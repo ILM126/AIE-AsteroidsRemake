@@ -1,8 +1,15 @@
-﻿    using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Design;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Storage;
 
 namespace TrebleSketch_AIE_Asteroids
 {
@@ -83,30 +90,70 @@ namespace TrebleSketch_AIE_Asteroids
         Texture2D shipExplosionTexture;
         Texture2D asteroidExplosionTexture;
 
+        KeysClass Key;
+
+        /*
+
+        //Declare event handlers
         public event EventHandler // Ahoy There, This is a script from http://derpy.me/MonoGameTimers
             Tick;
 
+        //Declare variables
         long
             interval,
             elapsedTime;
 
+        /// <summary>
+        /// Gets or Sets the Interval (in milliseconds) between Ticks for the Timer.
+        /// </summary>
         public long Interval
         {
             get { return interval; }
             set { interval = value; }
         }
 
+        /// <summary>
+        /// Gets the Elapsed Time (in milliseconds) since the last Tick.
+        /// </summary>
         public long ElapsedTime
         {
             get { return elapsedTime; }
         }
 
+        /// <summary>
+        /// Sets up a disabled Generic Timer object.
+        /// </summary>
+        /// <param name="game">Game that created the object.</param>
+        public void GenericTimer(Game game)
+            : base(game)
+        {
+            //Setup the variables and disable the timer
+            this.Updateable = false;
+            this.drawable = false;
+            this.interval = 100;
+            this.elapsedTime = 0;
+        }
+
+        /// <summary>
+        /// Sets up an enabled Generic Timer object.
+        /// </summary>
+        /// <param name="game">Game that created the object.</param>
+        /// <param name="interval">Time (in milliseconds) between ticks.</param>
+        /// <param name="beginCountdown">Enabled the Timer to start count down?</param>
+        public GenericTimer(Game game, long interval, bool beginCountdown)
+            :this(game)
+        {
+            //Setup the variables
+            this.Update = beginCountdown;
+            this.interval = interval;
+        }*/
 
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            this.Window.ClientSizeChanged += delegate { Resolution.WasResized = true; }; // http://community.monogame.net/t/change-window-size-mid-game/1991
         }
 
         /// <summary>
@@ -117,7 +164,11 @@ namespace TrebleSketch_AIE_Asteroids
         /// </summary>
         protected override void Initialize()
         {
+            Resolution.Initialize(graphics); // http://community.monogame.net/t/change-window-size-mid-game/1991
+
             // InitializeMenu();
+
+            // InitializeScreenResolution();
 
             InitializeASteroids();
 
@@ -149,9 +200,15 @@ namespace TrebleSketch_AIE_Asteroids
             // Menu.CurrentState = 0; // 0 = Menu || 1 = Game || 2 = Settings || 3 = LMAO
         } */
 
+        /* public void InitializeScreenResolution()
+        {
+            this.graphics.PreferredBackBufferWidth = 1280;
+            this.graphics.PreferredBackBufferHeight = 720;
+            this.graphics.ApplyChanges();
+        }*/
+
         public int CheckCurrentState(int CurrentState)
         {
-            
             return CurrentState;
         }
 
@@ -182,6 +239,8 @@ namespace TrebleSketch_AIE_Asteroids
 
             Ship.m_respawnTime = 1.0f;
             Ship.m_invulnerabliltyTime = 5.0f;
+
+            PlayerLives = 3;
         }
 
         private void InitializeASteroids() // You Rock, Woho
@@ -209,10 +268,11 @@ namespace TrebleSketch_AIE_Asteroids
             }
         }
 
+
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
-        /// </summary>
+            /// </summary>
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
@@ -248,10 +308,23 @@ namespace TrebleSketch_AIE_Asteroids
         {
             // Menu.CurrentState = 1; // 1 = Menu || 2 = Game || 3 = Settings || 4 = Ded || 0 = LMAO ||| At least I tried
 
-            ICheckINput(gameTime);
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                Exit();
+
+            Resolution.Update(this, graphics); // http://community.monogame.net/t/change-window-size-mid-game/1991
+
+            Key.ICheckINput(gameTime);
             ICheckShip(gameTime);
             ICheckASteroids();
             IRotateMISSLes();
+            CheckCollisions();
+
+            if (Keyboard.GetState().IsKeyDown(Keys.E))
+            {
+                Ship.Position = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
+                Ship.Velocity = new Vector2(0, 0);
+                Ship.Rotation = 0;
+            }
 
             foreach (AsteroidClass Asteroid in myAsteroids)
             {
@@ -259,40 +332,6 @@ namespace TrebleSketch_AIE_Asteroids
             }
 
             base.Update(gameTime);
-        }
-
-        protected void ICheckINput(GameTime gameTime)
-        {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || gameTime. || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
-            Ship.Acceleration = 0f;
-            Ship.RotationDelta = 0f;
-
-            if (Keyboard.GetState().IsKeyDown(Keys.W))
-            {
-                Ship.Acceleration = -0.1f;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.S))
-            {
-                Ship.Acceleration = 0.05f;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
-            {
-                Ship.RotationDelta = -0.01f;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.D))
-            {
-                Ship.RotationDelta = 0.01f;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.Q))
-            {
-                Ship.Velocity = new Vector2(0f, 0f);
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.Space))
-            {
-                ISpawnMISSle(gameTime);
-            }
         }
 
         private void ICheckShip(GameTime gameTime)
@@ -389,7 +428,7 @@ namespace TrebleSketch_AIE_Asteroids
             }
         }
 
-        protected void ISpawnMISSle(GameTime gameTime)
+        public void ISpawnMISSle(GameTime gameTime)
         {
             TimeSpan timeSinceLastShot = gameTime.TotalGameTime - lastShot;
 
@@ -402,7 +441,7 @@ namespace TrebleSketch_AIE_Asteroids
                 missle.Rotation = Ship.Rotation;
 
                 Matrix missleRotationMatrix = Matrix.CreateRotationZ(missle.Rotation);
-                missle.Velocity = new Vector2(0, -10);
+                missle.Velocity = new Vector2(0, -7);
                 missle.Velocity = Vector2.Transform(missle.Velocity, missleRotationMatrix);
                 missle.Velocity = missle.Velocity + Ship.Velocity;
 
@@ -632,9 +671,7 @@ namespace TrebleSketch_AIE_Asteroids
 
             spriteBatch.Begin();
 
-            DrawLives();
             DrawExplosions();
-            DrawScore();
 
             spriteBatch.Draw(Ship.Texture
                 , Ship.Position
@@ -676,6 +713,10 @@ namespace TrebleSketch_AIE_Asteroids
                     , SpriteEffects.None
                     , 0);
             }
+
+            DrawScore();
+            DrawLives();
+
             spriteBatch.End();
 
             base.Draw(gameTime);
