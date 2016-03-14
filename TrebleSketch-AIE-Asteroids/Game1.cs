@@ -92,6 +92,12 @@ namespace TrebleSketch_AIE_Asteroids
 
         KeysClass Key;
 
+        public Song backgroundMusicIntro;
+        public Song backgroundMusicCore;
+        public Song backgroundMusicEnd;
+
+        // AudioClass Music;
+
         /*
 
         //Declare event handlers
@@ -268,6 +274,7 @@ namespace TrebleSketch_AIE_Asteroids
             }
         }
 
+        // public static Song FromUri(string name, Uri uri);
 
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
@@ -288,6 +295,21 @@ namespace TrebleSketch_AIE_Asteroids
             scoreText = Content.Load<SpriteFont>("scoreFont");
             shipExplosionTexture = Content.Load<Texture2D>("explosion");
             asteroidExplosionTexture = Content.Load<Texture2D>("explosion2");
+            /*backgroundMusicIntro = Content.Load<Song>("ExtremeMugginsIntro");
+            backgroundMusicCore = Content.Load<Song>("ExtremeMugginsCore");
+            backgroundMusicEnd = Content.Load<Song>("ExtremeMugginsEnd");*/
+
+        }
+
+        public void ToggleMusic()
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.M))
+            {
+                MediaPlayer.Play(backgroundMusicIntro);
+                MediaPlayer.Play(backgroundMusicCore);
+                MediaPlayer.Play(backgroundMusicEnd);
+
+            }
         }
 
         /// <summary>
@@ -313,6 +335,7 @@ namespace TrebleSketch_AIE_Asteroids
 
             Resolution.Update(this, graphics); // http://community.monogame.net/t/change-window-size-mid-game/1991
 
+            // Key.ICheckINput(gameTime);
             Key.ICheckINput(gameTime);
             ICheckShip(gameTime);
             ICheckASteroids();
