@@ -13,12 +13,6 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin ExtremeMuggingsEnd.mp3
-/importer:Mp3Importer
-/processor:SongProcessor
-/processorParam:Quality=Best
-/build:ExtremeMuggingsEnd.mp3
-
 #begin ExtremeMugginsCore.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
@@ -30,4 +24,10 @@
 /processor:SongProcessor
 /processorParam:Quality=Best
 /build:ExtremeMugginsIntro.mp3
+
+#begin ExtremeMugginsEnd.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:ExtremeMugginsEnd.mp3
 
