@@ -17,7 +17,7 @@ namespace TrebleSketch_AIE_Asteroids
         public float RotationDelta;
 
         public Vector2 Size;
-        public int Radius;
+        public float Radius;
         public Vector2 MaxLimit;
         public Vector2 MinLimit;
 

@@ -8,7 +8,7 @@ namespace TrebleSketch_AIE_Asteroids
 {
     class KeysClass
     {
-        ShipClass Ship;
+        /*ShipClass Ship;
         Game1 game;
 
         public void ICheckINput(GameTime gameTime)
@@ -32,10 +32,10 @@ namespace TrebleSketch_AIE_Asteroids
             {
                 Ship.RotationDelta = 0.01f;
             }
-            /*            if (Keyboard.GetState().IsKeyDown(Keys.Q)) // wants to slow vehicle down
-                        {
-                                Ship.Velocity = Ship.Velocity - new Vector2(-1, -1);
-                        } */
+            //            if (Keyboard.GetState().IsKeyDown(Keys.Q)) // wants to slow vehicle down
+            //            {
+            //                    Ship.Velocity = Ship.Velocity - new Vector2(-1, -1);
+            //            }
             if (Keyboard.GetState().IsKeyDown(Keys.Q))
             {
                 Ship.Velocity = new Vector2(0, 0);
@@ -44,6 +44,6 @@ namespace TrebleSketch_AIE_Asteroids
             {
                 game.ISpawnMISSle(gameTime);
             }
-        }
+        }*/
     }
 }

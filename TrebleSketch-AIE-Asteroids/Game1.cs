@@ -96,6 +96,9 @@ namespace TrebleSketch_AIE_Asteroids
         public Song backgroundMusicCore;
         public Song backgroundMusicEnd;
 
+        // ShipClass Ship;
+        // Game1 game;
+
         // AudioClass Music;
 
         /*
@@ -231,7 +234,7 @@ namespace TrebleSketch_AIE_Asteroids
             Ship.RotationDelta = 0;
 
             Ship.Size = new Vector2(150.0f, 150.0f);
-            // Ship.Radius = Ship.Size.Y / 2;   CURRENTLY WORKING ON THIS!!!!!
+            Ship.Radius = Ship.Size.Y / 2; // CURRENTLY WORKING ON THIS!!!!!
             Ship.MaxLimit = new Vector2(graphics.PreferredBackBufferWidth + (Ship.Size.X / 2)
                 , graphics.PreferredBackBufferHeight + (Ship.Size.Y / 2));
             Ship.MinLimit = new Vector2(0 - (Ship.Size.X / 2), 0 - (Ship.Size.Y / 2));
@@ -312,6 +315,41 @@ namespace TrebleSketch_AIE_Asteroids
             }
         }
 
+        public void ICheckINput(GameTime gameTime)
+        {
+            Ship.Acceleration = 0f;
+            Ship.RotationDelta = 0f;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.W))
+            {
+                Ship.Acceleration = -0.08f;
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.S))
+            {
+                Ship.Acceleration = 0.05f;
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.A))
+            {
+                Ship.RotationDelta = -0.01f;
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.D))
+            {
+                Ship.RotationDelta = 0.01f;
+            }
+            /*            if (Keyboard.GetState().IsKeyDown(Keys.Q)) // wants to slow vehicle down
+                        {
+                                Ship.Velocity = Ship.Velocity - new Vector2(-1, -1);
+                        } */
+            if (Keyboard.GetState().IsKeyDown(Keys.Q))
+            {
+                Ship.Velocity = new Vector2(0, 0);
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            {
+                ISpawnMISSle(gameTime);
+            }
+        }
+
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
         /// game-specific content.
@@ -336,7 +374,7 @@ namespace TrebleSketch_AIE_Asteroids
             Resolution.Update(this, graphics); // http://community.monogame.net/t/change-window-size-mid-game/1991
 
             // Key.ICheckINput(gameTime);
-            Key.ICheckINput(gameTime);
+            ICheckINput(gameTime);
             ICheckShip(gameTime);
             ICheckASteroids();
             IRotateMISSLes();
@@ -351,7 +389,7 @@ namespace TrebleSketch_AIE_Asteroids
 
             foreach (AsteroidClass Asteroid in myAsteroids)
             {
-                // CircleCollisionCheck(Ship.Position, , Asteroid.Position, )
+                CircleCollisionCheck(Ship.Position, Ship.Radius, Asteroid.Position, Asteroid.Radius);
             }
 
             base.Update(gameTime);
