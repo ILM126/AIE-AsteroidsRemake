@@ -26,7 +26,7 @@ namespace TrebleSketch_AIE_Asteroids
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        MenuClass Menu;
+        // MenuClass Menu;
 
         enum WhereAmI
         {
@@ -59,6 +59,8 @@ namespace TrebleSketch_AIE_Asteroids
 
         TimeSpan lastShot = new TimeSpan(0, 0, 0, 0, 0);
         TimeSpan shotCoolDown = new TimeSpan(0, 0, 0, 0, 125);
+
+        TimeSpan lastChange;
 
         SpriteFont scoreText;
 
@@ -95,6 +97,7 @@ namespace TrebleSketch_AIE_Asteroids
         public Song backgroundMusicIntro;
         public Song backgroundMusicCore;
         public Song backgroundMusicEnd;
+        public Song backgroundMusicFull;
 
         // ShipClass Ship;
         // Game1 game;
@@ -187,7 +190,7 @@ namespace TrebleSketch_AIE_Asteroids
 
             datExplosions = new List<ExplosionsClass>(); // Boom
 
-            CenterOfShip = Ship.Position;                
+            CenterOfShip = Ship.Position;
 
             base.Initialize();
         }
@@ -298,20 +301,34 @@ namespace TrebleSketch_AIE_Asteroids
             scoreText = Content.Load<SpriteFont>("scoreFont");
             shipExplosionTexture = Content.Load<Texture2D>("explosion");
             asteroidExplosionTexture = Content.Load<Texture2D>("explosion2");
-            /*backgroundMusicIntro = Content.Load<Song>("ExtremeMugginsIntro");
+            backgroundMusicIntro = Content.Load<Song>("ExtremeMugginsIntro");
             backgroundMusicCore = Content.Load<Song>("ExtremeMugginsCore");
-            backgroundMusicEnd = Content.Load<Song>("ExtremeMugginsEnd");*/
+            backgroundMusicEnd = Content.Load<Song>("ExtremeMugginsEnd");
+            backgroundMusicFull = Content.Load<Song>("ExtremeMuggingsFull");
 
         }
 
-        public void ToggleMusic()
+        public void ToggleMusic(GameTime gameTime)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.M))
             {
-                MediaPlayer.Play(backgroundMusicIntro);
-                MediaPlayer.Play(backgroundMusicCore);
-                MediaPlayer.Play(backgroundMusicEnd);
-
+                if (MediaPlayer.State != MediaState.Playing)
+                {
+                    // MediaPlayer.Play(backgroundMusicIntro);
+                    // MediaPlayer.Play(backgroundMusicCore);
+                    // MediaPlayer.Play(backgroundMusicEnd);
+                    MediaPlayer.Play(backgroundMusicFull);
+                }
+            }
+            TimeSpan last = gameTime.TotalGameTime - lastChange;
+            if (Keyboard.GetState().IsKeyDown(Keys.L) && last > new TimeSpan(0,0,0,2,0)) 
+            {
+                MediaPlayer.IsRepeating = !MediaPlayer.IsRepeating;
+                lastChange = gameTime.TotalGameTime;
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.K))
+            {
+                MediaPlayer.Stop();
             }
         }
 
@@ -387,10 +404,7 @@ namespace TrebleSketch_AIE_Asteroids
                 Ship.Rotation = 0;
             }
 
-            foreach (AsteroidClass Asteroid in myAsteroids)
-            {
-                CircleCollisionCheck(Ship.Position, Ship.Radius, Asteroid.Position, Asteroid.Radius);
-            }
+            ToggleMusic(gameTime);
 
             base.Update(gameTime);
         }
@@ -608,12 +622,12 @@ namespace TrebleSketch_AIE_Asteroids
             for (int i = 0; i < PlayerLives; ++i)
             {
                 spriteBatch.Draw(Ship.Texture
-                , Ship.Position
+                , new Vector2(20, 10)
                 , null
                 , Color.White
                 , Ship.Rotation
-                , new Vector2(Ship.Texture.Width / 2
-                    , Ship.Texture.Height / 2)
+                , new Vector2(Ship.Texture.Width / 4
+                    , Ship.Texture.Height / 4)
                 , new Vector2(Ship.Size.X / Ship.Texture.Width, Ship.Size.Y / Ship.Texture.Height)
                 , SpriteEffects.None
                 , 0);
