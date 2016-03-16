@@ -33,6 +33,7 @@ namespace TrebleSketch_AIE_Asteroids
         public Vector2 m_spawnPosition;
 
         public int Score;
+        public int ScoreIncrements;
         public int Health; // Future Feature
 
         public void Respawn()

@@ -51,7 +51,7 @@ namespace TrebleSketch_AIE_Asteroids
 
         List<AsteroidClass> myAsteroids;
         public Texture2D asteroidTexture;
-        const int NUM_ASTEROIDS = 20;
+        const int NUM_ASTEROIDS = 50;
         Random randNum;
 
         public Texture2D missleTexture;
@@ -265,6 +265,8 @@ namespace TrebleSketch_AIE_Asteroids
             Ship.m_invulnerabliltyTime = 5.0f;
 
             PlayerLives = 3;
+
+            Ship.ScoreIncrements = 15;
         }
 
         private void InitializeASteroids() // You Rock, Woho
@@ -621,8 +623,10 @@ namespace TrebleSketch_AIE_Asteroids
 
                     if (missleCollisionCheck)
                     {
+                        Ship.Score += Ship.ScoreIncrements;
                         MissleDeathRow.Add(Missle);
                         AsteroidDeathRow.Add(Asteroid);
+                        InitializeASteroids();
                     }
                 }
             }
