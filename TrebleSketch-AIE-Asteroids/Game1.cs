@@ -99,10 +99,20 @@ namespace TrebleSketch_AIE_Asteroids
         public Song backgroundMusicEnd;
         public Song backgroundMusicFull;
 
+        class LifeClass
+        {
+            public Vector2 Size;
+            public Texture2D Texture;
+        }
+
+        LifeClass Life;
+
         // ShipClass Ship;
         // Game1 game;
 
         // AudioClass Music;
+
+        // Resolution ResolutionClass;
 
         /*
 
@@ -192,6 +202,8 @@ namespace TrebleSketch_AIE_Asteroids
 
             CenterOfShip = Ship.Position;
 
+            InitializeLife();
+
             base.Initialize();
         }
 
@@ -280,12 +292,19 @@ namespace TrebleSketch_AIE_Asteroids
             }
         }
 
+        public void InitializeLife()
+        {  
+            Life = new LifeClass();
+
+            Life.Size = new Vector2(10f, 105.2f);
+        }
+
         // public static Song FromUri(string name, Uri uri);
 
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
-            /// </summary>
+        /// </summary>
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
@@ -298,6 +317,7 @@ namespace TrebleSketch_AIE_Asteroids
             // asteroidTexture = Content.Load<Texture2D>("asteroid"); // The actual asteroid
             asteroidTexture = Content.Load<Texture2D>("tugboat");
             missleTexture = Content.Load<Texture2D>("bullet");
+            Life.Texture = Content.Load<Texture2D>("falcon-9");
             scoreText = Content.Load<SpriteFont>("scoreFont");
             shipExplosionTexture = Content.Load<Texture2D>("explosion");
             asteroidExplosionTexture = Content.Load<Texture2D>("explosion2");
@@ -621,14 +641,14 @@ namespace TrebleSketch_AIE_Asteroids
         {
             for (int i = 0; i < PlayerLives; ++i)
             {
-                spriteBatch.Draw(Ship.Texture
-                , new Vector2(20, 10)
+                spriteBatch.Draw(Life.Texture
+                , new Vector2(25, 85)
                 , null
                 , Color.White
-                , Ship.Rotation
-                , new Vector2(Ship.Texture.Width / 4
-                    , Ship.Texture.Height / 4)
-                , new Vector2(Ship.Size.X / Ship.Texture.Width, Ship.Size.Y / Ship.Texture.Height)
+                , 0
+                , new Vector2(Life.Texture.Width / 2
+                    , Life.Texture.Height / 2)
+                , new Vector2(Life.Size.X / Life.Texture.Width, Life.Size.Y / Life.Texture.Height)
                 , SpriteEffects.None
                 , 0);
             }
@@ -789,8 +809,8 @@ namespace TrebleSketch_AIE_Asteroids
                     , 0);
             }
 
-            DrawScore();
             DrawLives();
+            DrawScore();
 
             spriteBatch.End();
 
