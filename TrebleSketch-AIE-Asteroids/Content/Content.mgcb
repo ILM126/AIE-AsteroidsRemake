@@ -31,3 +31,9 @@
 /processorParam:Quality=Best
 /build:ExtremeMugginsEnd.mp3
 
+#begin ExtremeMuggingsFull.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:ExtremeMuggingsFull.mp3
+
