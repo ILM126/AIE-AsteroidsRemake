@@ -16,7 +16,7 @@ namespace TrebleSketch_AIE_Asteroids
     /// <summary>
     /// Name: SpaceXterminator
     /// Description: A Game Where Elon Musk Must Destroy All The Tugboats That Is Stopping His Launches
-    /// Version: 0.0.30 (Pre-First Playable)
+    /// Version: 0.0.55 (Pre-First Playable)
     /// Developer: Titus Huang (Treble Sketch/ILM126)
     /// Game Engine: MonoGame
     /// Dev Notes: This is my first ever major game of any kind, tons of hard work is still needed >:D
@@ -91,8 +91,6 @@ namespace TrebleSketch_AIE_Asteroids
 
         Texture2D shipExplosionTexture;
         Texture2D asteroidExplosionTexture;
-
-        KeysClass Key;
 
         public Song backgroundMusicIntro;
         public Song backgroundMusicCore;
@@ -169,7 +167,6 @@ namespace TrebleSketch_AIE_Asteroids
             this.Update = beginCountdown;
             this.interval = interval;
         }*/
-
 
         public Game1()
         {
@@ -248,7 +245,7 @@ namespace TrebleSketch_AIE_Asteroids
             Ship.Rotation = 0;
             Ship.RotationDelta = 0;
 
-            Ship.Size = new Vector2(150.0f, 150.0f);
+            Ship.Size = new Vector2(100.0f, 100.0f);
             Ship.Radius = Ship.Size.Y / 2; // CURRENTLY WORKING ON THIS!!!!!
             Ship.MaxLimit = new Vector2(graphics.PreferredBackBufferWidth + (Ship.Size.X / 2)
                 , graphics.PreferredBackBufferHeight + (Ship.Size.Y / 2));
@@ -265,7 +262,7 @@ namespace TrebleSketch_AIE_Asteroids
             Ship.m_invulnerabliltyTime = 5.0f;
 
             PlayerLives = 3;
-
+            Ship.Health = 150;
             Ship.ScoreIncrements = 15;
         }
 
@@ -369,11 +366,11 @@ namespace TrebleSketch_AIE_Asteroids
             }
             if (Keyboard.GetState().IsKeyDown(Keys.A))
             {
-                Ship.RotationDelta = -0.01f;
+                Ship.RotationDelta = -0.03f;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.D))
             {
-                Ship.RotationDelta = 0.01f;
+                Ship.RotationDelta = 0.03f;
             }
             /*            if (Keyboard.GetState().IsKeyDown(Keys.Q)) // wants to slow vehicle down
                         {
@@ -409,8 +406,11 @@ namespace TrebleSketch_AIE_Asteroids
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-            Resolution.Update(this, graphics); // http://community.monogame.net/t/change-window-size-mid-game/1991
+            if (myAsteroids.Count == 0)
+            {
+                InitializeASteroids();
+            }
+                Resolution.Update(this, graphics); // http://community.monogame.net/t/change-window-size-mid-game/1991
 
             // Key.ICheckINput(gameTime);
             ICheckINput(gameTime);
@@ -605,6 +605,8 @@ namespace TrebleSketch_AIE_Asteroids
             List<AsteroidClass> AsteroidDeathRow = new List<AsteroidClass>();
             List<MissleClass> MissleDeathRow = new List<MissleClass>();
 
+           
+
             foreach (AsteroidClass Asteroid in myAsteroids)
             {
                 bool playerCollisionCheck = CircleCollisionCheck(Ship.Position, Ship.Size.X / 2
@@ -619,14 +621,14 @@ namespace TrebleSketch_AIE_Asteroids
                 foreach (MissleClass Missle in myMissles)
                 {
                     bool missleCollisionCheck = CircleCollisionCheck(Missle.Position, Missle.Size.X / 2
-                    , Missle.Position, Missle.Size.X / 2);
+                    , Asteroid.Position, Asteroid.Size.X / 2);
 
                     if (missleCollisionCheck)
                     {
                         Ship.Score += Ship.ScoreIncrements;
                         MissleDeathRow.Add(Missle);
                         AsteroidDeathRow.Add(Asteroid);
-                        InitializeASteroids();
+                        CreateExplosion(Asteroid.Position, ExplosionType.ASTEROID);
                     }
                 }
             }
@@ -770,8 +772,6 @@ namespace TrebleSketch_AIE_Asteroids
 
             spriteBatch.Begin();
 
-            DrawExplosions();
-
             spriteBatch.Draw(Ship.Texture
                 , Ship.Position
                 , null
@@ -812,6 +812,8 @@ namespace TrebleSketch_AIE_Asteroids
                     , SpriteEffects.None
                     , 0);
             }
+
+            DrawExplosions();
 
             DrawLives();
             DrawScore();
