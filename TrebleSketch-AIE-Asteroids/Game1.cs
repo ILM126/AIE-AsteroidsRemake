@@ -16,7 +16,7 @@ namespace TrebleSketch_AIE_Asteroids
     /// <summary>
     /// Name: SpaceXterminator
     /// Description: A Game Where Elon Musk Must Destroy All The Tugboats That Is Stopping His Launches
-    /// Version: 0.0.55 (Pre-First Playable)
+    /// Version: 0.0.75 (Pre-First Playable)
     /// Developer: Titus Huang (Treble Sketch/ILM126)
     /// Game Engine: MonoGame
     /// Dev Notes: This is my first ever major game of any kind, tons of hard work is still needed >:D
@@ -51,7 +51,7 @@ namespace TrebleSketch_AIE_Asteroids
 
         List<AsteroidClass> myAsteroids;
         public Texture2D asteroidTexture;
-        const int NUM_ASTEROIDS = 50;
+        const int NUM_ASTEROIDS = 40;
         Random randNum;
 
         public Texture2D missleTexture;
@@ -245,7 +245,7 @@ namespace TrebleSketch_AIE_Asteroids
             Ship.Rotation = 0;
             Ship.RotationDelta = 0;
 
-            Ship.Size = new Vector2(100.0f, 100.0f);
+            Ship.Size = new Vector2(85.0f, 85.0f);
             Ship.Radius = Ship.Size.Y / 2; // CURRENTLY WORKING ON THIS!!!!!
             Ship.MaxLimit = new Vector2(graphics.PreferredBackBufferWidth + (Ship.Size.X / 2)
                 , graphics.PreferredBackBufferHeight + (Ship.Size.Y / 2));
@@ -261,8 +261,10 @@ namespace TrebleSketch_AIE_Asteroids
             Ship.m_respawnTime = 1.0f;
             Ship.m_invulnerabliltyTime = 5.0f;
 
+            Ship.m_spawnPosition = Ship.Position;
+
             PlayerLives = 3;
-            Ship.Health = 150;
+            Ship.Health = 150f;
             Ship.ScoreIncrements = 15;
         }
 
@@ -286,6 +288,8 @@ namespace TrebleSketch_AIE_Asteroids
                 Asteroid.MaxLimit = new Vector2(graphics.PreferredBackBufferWidth + (Asteroid.Size.X + 100)
                     , graphics.PreferredBackBufferHeight + (Asteroid.Size.Y + 100));
                 Asteroid.MinLimit = new Vector2(0 - (Asteroid.Size.X - 100), 0 - (Asteroid.Size.Y - 100));
+
+                Asteroid.DamageDealt = 5f;
 
                 myAsteroids.Add(Asteroid);
             }
@@ -380,10 +384,17 @@ namespace TrebleSketch_AIE_Asteroids
             {
                 Ship.Velocity = new Vector2(0, 0);
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            if (Ship.Visible == true)
             {
-                ISpawnMISSle(gameTime);
+                if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                {
+                    ISpawnMISSle(gameTime);
+                }
             }
+            /*if (Ship.Vunlerable == false && Keyboard.GetState().IsKeyDown(Keys.V)) // Feature WIP
+            {
+                Ship.Vunlerable = true;
+            }*/
         }
 
         /// <summary>
@@ -418,17 +429,30 @@ namespace TrebleSketch_AIE_Asteroids
             ICheckASteroids();
             IRotateMISSLes();
             CheckCollisions();
+            UpdatedExplosions(gameTime);
 
+            GetCentre();
+
+            ToggleMusic(gameTime);
+
+            base.Update(gameTime);
+        }
+
+        public void GetCentre()
+        {
             if (Keyboard.GetState().IsKeyDown(Keys.E))
             {
                 Ship.Position = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
                 Ship.Velocity = new Vector2(0, 0);
                 Ship.Rotation = 0;
             }
+        }
 
-            ToggleMusic(gameTime);
-
-            base.Update(gameTime);
+        public void GetCentreNow()
+        {
+                Ship.Position = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
+                Ship.Velocity = new Vector2(0, 0);
+                Ship.Rotation = 0;
         }
 
         private void ICheckShip(GameTime gameTime)
@@ -455,10 +479,15 @@ namespace TrebleSketch_AIE_Asteroids
             {
                 Ship.m_invulnerabliltyTimer -= delta;
             }
-            else if (Ship.m_invulnerabliltyTimer > 0)
+            else if (Ship.m_invulnerabliltyTimer < 0)
             {
                 Ship.m_invulnerabliltyTimer = 0;
+                if (Ship.Dead == true && Ship.Visible == false)
+                {
+                    GetCentreNow();
+                }
                 Ship.Vunlerable = true;
+                Ship.Visible = true;
             }
 
             Ship.Rotation += Ship.RotationDelta;
@@ -614,8 +643,19 @@ namespace TrebleSketch_AIE_Asteroids
                 if (playerCollisionCheck)
                 {
                     Ship.Die();
-                    AsteroidDeathRow.Add(Asteroid);
-                    CreateExplosion(Ship.Position, ExplosionType.SHIP);
+                    if (Ship.Visible == true)
+                    {
+                        Ship.Health -= Asteroid.DamageDealt;
+                        AsteroidDeathRow.Add(Asteroid);
+                    }
+                    if (Ship.Vunlerable)
+                    {
+                        CreateExplosion(Ship.Position, ExplosionType.SHIP);
+                        if (Ship.Health == 0)
+                        {
+                            PlayerLives--;
+                        }
+                    }
                 }
 
                 foreach (MissleClass Missle in myMissles)
@@ -648,7 +688,7 @@ namespace TrebleSketch_AIE_Asteroids
             for (int i = 0; i < PlayerLives; ++i)
             {
                 spriteBatch.Draw(Life.Texture
-                , new Vector2(25, 85)
+                , new Vector2(i*10 + 25, 85)
                 , null
                 , Color.White
                 , 0
@@ -662,8 +702,12 @@ namespace TrebleSketch_AIE_Asteroids
 
         private void DrawScore()
         {
-            spriteBatch.DrawString(scoreText, "SCORE : ", new Vector2(10, 10), Color.White);
-            spriteBatch.DrawString(scoreText, Ship.Score.ToString(), new Vector2(120, 10), Color.White);
+            spriteBatch.DrawString(scoreText, "SCORE : " + Ship.Score.ToString(), new Vector2(10, 10), Color.White);
+        }
+
+        private void DrawHealth()
+        {
+            spriteBatch.DrawString(scoreText, "HEALTH : " + Ship.Health.ToString(), new Vector2(150, 10), Color.White);
         }
 
         /* public string ChooseShip()
@@ -772,7 +816,9 @@ namespace TrebleSketch_AIE_Asteroids
 
             spriteBatch.Begin();
 
-            spriteBatch.Draw(Ship.Texture
+            if (Ship.Visible == true)
+            {
+                spriteBatch.Draw(Ship.Texture
                 , Ship.Position
                 , null
                 , Color.White
@@ -783,6 +829,7 @@ namespace TrebleSketch_AIE_Asteroids
                     , Ship.Size.Y / Ship.Texture.Height)
                 , SpriteEffects.None
                 , 0);
+            }
 
             foreach (AsteroidClass Asteroid in myAsteroids)
             {
@@ -814,8 +861,8 @@ namespace TrebleSketch_AIE_Asteroids
             }
 
             DrawExplosions();
-
             DrawLives();
+            DrawHealth();
             DrawScore();
 
             spriteBatch.End();
