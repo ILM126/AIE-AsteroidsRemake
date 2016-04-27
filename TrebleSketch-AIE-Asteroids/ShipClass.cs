@@ -34,7 +34,7 @@ namespace TrebleSketch_AIE_Asteroids
 
         public int Score;
         public int ScoreIncrements;
-        public int Health; // Future Feature
+        public float Health;
 
         public void Respawn()
         {

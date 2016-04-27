@@ -20,7 +20,7 @@ namespace TrebleSketch_AIE_Asteroids
         public Vector2 MaxLimit;
         public Vector2 MinLimit;
 
-        public int DamageDealt; // Future Feature
+        public float DamageDealt;
 
         // AsteroidClass Asteroid;
     }
