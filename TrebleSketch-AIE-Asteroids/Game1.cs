@@ -21,15 +21,13 @@ namespace TrebleSketch_AIE_Asteroids
     /// Developer: Titus Huang (Treble Sketch/ILM126)
     /// Game Engine: MonoGame
     /// Dev Notes: This is my first ever major game of any kind, tons of hard work is still needed >:D
-    /// ****** FINAL BUG: Lives doesn't disappear when the health reaches 0
     /// </summary>
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        // MenuClass Menu;
-
+        #region Stuff :P
         enum WhereAmI
         {
             MENU = 1,
@@ -111,6 +109,9 @@ namespace TrebleSketch_AIE_Asteroids
 
         string GameVersionBuild;
 
+
+#endregion
+
         public Game1()
         {
             Debug = new Debugging();
@@ -119,7 +120,6 @@ namespace TrebleSketch_AIE_Asteroids
             Debug.WriteToFile("[INFO] Starting SpaceXterminator " + GameVersionBuild, true);
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            this.Window.ClientSizeChanged += delegate { Resolution.WasResized = true; }; // http://community.monogame.net/t/change-window-size-mid-game/1991
         }
 
         /// <summary>
@@ -130,11 +130,6 @@ namespace TrebleSketch_AIE_Asteroids
         /// </summary>
         protected override void Initialize()
         {
-            Resolution.Initialize(graphics); // http://community.monogame.net/t/change-window-size-mid-game/1991
-
-            // InitializeMenu();
-
-            // InitializeScreenResolution();
 
             InitializeASteroids();
 
@@ -342,7 +337,6 @@ namespace TrebleSketch_AIE_Asteroids
             {
                 InitializeASteroids();
             }
-                Resolution.Update(this, graphics); // http://community.monogame.net/t/change-window-size-mid-game/1991
 
             ICheckINput(gameTime);
             ICheckShip(gameTime);

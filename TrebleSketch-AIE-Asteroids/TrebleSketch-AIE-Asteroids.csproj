@@ -67,7 +67,6 @@
     <Compile Include="Debugging.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="KeysClass.cs" />
-    <Compile Include="MenuClass.cs" />
     <Compile Include="MissleClass.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -81,7 +80,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Resolution.cs" />
     <Compile Include="ShipClass.cs" />
   </ItemGroup>
   <ItemGroup>
