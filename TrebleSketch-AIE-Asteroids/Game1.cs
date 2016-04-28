@@ -29,14 +29,6 @@ namespace TrebleSketch_AIE_Asteroids
         SpriteBatch spriteBatch;
 
         #region Stuff :P
-        enum WhereAmI
-        {
-            MENU = 1,
-            GAME = 2,
-            SETTINGS = 3,
-            GAMEOVER
-        }
-
         int PlayerLives;
 
         enum ShipTexture
@@ -54,14 +46,19 @@ namespace TrebleSketch_AIE_Asteroids
 
         List<AsteroidClass> myAsteroids;
         public Texture2D asteroidTexture;
-        const int NUM_ASTEROIDS = 40;
+        float NUM_ASTEROIDS;
         Random randNum;
 
         public Texture2D missleTexture;
         List<MissleClass> myMissles;
 
         TimeSpan lastShot = new TimeSpan(0, 0, 0, 0, 0);
+        TimeSpan sceneChanged = new TimeSpan(0, 0, 0, 0, 0);
+        TimeSpan restart = new TimeSpan(0, 0, 0, 0, 0);
         TimeSpan shotCoolDown = new TimeSpan(0, 0, 0, 0, 125);
+        TimeSpan textFadeAway = new TimeSpan(0, 0, 0, 7, 000);
+
+        TimeSpan SceneIDFade;
 
         TimeSpan lastChange;
 
@@ -110,8 +107,23 @@ namespace TrebleSketch_AIE_Asteroids
 
         string GameVersionBuild;
 
+        Vector2 CentreScreen;
+
+        float AsteroidLevel;
+        float Level_Multiplier;
+
+        float Level_Easy;
+        float Level_Medium;
+        float Level_Hard;
+        float Level_Conspiracy;
+
         public int SceneID; // How I handle my scene, pretty bad. But it works for quick deployment! :D
-        // This version will be the messy one, but future games will implement a simplier version.
+                            // This version will be the messy one, but future games will implement a simplier version.
+        bool Paused;                           
+        string SceneName;
+        bool PlayerInScene;
+        bool AsteroidsInScene;
+        bool SceneChanged;
 #endregion
 
         public Game1()
@@ -136,19 +148,34 @@ namespace TrebleSketch_AIE_Asteroids
             graphics.PreferredBackBufferWidth = 1280;
             graphics.ApplyChanges();
 
-            InitializeASteroids();
+            CentreScreen = new Vector2(graphics.PreferredBackBufferWidth / 2
+                , graphics.PreferredBackBufferHeight / 2);
 
-            InitializeShip();
+            Ship = new ShipClass();
+            Life = new LifeClass();
+            myAsteroids = new List<AsteroidClass>();
+
+            BeginInitialization();
+
+            SceneID = 0;
+            SceneName = "Tests Scene";
+            Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
+
+            Level_Easy = 0.45f;
+            Level_Medium = 0.80f;
+            Level_Hard = 1.3f;
+            Level_Conspiracy = 5f;
+
+            Level_Multiplier = Level_Easy;
+
+            AsteroidLevel = 0;
+            NUM_ASTEROIDS = AsteroidLevel * Level_Multiplier + 7;
 
             Ship.Debug = Debug;
 
             myMissles = new List<MissleClass>(); // Magic Missle!
 
             datExplosions = new List<ExplosionsClass>(); // Boom
-
-            CenterOfShip = Ship.Position;
-
-            InitializeLife();
 
             base.Initialize();
         }
@@ -158,10 +185,8 @@ namespace TrebleSketch_AIE_Asteroids
             return CurrentState;
         }
 
-        void InitializeShip() // I ship it! - Lightwing <3
+        void BeginInitialization()
         {
-            Ship = new ShipClass();
-
             Ship.Position = new Vector2(
                 graphics.PreferredBackBufferWidth / 2
                 , graphics.PreferredBackBufferHeight / 2);
@@ -176,6 +201,11 @@ namespace TrebleSketch_AIE_Asteroids
                 , graphics.PreferredBackBufferHeight + (Ship.Size.Y / 2));
             Ship.MinLimit = new Vector2(0 - (Ship.Size.X / 2), 0 - (Ship.Size.Y / 2));
 
+            Life.Size = new Vector2(10f, 105.2f);
+        }
+
+        void InitializeShip() // I ship it! - Lightwing <3
+        {
             Ship.Dead = false;
             Ship.Visible = true;
             Ship.Vunlerable = false;
@@ -186,7 +216,7 @@ namespace TrebleSketch_AIE_Asteroids
             Ship.m_respawnTime = 2f;
             Ship.m_invulnerabliltyTime = 7f;
 
-            Ship.m_spawnPosition = Ship.Position;
+            Ship.m_spawnPosition = CentreScreen;
 
             PlayerLives = 3;
             Ship.Health = 150f;
@@ -197,9 +227,7 @@ namespace TrebleSketch_AIE_Asteroids
         {
             randNum = new Random();
 
-            myAsteroids = new List<AsteroidClass>();
-
-            for (int i = 0; i < NUM_ASTEROIDS; i++)
+            for (int i = 0; i < (int)NUM_ASTEROIDS; i++)
             {
                 AsteroidClass Asteroid = new AsteroidClass();
                 Asteroid.Position = new Vector2(randNum.Next(graphics.PreferredBackBufferWidth)
@@ -217,14 +245,8 @@ namespace TrebleSketch_AIE_Asteroids
                 Asteroid.DamageDealt = 5f;
 
                 myAsteroids.Add(Asteroid);
+                Debug.WriteToFile("[DEBUG] Asteroids on screen: " + myAsteroids.Count, false);
             }
-        }
-
-        public void InitializeLife()
-        {  
-            Life = new LifeClass();
-
-            Life.Size = new Vector2(10f, 105.2f);
         }
 
         // public static Song FromUri(string name, Uri uri);
@@ -282,36 +304,91 @@ namespace TrebleSketch_AIE_Asteroids
 
         public void ICheckINput(GameTime gameTime)
         {
-            Ship.Acceleration = 0f;
-            Ship.RotationDelta = 0f;
-            Ship.SpeedLimit = 20f;
+            if (PlayerInScene)
+            {
+                Ship.Acceleration = 0f;
+                Ship.RotationDelta = 0f;
+                Ship.SpeedLimit = 20f;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.W))
-            {
-                Ship.Acceleration = -0.08f;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.S))
-            {
-                Ship.Acceleration = 0.05f;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
-            {
-                Ship.RotationDelta = -0.03f;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.D))
-            {
-                Ship.RotationDelta = 0.03f;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.Q))
-            {
-                Ship.Velocity = new Vector2(0, 0);
-            }
-            if (Ship.Visible == true)
-            {
-                if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                if (Keyboard.GetState().IsKeyDown(Keys.W))
                 {
-                    ISpawnMISSle(gameTime);
+                    Ship.Acceleration = -0.08f;
                 }
+                if (Keyboard.GetState().IsKeyDown(Keys.S))
+                {
+                    Ship.Acceleration = 0.05f;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.A))
+                {
+                    if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
+                    {
+                        Ship.RotationDelta = -0.10f;
+                    }
+                    else
+                    {
+                        Ship.RotationDelta = -0.03f;
+                    }
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.D))
+                {
+                    if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
+                    {
+                        Ship.RotationDelta = 0.10f;
+                    }
+                    else
+                    {
+                        Ship.RotationDelta = 0.03f;
+                    }
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.Q))
+                {
+                    Ship.Velocity = new Vector2(0, 0);
+                }
+                if (Ship.Visible == true)
+                {
+                    if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                    {
+                        ISpawnMISSle(gameTime);
+                    }
+                }
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.D0))
+            {
+                SceneID = 0;
+                Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.D1))
+            {
+                SceneID = 1;
+                Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.D2))
+            {
+                SceneID = 2;
+                Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
+                if (!Paused)
+                {
+                    myAsteroids.Clear();
+                    AsteroidLevel = 0;
+                    AsteroidLevel++;
+                    Ship.Score = 0;
+                    InitializeShip();
+                    InitializeASteroids();
+                    CenterOfShip = Ship.Position;
+                    Debug.WriteToFile("[DEBUG] Ship Position: " + Ship.Position, false);
+                }
+                NUM_ASTEROIDS = AsteroidLevel * Level_Multiplier + 7;
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.D3))
+            {
+                SceneID = 3;
+                Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.D4))
+            {
+                SceneID = 4;
+                Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
             }
         }
 
@@ -338,20 +415,69 @@ namespace TrebleSketch_AIE_Asteroids
                 Debug.WriteToFile("[INFO] Exiting game...", true);
                 Exit();
             }
-            if (myAsteroids.Count == 0)
+            
+            switch (SceneID)
             {
-                InitializeASteroids();
+                case 0:
+                    SceneName = "Tests Scene";
+                    PlayerInScene = false;
+                    AsteroidsInScene = false;
+                    break;
+                case 1:
+                    SceneName = "Main Menu";
+                    PlayerInScene = false;
+                    AsteroidsInScene = false;
+                    break;
+                case 2:
+                    SceneName = "Game";
+                    ICheckShip(gameTime);
+                    IRotateMISSLes();
+                    GetCentre();
+                    UpdatedExplosions(gameTime);
+                    CheckCollisions();
+                    PlayerInScene = true;
+                    AsteroidsInScene = true;
+                    break;
+                case 3:
+                    SceneName = "Settings - Diffculty";
+                    PlayerInScene = false;
+                    AsteroidsInScene = false;
+                    break;
+                case 4:
+                    SceneName = "Game Over";
+                    PlayerInScene = false;
+                    AsteroidsInScene = false;
+                    break;
+                default:
+                    SceneName = "Deafult Scene";
+                    PlayerInScene = false;
+                    AsteroidsInScene = false;
+                    break;
+            }
+
+            if (AsteroidsInScene)
+            {
+                ICheckASteroids();
+                if (myAsteroids.Count == 0)
+                {
+                    AsteroidLevel++;
+                    Debug.WriteToFile("[DEBUG] Starting Level: " + AsteroidLevel, false);
+                    InitializeASteroids();
+                }
+            } else
+            {
+                myAsteroids.Clear();
+            }
+
+            if (PlayerInScene)
+            {
+
+            } else
+            {
+                Ship.Visible = false;
             }
 
             ICheckINput(gameTime);
-            ICheckShip(gameTime);
-            ICheckASteroids();
-            IRotateMISSLes();
-            CheckCollisions();
-            UpdatedExplosions(gameTime);
-
-            GetCentre();
-
             ToggleMusic(gameTime);
 
             base.Update(gameTime);
@@ -608,7 +734,10 @@ namespace TrebleSketch_AIE_Asteroids
                         }
                         AsteroidDeathRow.Add(Asteroid);
                         CreateExplosion(Asteroid.Position, ExplosionType.ASTEROID);
-                        Debug.WriteToFile("[INFO] Ship Health is now: " + Ship.Health + "HP", true);
+                        if (Ship.Health != 0 && !Ship.Vunlerable)
+                        {
+                            Debug.WriteToFile("[INFO] Ship Health is now: " + Ship.Health + "HP", true);
+                        }
                     }
                     if (Ship.Vunlerable && Ship.Visible)
                     {
@@ -633,7 +762,8 @@ namespace TrebleSketch_AIE_Asteroids
                         MissleDeathRow.Add(Missle);
                         AsteroidDeathRow.Add(Asteroid);
                         CreateExplosion(Asteroid.Position, ExplosionType.ASTEROID);
-                        Debug.WriteToFile("[INFO] An Elon Missle hit a Barge Ship", true);
+                        //Debug.WriteToFile("[INFO] An Elon Missle hit a Barge Ship", true);
+                        Debug.WriteToFile("[DEBUG] Asteroids on screen: " + myAsteroids.Count, false);
                     }
                 }
             }
@@ -676,19 +806,36 @@ namespace TrebleSketch_AIE_Asteroids
             spriteBatch.DrawString(scoreText, "HEALTH : " + Ship.Health.ToString(), new Vector2(150, 10), Color.White);
         }
 
-        /* public string ChooseShip()
-        // http://stackoverflow.com/questions/10216757/adding-inputbox-like-control-to-xna-game Grrrrrrrrrr
-        // http://www.dreamincode.net/forums/topic/158381-xna-text-input/
-        // http://stackoverflow.com/questions/10154046/making-text-input-in-xna-for-entering-names-chatting
+        void DrawLevel()
         {
-            spriteBatch.DrawString(scoreText, "Choose Your Character: ", new Vector2(20, 40), Color.White);
-            GetKeyboardLayoutName
-            if (Keyboard.GetState().IsKeyDown)
+            spriteBatch.DrawString(scoreText, "Level : " + (int)AsteroidLevel, new Vector2(300, 10), Color.White);
+        }
+
+        void DrawSceneID(GameTime gameTime)
+        {
+            TimeSpan SceneIDFade = gameTime.TotalGameTime + sceneChanged;
+            if (SceneIDFade < new TimeSpan(0, 0, 0, 5, 0))
             {
-                Menu.CurrentState = 1;
-                spriteBatch.DrawString(scoreText, "This Game has started!", new Vector2(20, 50), Color.White);
+                spriteBatch.DrawString(scoreText, "SceneID : " + SceneID, CentreScreen, Color.White);
+                sceneChanged = gameTime.TotalGameTime;
+            } else if (SceneChanged && SceneIDFade < new TimeSpan(0, 0, 0, 5, 0))
+            {
+                spriteBatch.DrawString(scoreText, "SceneID : " + SceneID, CentreScreen, Color.White);
+                sceneChanged = gameTime.TotalGameTime;
             }
-        } */
+            //if (SceneIDFade < textFadeAway)
+            //{
+            //    spriteBatch.DrawString(scoreText, "SceneID : " + SceneID, CentreScreen, Color.White);
+            //    sceneChanged = gameTime.TotalGameTime;
+            //}
+            //else if (SceneChanged)
+            //{
+            //    SceneChanged = false;
+            //    SceneIDFade = restart;
+            //}
+            //Debug.WriteToFile("[DEBUG] SceneIDFade Time: " + SceneIDFade.ToString(), false);
+            //Debug.WriteToFile("[DEBUG] textFadeAway Time: " + textFadeAway.ToString(), false);
+        }
 
         protected void CreateExplosion(Vector2 SpawnPosition, ExplosionType SpawnedExplosionType)
         {
@@ -826,10 +973,30 @@ namespace TrebleSketch_AIE_Asteroids
                     , 0);
             }
 
-            DrawExplosions();
-            DrawHealth();
-            DrawScore();
-            DrawLives(spriteBatch);
+            if (SceneID == 2)
+            {
+                DrawExplosions();
+                DrawHealth();
+                DrawScore();
+                DrawLevel();
+                DrawLives(spriteBatch);
+            }
+
+            DrawSceneID(gameTime);
+
+            //switch (SceneID)
+            //{
+            //    case 0:
+            //    case 1:
+            //    case 2:
+            //    case 3:
+            //    case 4:
+            //        DrawSceneID(gameTime);
+            //        break;
+            //    default:
+            //        DrawSceneID(gameTime);
+            //        break;
+            //}
 
             spriteBatch.End();
 
