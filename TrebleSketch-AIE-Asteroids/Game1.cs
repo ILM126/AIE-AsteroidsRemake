@@ -229,6 +229,8 @@ namespace TrebleSketch_AIE_Asteroids
 
             Ship.m_spawnPosition = CentreScreen;
 
+            Ship.m_spawnPosition = Ship.Position;
+
             PlayerLives = 3;
             Ship.Health = 150f;
             Ship.ScoreIncrements = 15;
@@ -252,6 +254,8 @@ namespace TrebleSketch_AIE_Asteroids
                 Asteroid.MaxLimit = new Vector2(graphics.PreferredBackBufferWidth + (Asteroid.Size.X + 100)
                     , graphics.PreferredBackBufferHeight + (Asteroid.Size.Y + 100));
                 Asteroid.MinLimit = new Vector2(0 - (Asteroid.Size.X + 100), 0 - (Asteroid.Size.Y + 100));
+
+                Asteroid.DamageDealt = 5f;
 
                 Asteroid.DamageDealt = 5f;
 
@@ -431,6 +435,10 @@ namespace TrebleSketch_AIE_Asteroids
                     Position = CentreScreen
                 });
             }
+            /*if (Ship.Vunlerable == false && Keyboard.GetState().IsKeyDown(Keys.V)) // Feature WIP
+            {
+                Ship.Vunlerable = true;
+            }*/
         }
 
         /// <summary>
@@ -617,6 +625,7 @@ namespace TrebleSketch_AIE_Asteroids
                     Ship.Vunlerable = false;
                 }
                 Ship.Vunlerable = true;
+                Ship.Visible = true;
             }
 
             Ship.Rotation += Ship.RotationDelta;
