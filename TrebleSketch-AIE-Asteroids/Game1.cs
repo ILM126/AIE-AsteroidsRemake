@@ -53,10 +53,7 @@ namespace TrebleSketch_AIE_Asteroids
         List<MissleClass> myMissles;
 
         TimeSpan lastShot = new TimeSpan(0, 0, 0, 0, 0);
-        TimeSpan sceneChanged = new TimeSpan(0, 0, 0, 0, 0);
-        TimeSpan restart = new TimeSpan(0, 0, 0, 0, 0);
         TimeSpan shotCoolDown = new TimeSpan(0, 0, 0, 0, 125);
-        TimeSpan textFadeAway = new TimeSpan(0, 0, 0, 7, 000);
 
         TimeSpan SceneIDFade;
 
@@ -123,8 +120,20 @@ namespace TrebleSketch_AIE_Asteroids
         string SceneName;
         bool PlayerInScene;
         bool AsteroidsInScene;
-        bool SceneChanged;
-#endregion
+
+        public class Message // http://gamedev.stackexchange.com/questions/28532/timer-for-pop-up-text-in-xna
+        {
+            public string Text { get; set; }
+            public TimeSpan Appeared { get; set; }
+            public Vector2 Position { get; set; }
+        }
+
+        // static readonly Vector2 BattleTextDisplacement = new Vector2(80, -100);
+        List<Message> messages;
+        Message ListMessages;
+        // TimeSpan MaxAgeMessage = new TimeSpan(0, 0, 0, 1, 0);
+        TimeSpan messageDisappear = new TimeSpan(0, 0, 0, 0, 125);
+        #endregion
 
         public Game1()
         {
@@ -154,6 +163,8 @@ namespace TrebleSketch_AIE_Asteroids
             Ship = new ShipClass();
             Life = new LifeClass();
             myAsteroids = new List<AsteroidClass>();
+            messages = new List<Message>();
+            ListMessages = new Message();
 
             BeginInitialization();
 
@@ -357,16 +368,34 @@ namespace TrebleSketch_AIE_Asteroids
             {
                 SceneID = 0;
                 Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
+                messages.Add(new Message()
+                {
+                    Text = "Scene ID: " + SceneID,
+                    Appeared = gameTime.TotalGameTime,
+                    Position = CentreScreen
+                });
             }
             if (Keyboard.GetState().IsKeyDown(Keys.D1))
             {
                 SceneID = 1;
                 Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
+                messages.Add(new Message()
+                {
+                    Text = "Scene ID: " + SceneID,
+                    Appeared = gameTime.TotalGameTime,
+                    Position = CentreScreen
+                });
             }
             if (Keyboard.GetState().IsKeyDown(Keys.D2))
             {
                 SceneID = 2;
                 Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
+                messages.Add(new Message()
+                {
+                    Text = "Scene ID: " + SceneID,
+                    Appeared = gameTime.TotalGameTime,
+                    Position = CentreScreen
+                });
                 if (!Paused)
                 {
                     myAsteroids.Clear();
@@ -384,11 +413,23 @@ namespace TrebleSketch_AIE_Asteroids
             {
                 SceneID = 3;
                 Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
+                messages.Add(new Message()
+                {
+                    Text = "Scene ID: " + SceneID,
+                    Appeared = gameTime.TotalGameTime,
+                    Position = CentreScreen
+                });
             }
             if (Keyboard.GetState().IsKeyDown(Keys.D4))
             {
                 SceneID = 4;
                 Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
+                messages.Add(new Message()
+                {
+                    Text = "Scene ID: " + SceneID,
+                    Appeared = gameTime.TotalGameTime,
+                    Position = CentreScreen
+                });
             }
         }
 
@@ -415,7 +456,20 @@ namespace TrebleSketch_AIE_Asteroids
                 Debug.WriteToFile("[INFO] Exiting game...", true);
                 Exit();
             }
-            
+
+            bool GameFirstLoad = true;
+            if (GameFirstLoad)
+            {
+                messages.Add(new Message()
+                {
+                    Text = "Scene ID: " + SceneID,
+                    Appeared = gameTime.TotalGameTime,
+                    Position = CentreScreen
+                });
+                Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
+                GameFirstLoad = false;
+            }
+
             switch (SceneID)
             {
                 case 0:
@@ -479,6 +533,28 @@ namespace TrebleSketch_AIE_Asteroids
 
             ICheckINput(gameTime);
             ToggleMusic(gameTime);
+
+            TimeSpan MaxAgeMessage = new TimeSpan(0, 0, 0, 0, 0); // When you add something here, text doesn't even show
+
+            while (messages.Count > 0 && messages[0].Appeared + MaxAgeMessage > gameTime.TotalGameTime)
+                messages.RemoveAt(0);
+
+            //foreach (Message ListMessages in messages)
+            //{
+            //    TimeSpan timeSinceLastShot = gameTime.TotalGameTime - lastShot;
+            //    if (timeSinceLastShot > messageDisappear)
+            //    {
+            //        lastShot = messages[0].Appeared;
+            //    } else
+            //    {
+            //        messages.RemoveAt(0);
+            //    }
+            //}
+
+            //for ()
+            //{
+
+            //}
 
             base.Update(gameTime);
         }
@@ -811,31 +887,8 @@ namespace TrebleSketch_AIE_Asteroids
             spriteBatch.DrawString(scoreText, "Level : " + (int)AsteroidLevel, new Vector2(300, 10), Color.White);
         }
 
-        void DrawSceneID(GameTime gameTime)
-        {
-            TimeSpan SceneIDFade = gameTime.TotalGameTime + sceneChanged;
-            if (SceneIDFade < new TimeSpan(0, 0, 0, 5, 0))
-            {
-                spriteBatch.DrawString(scoreText, "SceneID : " + SceneID, CentreScreen, Color.White);
-                sceneChanged = gameTime.TotalGameTime;
-            } else if (SceneChanged && SceneIDFade < new TimeSpan(0, 0, 0, 5, 0))
-            {
-                spriteBatch.DrawString(scoreText, "SceneID : " + SceneID, CentreScreen, Color.White);
-                sceneChanged = gameTime.TotalGameTime;
-            }
-            //if (SceneIDFade < textFadeAway)
-            //{
-            //    spriteBatch.DrawString(scoreText, "SceneID : " + SceneID, CentreScreen, Color.White);
-            //    sceneChanged = gameTime.TotalGameTime;
-            //}
-            //else if (SceneChanged)
-            //{
-            //    SceneChanged = false;
-            //    SceneIDFade = restart;
-            //}
-            //Debug.WriteToFile("[DEBUG] SceneIDFade Time: " + SceneIDFade.ToString(), false);
-            //Debug.WriteToFile("[DEBUG] textFadeAway Time: " + textFadeAway.ToString(), false);
-        }
+//                spriteBatch.DrawString(scoreText, "SceneID : " + SceneID, CentreScreen, Color.White);
+
 
         protected void CreateExplosion(Vector2 SpawnPosition, ExplosionType SpawnedExplosionType)
         {
@@ -982,7 +1035,8 @@ namespace TrebleSketch_AIE_Asteroids
                 DrawLives(spriteBatch);
             }
 
-            DrawSceneID(gameTime);
+            foreach (var message in messages)
+                spriteBatch.DrawString(scoreText, message.Text, message.Position, Color.Lime);
 
             //switch (SceneID)
             //{
