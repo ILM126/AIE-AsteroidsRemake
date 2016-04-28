@@ -132,6 +132,9 @@ namespace TrebleSketch_AIE_Asteroids
         /// </summary>
         protected override void Initialize()
         {
+            graphics.PreferredBackBufferHeight = 720;
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.ApplyChanges();
 
             InitializeASteroids();
 
