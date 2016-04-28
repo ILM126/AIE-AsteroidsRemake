@@ -21,6 +21,7 @@ namespace TrebleSketch_AIE_Asteroids
     /// Developer: Titus Huang (Treble Sketch/ILM126)
     /// Game Engine: MonoGame
     /// Dev Notes: This is my first ever major game of any kind, tons of hard work is still needed >:D
+    /// *** Ask Max about radians and stuff, where the missles will spawn over Elon's eyes no matter what orientation he is
     /// </summary>
     public class Game1 : Game
     {
@@ -109,7 +110,8 @@ namespace TrebleSketch_AIE_Asteroids
 
         string GameVersionBuild;
 
-
+        public int SceneID; // How I handle my scene, pretty bad. But it works for quick deployment! :D
+        // This version will be the messy one, but future games will implement a simplier version.
 #endregion
 
         public Game1()
@@ -494,7 +496,30 @@ namespace TrebleSketch_AIE_Asteroids
             {
                 MissleClass missle = new MissleClass();
 
-                missle.Position = Ship.Position;
+                missle.Position = new Vector2 (Ship.Position.X + 12, Ship.Position.Y);
+
+                missle.Rotation = Ship.Rotation;
+
+                Matrix missleRotationMatrix = Matrix.CreateRotationZ(missle.Rotation);
+                missle.Velocity = new Vector2(0, -7);
+                missle.Velocity = Vector2.Transform(missle.Velocity, missleRotationMatrix);
+                missle.Velocity = missle.Velocity + Ship.Velocity;
+
+                missle.Size = new Vector2(16, 16);
+
+                missle.MaxLimit = new Vector2(graphics.PreferredBackBufferWidth + 500
+                    , graphics.PreferredBackBufferHeight + 500);
+                missle.MinLimit = new Vector2(-500, -500);
+
+                myMissles.Add(missle);
+
+                lastShot = gameTime.TotalGameTime;
+            }
+            if (timeSinceLastShot > shotCoolDown)
+            {
+                MissleClass missle = new MissleClass();
+
+                missle.Position = new Vector2 (Ship.Position.X - 12, Ship.Position.Y);
 
                 missle.Rotation = Ship.Rotation;
 
