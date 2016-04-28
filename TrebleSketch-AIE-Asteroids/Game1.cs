@@ -120,6 +120,7 @@ namespace TrebleSketch_AIE_Asteroids
         string SceneName;
         bool PlayerInScene;
         bool AsteroidsInScene;
+        bool GameFirstLoad = true;
 
         public class Message // http://gamedev.stackexchange.com/questions/28532/timer-for-pop-up-text-in-xna
         {
@@ -290,6 +291,8 @@ namespace TrebleSketch_AIE_Asteroids
             backgroundMusicCore = Content.Load<Song>("ExtremeMugginsCore");
             backgroundMusicEnd = Content.Load<Song>("ExtremeMugginsEnd");
             backgroundMusicFull = Content.Load<Song>("ExtremeMuggingsFull");
+            MouseMovement.MouseTexture = Content.Load<Texture2D>("Cursor-v1");
+            MouseMovement.MouseTexturePressed = Content.Load<Texture2D>("Cursor-v1-clicked");
 
         }
 
@@ -464,8 +467,6 @@ namespace TrebleSketch_AIE_Asteroids
                 Debug.WriteToFile("[INFO] Exiting game...", true);
                 Exit();
             }
-
-            bool GameFirstLoad = true;
             if (GameFirstLoad)
             {
                 messages.Add(new Message()
@@ -476,6 +477,7 @@ namespace TrebleSketch_AIE_Asteroids
                 });
                 Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
                 GameFirstLoad = false;
+                Debug.WriteToFile("[DEBUG] Game First Load: " + GameFirstLoad.ToString(), false);
             }
 
             switch (SceneID)
@@ -542,11 +544,15 @@ namespace TrebleSketch_AIE_Asteroids
             ICheckINput(gameTime);
             ToggleMusic(gameTime);
 
-            TimeSpan MaxAgeMessage = new TimeSpan(0, 0, 0, 0, 0); // When you add something here, text doesn't even show
+            TimeSpan MaxAgeMessage = new TimeSpan(0, 0, 0, 5, 0); // When you add something here, text doesn't even show
 
-            while (messages.Count > 0 && messages[0].Appeared + MaxAgeMessage > gameTime.TotalGameTime)
+            while (messages.Count > 0 && messages[0].Appeared + MaxAgeMessage < gameTime.TotalGameTime)
+            {
                 messages.RemoveAt(0);
+                Debug.WriteToFile("[DEBUG] Message being removed", false);
+            }
 
+            MouseMovement.Update();
             //foreach (Message ListMessages in messages)
             //{
             //    TimeSpan timeSinceLastShot = gameTime.TotalGameTime - lastShot;
