@@ -8,10 +8,13 @@ namespace TrebleSketch_AIE_Asteroids
 {
     class ShipClass // Totally not the potato class
     {
+        public Debugging Debug;
+
         public Texture2D Texture;
         public Vector2 Position;
         public Vector2 Velocity;
         public float Acceleration;
+        public float SpeedLimit;
 
         public float Rotation;
         public float RotationDelta;
@@ -38,6 +41,11 @@ namespace TrebleSketch_AIE_Asteroids
 
         public void Respawn()
         {
+            Debug.WriteToFile("[INFO] Respawn tripped", true);
+            if (Dead)
+            {
+                Health = 150f;
+            }
             Position = new Vector2(m_spawnPosition.X
                 , m_spawnPosition.Y);
             Velocity = new Vector2(0, 0);
@@ -55,6 +63,7 @@ namespace TrebleSketch_AIE_Asteroids
                 Visible = false;
                 Vunlerable = false;
                 Dead = true;
+                Debug.WriteToFile("[INFO] Die With Vunlerale tripped", true);
             }
         }
     }

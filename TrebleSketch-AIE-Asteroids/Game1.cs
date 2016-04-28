@@ -10,13 +10,14 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Storage;
+using System.IO;
 
 namespace TrebleSketch_AIE_Asteroids
 {
     /// <summary>
     /// Name: SpaceXterminator
     /// Description: A Game Where Elon Musk Must Destroy All The Tugboats That Is Stopping His Launches
-    /// Version: 0.0.81 (First Playable)
+    /// Version: 0.0.126 (First Playable)
     /// Developer: Titus Huang (Treble Sketch/ILM126)
     /// Game Engine: MonoGame
     /// Dev Notes: This is my first ever major game of any kind, tons of hard work is still needed >:D
@@ -45,6 +46,8 @@ namespace TrebleSketch_AIE_Asteroids
             FALCON9,
             MUSK,
         }
+
+        Debugging Debug;
 
         ShipClass Ship;
 
@@ -169,8 +172,14 @@ namespace TrebleSketch_AIE_Asteroids
             this.interval = interval;
         }*/
 
+        string GameVersionBuild;
+
         public Game1()
         {
+            Debug = new Debugging();
+            File.Delete(Debug.GetCurrentDirectory());
+            GameVersionBuild = "v0.0.124 (27/04/16)";
+            Debug.WriteToFile("[INFO] Starting SpaceXterminator " + GameVersionBuild, true);
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             this.Window.ClientSizeChanged += delegate { Resolution.WasResized = true; }; // http://community.monogame.net/t/change-window-size-mid-game/1991
@@ -193,6 +202,8 @@ namespace TrebleSketch_AIE_Asteroids
             InitializeASteroids();
 
             InitializeShip();
+
+            Ship.Debug = Debug;
 
             myMissles = new List<MissleClass>(); // Magic Missle!
 
@@ -256,11 +267,11 @@ namespace TrebleSketch_AIE_Asteroids
             Ship.Visible = true;
             Ship.Vunlerable = false;
 
-            Ship.m_invulnerabliltyTimer = 2.0f;
+            Ship.m_invulnerabliltyTimer = 5f;
             Ship.m_respawnTimer = 0f;
 
-            Ship.m_respawnTime = 1.0f;
-            Ship.m_invulnerabliltyTime = 5.0f;
+            Ship.m_respawnTime = 2f;
+            Ship.m_invulnerabliltyTime = 7f;
 
             Ship.m_spawnPosition = Ship.Position;
 
@@ -360,6 +371,7 @@ namespace TrebleSketch_AIE_Asteroids
         {
             Ship.Acceleration = 0f;
             Ship.RotationDelta = 0f;
+            Ship.SpeedLimit = 20f;
 
             if (Keyboard.GetState().IsKeyDown(Keys.W))
             {
@@ -417,7 +429,10 @@ namespace TrebleSketch_AIE_Asteroids
             // Menu.CurrentState = 1; // 1 = Menu || 2 = Game || 3 = Settings || 4 = Ded || 0 = LMAO ||| At least I tried
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
+                Debug.WriteToFile("[INFO] Exiting game...", true);
                 Exit();
+            }
             if (myAsteroids.Count == 0)
             {
                 InitializeASteroids();
@@ -431,6 +446,8 @@ namespace TrebleSketch_AIE_Asteroids
             IRotateMISSLes();
             CheckCollisions();
             UpdatedExplosions(gameTime);
+
+            DrawLives(spriteBatch);
 
             GetCentre();
 
@@ -459,26 +476,34 @@ namespace TrebleSketch_AIE_Asteroids
         private void ICheckShip(GameTime gameTime)
         {
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
+            if (Ship.m_invulnerabliltyTimer != 0)
+            {
+                Debug.WriteToFile("[DEBUG] m_invulnerabliltyTimer: " + Ship.m_invulnerabliltyTimer.ToString(), false);
+            }
             if (Ship.Dead && Ship.m_invulnerabliltyTimer == 0f)
             {
                 Ship.m_invulnerabliltyTimer = Ship.m_invulnerabliltyTime;
                 Ship.m_respawnTimer = Ship.m_respawnTime;
+                Debug.WriteToFile("[INFO] Timer Tripped after death", true);
             }
 
             if (Ship.m_respawnTimer > 0)
             {
                 Ship.m_respawnTimer -= delta;
+                Debug.WriteToFile("[INFO] Respawn in: " + Ship.m_respawnTimer.ToString(), false);
             }
-            else if (Ship.m_respawnTime < 0)
+            else if (!Ship.Visible)
             {
                 Ship.m_respawnTimer = 0;
                 Ship.Respawn();
+                Debug.WriteToFile("[INFO] Player Respawned", true);
+                Debug.WriteToFile("[INFO] Health after respawn is: " + Ship.Health.ToString(), true);
             }
 
             if (Ship.m_invulnerabliltyTimer > 0)
             {
                 Ship.m_invulnerabliltyTimer -= delta;
+                Ship.Vunlerable = false;
             }
             else if (Ship.m_invulnerabliltyTimer < 0)
             {
@@ -486,9 +511,9 @@ namespace TrebleSketch_AIE_Asteroids
                 if (Ship.Dead == true && Ship.Visible == false)
                 {
                     GetCentreNow();
+                    Ship.Vunlerable = false;
                 }
                 Ship.Vunlerable = true;
-                Ship.Visible = true;
             }
 
             Ship.Rotation += Ship.RotationDelta;
@@ -496,11 +521,21 @@ namespace TrebleSketch_AIE_Asteroids
             Matrix playerRotationMatrix =
                 Matrix.CreateRotationZ(Ship.Rotation);
 
-            Ship.Velocity += Vector2.Transform(
+            if (Ship.Velocity.X <= Ship.SpeedLimit || Ship.Velocity.Y <= Ship.SpeedLimit)
+            {
+                Ship.Velocity += Vector2.Transform(
                 new Vector2(0, Ship.Acceleration)
                 , playerRotationMatrix);
 
+            }
+            //Ship.Velocity += Vector2.Transform(
+            //    new Vector2(0, Ship.Acceleration)
+            //    , playerRotationMatrix);
+
             Ship.Position += Ship.Velocity;
+
+            //Debug.WriteToFile("[DEBUG] Ship Y Velocity: " + Ship.Velocity.Y.ToString(), false);
+            //Debug.WriteToFile("[DEBUG] Ship X Velocity: " + Ship.Velocity.X.ToString(), false);
 
             // Keep thw  within the camera's reach
             if (Ship.Position.X > Ship.MaxLimit.X)
@@ -597,20 +632,20 @@ namespace TrebleSketch_AIE_Asteroids
 
                 if (Missle.Position.X > Missle.MaxLimit.X)
                 {
-                    Missle.Velocity.X *= -1;
+                    Missle.Velocity.X *= 1;
                 }
                 else if (Missle.Position.X < Missle.MinLimit.X)
                 {
-                    Missle.Velocity.X *= -1;
+                    Missle.Velocity.X *= 1;
                 }
 
                 if (Missle.Position.Y > Missle.MaxLimit.Y)
                 {
-                    Missle.Velocity.Y *= -1;
+                    Missle.Velocity.Y *= 1;
                 }
                 else if (Missle.Position.Y < Missle.MinLimit.Y)
                 {
-                    Missle.Velocity.Y *= -1;
+                    Missle.Velocity.Y *= 1;
                 }
             }
         }
@@ -635,25 +670,29 @@ namespace TrebleSketch_AIE_Asteroids
             List<AsteroidClass> AsteroidDeathRow = new List<AsteroidClass>();
             List<MissleClass> MissleDeathRow = new List<MissleClass>();
 
-           
-
             foreach (AsteroidClass Asteroid in myAsteroids)
             {
                 bool playerCollisionCheck = CircleCollisionCheck(Ship.Position, Ship.Size.X / 2
                     , Asteroid.Position, Asteroid.Size.X / 2);
                 if (playerCollisionCheck)
                 {
-                    Ship.Die();
-                    if (Ship.Visible == true)
+                    if (Ship.Visible)
                     {
-                        Ship.Health -= Asteroid.DamageDealt;
+                        if (Ship.Vunlerable)
+                        {
+                            Ship.Health -= Asteroid.DamageDealt;
+                        }
                         AsteroidDeathRow.Add(Asteroid);
+                        CreateExplosion(Asteroid.Position, ExplosionType.ASTEROID);
+                        Debug.WriteToFile("[INFO] Ship Health is now: " + Ship.Health + "HP", true);
                     }
-                    if (Ship.Vunlerable)
+                    if (Ship.Vunlerable && Ship.Visible)
                     {
-                        CreateExplosion(Ship.Position, ExplosionType.SHIP);
                         if (Ship.Health == 0)
                         {
+                            CreateExplosion(Ship.Position, ExplosionType.SHIP);
+                            Ship.Dead = true;
+                            Ship.Die();
                             PlayerLives--;
                         }
                     }
@@ -670,6 +709,7 @@ namespace TrebleSketch_AIE_Asteroids
                         MissleDeathRow.Add(Missle);
                         AsteroidDeathRow.Add(Asteroid);
                         CreateExplosion(Asteroid.Position, ExplosionType.ASTEROID);
+                        Debug.WriteToFile("[INFO] An Elon Missle hit a Barge Ship", true);
                     }
                 }
             }
@@ -684,8 +724,10 @@ namespace TrebleSketch_AIE_Asteroids
             }
         }
 
-        private void DrawLives()
+        private void DrawLives(SpriteBatch spriteBatch)
         {
+            spriteBatch.Begin();
+            // Debug.WriteToFile("[DEBUG] No. of Player Lives: " + PlayerLives, false);
             for (int i = 0; i < PlayerLives; ++i)
             {
                 spriteBatch.Draw(Life.Texture
@@ -699,6 +741,7 @@ namespace TrebleSketch_AIE_Asteroids
                 , SpriteEffects.None
                 , 0);
             }
+            spriteBatch.End();
         }
 
         private void DrawScore()
@@ -862,7 +905,6 @@ namespace TrebleSketch_AIE_Asteroids
             }
 
             DrawExplosions();
-            DrawLives();
             DrawHealth();
             DrawScore();
 
