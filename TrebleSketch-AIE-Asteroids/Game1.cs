@@ -109,69 +109,6 @@ namespace TrebleSketch_AIE_Asteroids
 
         LifeClass Life;
 
-        // ShipClass Ship;
-        // Game1 game;
-
-        // AudioClass Music;
-
-        // Resolution ResolutionClass;
-
-        /*
-
-        //Declare event handlers
-        public event EventHandler // Ahoy There, This is a script from http://derpy.me/MonoGameTimers
-            Tick;
-
-        //Declare variables
-        long
-            interval,
-            elapsedTime;
-
-        /// <summary>
-        /// Gets or Sets the Interval (in milliseconds) between Ticks for the Timer.
-        /// </summary>
-        public long Interval
-        {
-            get { return interval; }
-            set { interval = value; }
-        }
-
-        /// <summary>
-        /// Gets the Elapsed Time (in milliseconds) since the last Tick.
-        /// </summary>
-        public long ElapsedTime
-        {
-            get { return elapsedTime; }
-        }
-
-        /// <summary>
-        /// Sets up a disabled Generic Timer object.
-        /// </summary>
-        /// <param name="game">Game that created the object.</param>
-        public void GenericTimer(Game game)
-            : base(game)
-        {
-            //Setup the variables and disable the timer
-            this.Updateable = false;
-            this.drawable = false;
-            this.interval = 100;
-            this.elapsedTime = 0;
-        }
-
-        /// <summary>
-        /// Sets up an enabled Generic Timer object.
-        /// </summary>
-        /// <param name="game">Game that created the object.</param>
-        /// <param name="interval">Time (in milliseconds) between ticks.</param>
-        /// <param name="beginCountdown">Enabled the Timer to start count down?</param>
-        public GenericTimer(Game game, long interval, bool beginCountdown)
-            :this(game)
-        {
-            //Setup the variables
-            this.Update = beginCountdown;
-            this.interval = interval;
-        }*/
-
         string GameVersionBuild;
 
         public Game1()
@@ -216,36 +153,12 @@ namespace TrebleSketch_AIE_Asteroids
             base.Initialize();
         }
 
-        /*private void InitializeMenu(GameTime gameTime)
-        {
-            if (menuStates == WhereAmI.MENU)
-            {
-                if (Keyboard.GetState().IsKeyDown(Keys.NumPad1))
-                {
-                    menuStates = WhereAmI.GAME;
-                }
-            }
-            else if (menuStates == WhereAmI.GAME)
-            {
-
-            }
-
-            // Menu.CurrentState = 0; // 0 = Menu || 1 = Game || 2 = Settings || 3 = LMAO
-        } */
-
-        /* public void InitializeScreenResolution()
-        {
-            this.graphics.PreferredBackBufferWidth = 1280;
-            this.graphics.PreferredBackBufferHeight = 720;
-            this.graphics.ApplyChanges();
-        }*/
-
         public int CheckCurrentState(int CurrentState)
         {
             return CurrentState;
         }
 
-        private void InitializeShip() // I ship it! - Lightwing <3
+        void InitializeShip() // I ship it! - Lightwing <3
         {
             Ship = new ShipClass();
 
@@ -280,7 +193,7 @@ namespace TrebleSketch_AIE_Asteroids
             Ship.ScoreIncrements = 15;
         }
 
-        private void InitializeASteroids() // You Rock, Woho
+        void InitializeASteroids() // You Rock, Woho
         {
             randNum = new Random();
 
@@ -389,10 +302,6 @@ namespace TrebleSketch_AIE_Asteroids
             {
                 Ship.RotationDelta = 0.03f;
             }
-            /*            if (Keyboard.GetState().IsKeyDown(Keys.Q)) // wants to slow vehicle down
-                        {
-                                Ship.Velocity = Ship.Velocity - new Vector2(-1, -1);
-                        } */
             if (Keyboard.GetState().IsKeyDown(Keys.Q))
             {
                 Ship.Velocity = new Vector2(0, 0);
@@ -404,10 +313,6 @@ namespace TrebleSketch_AIE_Asteroids
                     ISpawnMISSle(gameTime);
                 }
             }
-            /*if (Ship.Vunlerable == false && Keyboard.GetState().IsKeyDown(Keys.V)) // Feature WIP
-            {
-                Ship.Vunlerable = true;
-            }*/
         }
 
         /// <summary>
@@ -439,15 +344,12 @@ namespace TrebleSketch_AIE_Asteroids
             }
                 Resolution.Update(this, graphics); // http://community.monogame.net/t/change-window-size-mid-game/1991
 
-            // Key.ICheckINput(gameTime);
             ICheckINput(gameTime);
             ICheckShip(gameTime);
             ICheckASteroids();
             IRotateMISSLes();
             CheckCollisions();
             UpdatedExplosions(gameTime);
-
-            DrawLives(spriteBatch);
 
             GetCentre();
 
@@ -466,14 +368,14 @@ namespace TrebleSketch_AIE_Asteroids
             }
         }
 
-        public void GetCentreNow()
+        void GetCentreNow()
         {
                 Ship.Position = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
                 Ship.Velocity = new Vector2(0, 0);
                 Ship.Rotation = 0;
         }
 
-        private void ICheckShip(GameTime gameTime)
+        void ICheckShip(GameTime gameTime)
         {
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (Ship.m_invulnerabliltyTimer != 0)
@@ -563,7 +465,7 @@ namespace TrebleSketch_AIE_Asteroids
 
         }
 
-        private void ICheckASteroids()
+        void ICheckASteroids()
         {
             foreach (AsteroidClass Asteroid in myAsteroids) // A-steroid's rotation
             {
@@ -624,7 +526,7 @@ namespace TrebleSketch_AIE_Asteroids
 
         }
 
-        private void IRotateMISSLes() // You Spin Me Right Round, Baby Right Round
+        void IRotateMISSLes() // You Spin Me Right Round, Baby Right Round
         {
             foreach (MissleClass Missle in myMissles) // MISSle's rotation
             {
@@ -650,7 +552,7 @@ namespace TrebleSketch_AIE_Asteroids
             }
         }
 
-        private bool CircleCollisionCheck(Vector2 object1Pos
+        bool CircleCollisionCheck(Vector2 object1Pos
             , float object1Radius
             , Vector2 object2Pos
             , float object2Radius) // Yo, I check for collisions between objects
@@ -665,7 +567,7 @@ namespace TrebleSketch_AIE_Asteroids
             return false;
         }
 
-        private void CheckCollisions()
+        void CheckCollisions()
         {
             List<AsteroidClass> AsteroidDeathRow = new List<AsteroidClass>();
             List<MissleClass> MissleDeathRow = new List<MissleClass>();
@@ -724,9 +626,8 @@ namespace TrebleSketch_AIE_Asteroids
             }
         }
 
-        private void DrawLives(SpriteBatch spriteBatch)
+        void DrawLives(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin();
             // Debug.WriteToFile("[DEBUG] No. of Player Lives: " + PlayerLives, false);
             for (int i = 0; i < PlayerLives; ++i)
             {
@@ -741,15 +642,14 @@ namespace TrebleSketch_AIE_Asteroids
                 , SpriteEffects.None
                 , 0);
             }
-            spriteBatch.End();
         }
 
-        private void DrawScore()
+        void DrawScore()
         {
             spriteBatch.DrawString(scoreText, "SCORE : " + Ship.Score.ToString(), new Vector2(10, 10), Color.White);
         }
 
-        private void DrawHealth()
+        void DrawHealth()
         {
             spriteBatch.DrawString(scoreText, "HEALTH : " + Ship.Health.ToString(), new Vector2(150, 10), Color.White);
         }
@@ -785,7 +685,7 @@ namespace TrebleSketch_AIE_Asteroids
             datExplosions.Add(NewExplosion);
         }
 
-        private void UpdatedExplosions(GameTime gameTime)
+        void UpdatedExplosions(GameTime gameTime)
         {
             List<ExplosionsClass> ToRemove = new List<ExplosionsClass>();
 
@@ -821,7 +721,7 @@ namespace TrebleSketch_AIE_Asteroids
             }
         }
 
-        private void DrawExplosions()
+        void DrawExplosions()
         {
             Texture2D TempText;
 
@@ -907,6 +807,7 @@ namespace TrebleSketch_AIE_Asteroids
             DrawExplosions();
             DrawHealth();
             DrawScore();
+            DrawLives(spriteBatch);
 
             spriteBatch.End();
 
