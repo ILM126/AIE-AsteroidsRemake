@@ -1147,15 +1147,7 @@ namespace TrebleSketch_AIE_Asteroids
                     }
                     if (Ship.Visible)
                     {
-                        if (Ship.Health == 0)
-                        {
-                            CreateExplosion(Ship.Position, ExplosionType.SHIP);
-                            Ship.Dead = true;
-                            Ship.Die();
-                            PlayerLives--;
-                            Debug.WriteToFile("[INFO] Ship Loses Life, now on: " + PlayerLives, true);
-                        }
-                        if (Ship.Health == -105)
+                        if (Ship.Health < 0) // Grr, stupid me. https://stackoverflow.com/questions/4099366/how-do-i-check-if-a-number-is-positive-or-negative-in-c
                         {
                             CreateExplosion(Ship.Position, ExplosionType.SHIP);
                             Ship.Dead = true;
@@ -1222,7 +1214,13 @@ namespace TrebleSketch_AIE_Asteroids
 
         void DrawHealth()
         {
-            spriteBatch.DrawString(scoreText, "HEALTH : " + Ship.Health.ToString(), new Vector2(170, 10), Color.White);
+            if (Ship.Health > 0)
+            {
+                spriteBatch.DrawString(scoreText, "HEALTH : " + Ship.Health, new Vector2(170, 10), Color.White);
+            } else
+            {
+                spriteBatch.DrawString(scoreText, "HEALTH : 0", new Vector2(170, 10), Color.White);
+            }
         }
 
         void DrawLevel()
