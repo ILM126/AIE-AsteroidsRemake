@@ -141,6 +141,14 @@ namespace TrebleSketch_AIE_Asteroids
             public Texture2D MainMenu_StartButton;
             public Texture2D MainMenu_StartButton_Hover;
             public Texture2D MainMenu_StartButton_Clicked;
+
+            public Rectangle Button;
+            public Rectangle CursonRect;
+            public bool isHoveringButton;
+            public bool isClickingWhileHovering;
+            public Vector2 button_Position;
+
+            public MouseState state;
         }
 
         public Buttons MenuButton;
@@ -151,6 +159,8 @@ namespace TrebleSketch_AIE_Asteroids
 
         int KeyMappingOption;
         bool Trigged = false;
+
+        bool Restart;
         #endregion
 
         public Game1()
@@ -207,12 +217,29 @@ namespace TrebleSketch_AIE_Asteroids
                 , graphics.PreferredBackBufferHeight + (Ship.Size.Y / 2));
             Ship.MinLimit = new Vector2(0 - (Ship.Size.X / 2), 0 - (Ship.Size.Y / 2));
 
+            Ship.m_spawnPosition = CentreScreen;
+
+            Ship.m_invulnerabliltyTimer = 5f;
+            Ship.m_respawnTimer = 0f;
+
+            Ship.m_respawnTime = 2f;
+            Ship.m_invulnerabliltyTime = 7f;
+
+            Ship.SpeedLimit = 20f;
+
             Debug.WriteToFile("[DEBUG] Initialized", false);
 
             Debug.WriteToFile("[DEBUG] Initializing Life and MouseMovement", false);
             Life.Size = new Vector2(10f, 105.2f);
             MouseMovement.CursorRect = CursorRect;
             Debug.WriteToFile("[DEBUG] Initialized", false);
+
+            MenuButton.button_Position = new Vector2(CentreScreen.X, CentreScreen.Y);
+            MenuButton.Button = new Rectangle(
+                    (int)MenuButton.button_Position.X - 50,
+                    (int)MenuButton.button_Position.Y - 20,
+                    100,
+                    40);
         }
 
         void InitializeShip() // I ship it! - Lightwing <3
@@ -222,19 +249,11 @@ namespace TrebleSketch_AIE_Asteroids
             Ship.Visible = true;
             Ship.Vunlerable = false;
 
-            Ship.m_invulnerabliltyTimer = 5f;
-            Ship.m_respawnTimer = 0f;
-
-            Ship.m_respawnTime = 2f;
-            Ship.m_invulnerabliltyTime = 7f;
-
-            Ship.m_spawnPosition = CentreScreen;
-
-            Ship.m_spawnPosition = Ship.Position;
+            GetCentreNow();
 
             PlayerLives = 3;
             Ship.Health = 150f;
-            Ship.ScoreIncrements = 15;
+            Ship.ScoreIncrements = 10;
             Debug.WriteToFile("[INFO] Ship loaded", true);
         }
 
@@ -271,6 +290,7 @@ namespace TrebleSketch_AIE_Asteroids
             MouseMovement = new Cursor();
             UserInput = new InputHandler();
             MenuButton = new Buttons();
+            MenuButton.state = MouseMovement.state;
 
             Ship = new ShipClass();
             Life = new LifeClass();
@@ -286,8 +306,8 @@ namespace TrebleSketch_AIE_Asteroids
 
         void InitializeScene()
         {
-            SceneID = 0;
-            SceneName = "Tests Scene";
+            SceneID = 1;
+            SceneName = "Main Menu";
             Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
 
             Level_Easy = 0.60f;
@@ -397,7 +417,6 @@ namespace TrebleSketch_AIE_Asteroids
             {
                 Ship.Acceleration = 0f;
                 Ship.RotationDelta = 0f;
-                Ship.SpeedLimit = 20f;
                 GetCentre();
 
                 if (KeyMappingOption == 0)
@@ -426,6 +445,7 @@ namespace TrebleSketch_AIE_Asteroids
                     Appeared = gameTime.TotalGameTime,
                     Position = CentreScreen
                 });
+                Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
             }
             if (InputHandler.IsKeyDownOnce(Keys.D1))
             {
@@ -437,6 +457,7 @@ namespace TrebleSketch_AIE_Asteroids
                     Appeared = gameTime.TotalGameTime,
                     Position = CentreScreen
                 });
+                Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
             }
             if (InputHandler.IsKeyDownOnce(Keys.D2))
             {
@@ -448,6 +469,7 @@ namespace TrebleSketch_AIE_Asteroids
                     Appeared = gameTime.TotalGameTime,
                     Position = CentreScreen
                 });
+                Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
                 if (!Paused)
                 {
                     myAsteroids.Clear();
@@ -471,6 +493,7 @@ namespace TrebleSketch_AIE_Asteroids
                     Appeared = gameTime.TotalGameTime,
                     Position = CentreScreen
                 });
+                Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
             }
             if (InputHandler.IsKeyDownOnce(Keys.D4))
             {
@@ -482,6 +505,7 @@ namespace TrebleSketch_AIE_Asteroids
                     Appeared = gameTime.TotalGameTime,
                     Position = CentreScreen
                 });
+                Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
             }
         }
 
@@ -606,6 +630,7 @@ namespace TrebleSketch_AIE_Asteroids
                             Appeared = gameTime.TotalGameTime,
                             Position = CentreScreen
                         });
+                        Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
                         LoadViaCode = false;
                     }
                     PlayerInScene = false;
@@ -621,7 +646,32 @@ namespace TrebleSketch_AIE_Asteroids
                             Appeared = gameTime.TotalGameTime,
                             Position = CentreScreen
                         });
+                        Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
+                        if (!Paused && myAsteroids.Count != 0)
+                        {
+                            //myAsteroids.Clear();
+                            //myMissles.Clear();
+                        }
                         LoadViaCode = false;
+                    }
+                    if (MenuButton.state.LeftButton == ButtonState.Pressed)
+                    {
+                        MenuButton.isClickingWhileHovering = true;
+                    }
+                    else if (UserInput.MouseInRectangle(MenuButton.Button))
+                    {
+                        MenuButton.isHoveringButton = true;
+                        MenuButton.isClickingWhileHovering = false;
+                    }
+                    else
+                    {
+                        MenuButton.isClickingWhileHovering = false;
+                        MenuButton.isHoveringButton = false;
+                    }
+                    if (UserInput.MouseButtonClickedOnce(MouseButton.Left) && UserInput.MouseInRectangle(MenuButton.Button))
+                    {
+                        SceneID = 2;
+                        LoadViaCode = true;
                     }
                     PlayerInScene = false;
                     AsteroidsInScene = false;
@@ -636,7 +686,10 @@ namespace TrebleSketch_AIE_Asteroids
                             Appeared = gameTime.TotalGameTime,
                             Position = CentreScreen
                         });
+                        Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
                         LoadViaCode = false;
+                        Debug.WriteToFile("[DEBUG] SCENE 2 LOADED", false);
+                        InitializeShip();
                     }
                     ICheckShip(gameTime);
                     IRotateMISSLes();
@@ -655,6 +708,7 @@ namespace TrebleSketch_AIE_Asteroids
                             Appeared = gameTime.TotalGameTime,
                             Position = CentreScreen
                         });
+                        Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
                         LoadViaCode = false;
                     }
                     PlayerInScene = false;
@@ -670,6 +724,7 @@ namespace TrebleSketch_AIE_Asteroids
                             Appeared = gameTime.TotalGameTime,
                             Position = CentreScreen
                         });
+                        Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
                         LoadViaCode = false;
                     }
                     if (timeNow + MaxAgeMessage < gameTime.TotalGameTime)
@@ -691,6 +746,7 @@ namespace TrebleSketch_AIE_Asteroids
                             Appeared = gameTime.TotalGameTime,
                             Position = CentreScreen
                         });
+                        Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
                         LoadViaCode = false;
                     }
                     PlayerInScene = false;
@@ -714,37 +770,46 @@ namespace TrebleSketch_AIE_Asteroids
                         case 0:
                         case 1:
                             NUM_ASTEROIDS = AsteroidLevel + Level_Multiplier + 5;
+                            Ship.ScoreIncrements = 10;
                             break;
                         case 2:
                         case 3:
                             NUM_ASTEROIDS = AsteroidLevel * Level_Multiplier + 7;
+                            Ship.ScoreIncrements = 12;
                             break;
                         case 4:
                         case 5:
                         case 6:
                             NUM_ASTEROIDS = (AsteroidLevel * 2f) * Level_Multiplier + 15;
+                            Ship.ScoreIncrements = 15;
                             break;
                         case 7:
                         case 8:
                         case 9:
+                            NUM_ASTEROIDS = (AsteroidLevel * 2f) * Level_Multiplier + 17;
+                            break;
                         case 10:
                         case 11:
                             NUM_ASTEROIDS = (AsteroidLevel * 3f) * Level_Multiplier + 20;
+                            Ship.ScoreIncrements = 17;
                             break;
                         case 12:
                         case 13:
                         case 14:
                             NUM_ASTEROIDS = (AsteroidLevel * 3.5f) * Level_Multiplier + 20;
+                            Ship.ScoreIncrements = 17;
                             break;
                         case 15:
                         case 16:
                         case 17:
-                            NUM_ASTEROIDS = (AsteroidLevel * 5f) * Level_Multiplier + 15;
+                            NUM_ASTEROIDS = (AsteroidLevel * 5f) * (Level_Multiplier * 1.2f) + 25;
+                            Ship.ScoreIncrements = 17;
                             break;
                         case 18:
                         case 19:
                         case 20:
-                            NUM_ASTEROIDS = (AsteroidLevel * 4f) * Level_Multiplier + 30;
+                            NUM_ASTEROIDS = (AsteroidLevel * 5.2f) * (Level_Multiplier * 2) + 35;
+                            Ship.ScoreIncrements = 21;
                             break;
                         default:
                             NUM_ASTEROIDS = AsteroidLevel * Level_Multiplier + 5;
@@ -771,7 +836,6 @@ namespace TrebleSketch_AIE_Asteroids
             }
             else
             {
-                GetCentreNow();
                 Ship.Visible = false;
                 Ship.Dead = true;
                 Ship.Vunlerable = false;
@@ -828,19 +892,19 @@ namespace TrebleSketch_AIE_Asteroids
             {
                 Debug.WriteToFile("[DEBUG] m_invulnerabliltyTimer: " + Ship.m_invulnerabliltyTimer.ToString(), false);
             }
-            if (Ship.Dead && Ship.m_invulnerabliltyTimer == 0f)
+            if (Ship.Dead && Ship.m_invulnerabliltyTimer == 0f) // Player is dead via natural means
             {
                 Ship.m_invulnerabliltyTimer = Ship.m_invulnerabliltyTime;
                 Ship.m_respawnTimer = Ship.m_respawnTime;
                 Debug.WriteToFile("[INFO] Timer Tripped after death", true);
             }
 
-            if (Ship.m_respawnTimer > 0)
+            if (Ship.m_respawnTimer > 0) // Player is respawning
             {
                 Ship.m_respawnTimer -= delta;
-                Debug.WriteToFile("[INFO] Respawn in: " + Ship.m_respawnTimer.ToString(), false);
+                Debug.WriteToFile("[Debug] Respawn in: " + Ship.m_respawnTimer.ToString(), false);
             }
-            else if (!Ship.Visible)
+            else if (!Ship.Visible && Ship.Dead) // Player is dead and is respawning
             {
                 Ship.m_respawnTimer = 0;
                 Ship.Respawn();
@@ -848,17 +912,16 @@ namespace TrebleSketch_AIE_Asteroids
                 Debug.WriteToFile("[INFO] Health after respawn is: " + Ship.Health.ToString(), true);
             }
 
-            if (Ship.m_invulnerabliltyTimer > 0)
+            if (Ship.m_invulnerabliltyTimer > 0) // Player is not Vunlerable
             {
                 Ship.m_invulnerabliltyTimer -= delta;
                 Ship.Vunlerable = false;
             }
-            else if (Ship.m_invulnerabliltyTimer < 0)
+            else if (Ship.m_invulnerabliltyTimer < 0) // Player is Vunlerable
             {
                 Ship.m_invulnerabliltyTimer = 0;
-                if (Ship.Dead == true && Ship.Visible == false)
+                if (Ship.Dead == true && Ship.Visible == false) // Player is not seen and Dead, during respawn... Useless?
                 {
-                    GetCentreNow();
                     Ship.Vunlerable = false;
                 }
                 Ship.Vunlerable = true;
@@ -870,7 +933,7 @@ namespace TrebleSketch_AIE_Asteroids
             Matrix playerRotationMatrix =
                 Matrix.CreateRotationZ(Ship.Rotation);
 
-            if (Ship.Velocity.X <= Ship.SpeedLimit || Ship.Velocity.Y <= Ship.SpeedLimit)
+            if (Ship.Velocity.X <= Ship.SpeedLimit || Ship.Velocity.Y <= Ship.SpeedLimit) // Get speed limit sorted out
             {
                 Ship.Velocity += Vector2.Transform(
                 new Vector2(0, Ship.Acceleration)
@@ -886,7 +949,7 @@ namespace TrebleSketch_AIE_Asteroids
             //Debug.WriteToFile("[DEBUG] Ship Y Velocity: " + Ship.Velocity.Y.ToString(), false);
             //Debug.WriteToFile("[DEBUG] Ship X Velocity: " + Ship.Velocity.X.ToString(), false);
 
-            // Keep thw  within the camera's reach
+            // Keep the ship within the camera's reach
             if (Ship.Position.X > Ship.MaxLimit.X)
             {
                 Ship.Position.X = Ship.MinLimit.X;
@@ -904,12 +967,6 @@ namespace TrebleSketch_AIE_Asteroids
             {
                 Ship.Position.Y = Ship.MaxLimit.Y;
             }
-
-            /* if (Ship.Velocity == "10, 10")
-            {
-                Ship.Velocity 
-            } */
-
         }
 
         void ICheckASteroids()
@@ -1287,6 +1344,48 @@ namespace TrebleSketch_AIE_Asteroids
                     , new Vector2(Missle.Size.X / missleTexture.Width, Missle.Size.Y / missleTexture.Height)
                     , SpriteEffects.None
                     , 0);
+            }
+
+            if (SceneID == 1)
+            {
+                if (MenuButton.isClickingWhileHovering && MenuButton.isHoveringButton)
+                {
+                    spriteBatch.Draw(
+                    MenuButton.MainMenu_StartButton_Clicked,
+                    new Vector2(CentreScreen.X, CentreScreen.Y),
+                    null,
+                    Color.White,
+                    0,
+                    new Vector2(MenuButton.MainMenu_StartButton_Hover.Width / 2, MenuButton.MainMenu_StartButton_Hover.Height / 2),
+                    1,
+                    0,
+                    0);
+                }
+                else if (MenuButton.isHoveringButton)
+                {
+                    spriteBatch.Draw(
+                        MenuButton.MainMenu_StartButton_Hover,
+                        MenuButton.button_Position,
+                        null,
+                        Color.White,
+                        0,
+                        new Vector2(MenuButton.MainMenu_StartButton_Hover.Width / 2, MenuButton.MainMenu_StartButton_Hover.Height / 2),
+                        1,
+                        0,
+                        0);
+                }
+                else {
+                    spriteBatch.Draw(
+                        MenuButton.MainMenu_StartButton,
+                        MenuButton.button_Position,
+                        null,
+                        Color.White,
+                        0,
+                        new Vector2(MenuButton.MainMenu_StartButton_Hover.Width / 2, MenuButton.MainMenu_StartButton_Hover.Height / 2),
+                        1,
+                        0,
+                        0);
+                }
             }
 
             if (SceneID == 2)
