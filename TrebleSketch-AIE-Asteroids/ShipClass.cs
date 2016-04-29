@@ -57,7 +57,7 @@ namespace TrebleSketch_AIE_Asteroids
         }
 
         public void Die()
-            {
+        {
             if (Vunlerable)
             {
                 Visible = false;
