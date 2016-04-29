@@ -404,7 +404,7 @@ namespace TrebleSketch_AIE_Asteroids
                 {
                     Ship.Acceleration = 0.05f;
                 }
-                if (InputHandler.IsKeyDownOnce(Keys.A))
+                if (InputHandler.IsKeyDownOnce(Keys.Left))
                 {
                     if (InputHandler.IsKeyDownOnce(Keys.LeftShift))
                     {
@@ -415,7 +415,7 @@ namespace TrebleSketch_AIE_Asteroids
                         Ship.RotationDelta = -0.03f;
                     }
                 }
-                if (InputHandler.IsKeyDownOnce(Keys.D))
+                if (InputHandler.IsKeyDownOnce(Keys.Right))
                 {
                     if (InputHandler.IsKeyDownOnce(Keys.LeftShift))
                     {
