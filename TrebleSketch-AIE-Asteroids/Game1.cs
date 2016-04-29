@@ -885,7 +885,7 @@ namespace TrebleSketch_AIE_Asteroids
                 {
                     if (MediaPlayer.State != MediaState.Playing)
                     {
-                        MediaPlayer.Play(backgroundMusicFull); // PLAY DIS
+                        MediaPlayer.Play(Archie_Fallen_Dreams); // PLAY DIS
                         MediaPlayer.Volume -= 0.90f;
                         playedOnce = true;
                         Debug.WriteToFile(Archie_Fallen_Dreams.Name + " by " + Archie_Fallen_Dreams.Artist + " just played for the first time", true);
@@ -896,7 +896,7 @@ namespace TrebleSketch_AIE_Asteroids
                     {
                         if (MediaPlayer.State != MediaState.Playing)
                         {
-                            MediaPlayer.Play(backgroundMusicFull); // PLAY DIS
+                            MediaPlayer.Play(Archie_Fallen_Dreams); // PLAY DIS
                         }
                     }
                     lastAudioChange = gameTime.TotalGameTime;
