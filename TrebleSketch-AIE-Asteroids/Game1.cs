@@ -148,6 +148,9 @@ namespace TrebleSketch_AIE_Asteroids
         TimeSpan lastRepeatChange;
         TimeSpan lastAudioChange;
         bool playedOnce;
+
+        int KeyMappingOption;
+        bool Trigged = false;
         #endregion
 
         public Game1()
@@ -395,49 +398,22 @@ namespace TrebleSketch_AIE_Asteroids
                 Ship.Acceleration = 0f;
                 Ship.RotationDelta = 0f;
                 Ship.SpeedLimit = 20f;
-
-                if (InputHandler.IsKeyDownOnce(Keys.W))
-                {
-                    Ship.Acceleration = -0.08f;
-                }
-                if (InputHandler.IsKeyDownOnce(Keys.S))
-                {
-                    Ship.Acceleration = 0.05f;
-                }
-                if (InputHandler.IsKeyDownOnce(Keys.Left))
-                {
-                    if (InputHandler.IsKeyDownOnce(Keys.LeftShift))
-                    {
-                        Ship.RotationDelta = -0.10f;
-                    }
-                    else
-                    {
-                        Ship.RotationDelta = -0.03f;
-                    }
-                }
-                if (InputHandler.IsKeyDownOnce(Keys.Right))
-                {
-                    if (InputHandler.IsKeyDownOnce(Keys.LeftShift))
-                    {
-                        Ship.RotationDelta = 0.10f;
-                    }
-                    else
-                    {
-                        Ship.RotationDelta = 0.03f;
-                    }
-                }
-                if (InputHandler.IsKeyDownOnce(Keys.Q))
-                {
-                    Ship.Velocity = new Vector2(0, 0);
-                }
-                if (Ship.Visible == true)
-                {
-                    if (InputHandler.IsKeyDownOnce(Keys.Space))
-                    {
-                        ISpawnMISSle(gameTime);
-                    }
-                }
                 GetCentre();
+
+                if (KeyMappingOption == 0)
+                {
+                    KeyMap0(gameTime);
+                } else if (KeyMappingOption == 1)
+                {
+                    KeyMap1(gameTime);
+                } else
+                {
+                    if (!Trigged)
+                    {
+                        Debug.WriteToFile("[INFO] No Key Mapping Option picked", true);
+                        Trigged = true;
+                    }
+                }
             }
 
             if (InputHandler.IsKeyDownOnce(Keys.D0))
@@ -508,6 +484,113 @@ namespace TrebleSketch_AIE_Asteroids
                 });
             }
         }
+
+        #region KeyMapping
+        void KeyMap0(GameTime gameTime)
+        {
+            if (InputHandler.IsKeyDownOnce(Keys.W))
+            {
+                if (InputHandler.IsKeyDownOnce(Keys.LeftShift))
+                {
+                    Ship.Acceleration = -0.15f;
+                }
+                else
+                {
+                    Ship.Acceleration = -0.07f;
+                }
+            }
+            if (InputHandler.IsKeyDownOnce(Keys.S))
+            {
+                if (InputHandler.IsKeyDownOnce(Keys.LeftShift))
+                {
+                    Ship.Acceleration = 0.22f;
+                }
+                else
+                {
+                    Ship.Acceleration = 0.05f;
+                }
+            }
+            if (InputHandler.IsKeyDownOnce(Keys.A))
+            {
+                if (InputHandler.IsKeyDownOnce(Keys.LeftShift))
+                {
+                    Ship.RotationDelta = -0.10f;
+                }
+                else
+                {
+                    Ship.RotationDelta = -0.03f;
+                }
+            }
+            if (InputHandler.IsKeyDownOnce(Keys.D))
+            {
+                if (InputHandler.IsKeyDownOnce(Keys.LeftShift))
+                {
+                    Ship.RotationDelta = 0.10f;
+                }
+                else
+                {
+                    Ship.RotationDelta = 0.03f;
+                }
+            }
+            if (InputHandler.IsKeyDownOnce(Keys.Q))
+            {
+                Ship.Velocity = new Vector2(0, 0);
+            }
+            if (Ship.Visible == true)
+            {
+                if (InputHandler.IsKeyDownOnce(Keys.Space))
+                {
+                    ISpawnMISSle(gameTime);
+                }
+            }
+        }
+
+        void KeyMap1(GameTime gameTime)
+        {
+            if (InputHandler.IsKeyDownOnce(Keys.W))
+            {
+                Ship.Acceleration = -0.08f;
+            }
+            if (InputHandler.IsKeyDownOnce(Keys.S))
+            {
+                Ship.Acceleration = 0.05f;
+            }
+            if (InputHandler.IsKeyDownOnce(Keys.Left))
+            {
+                if (InputHandler.IsKeyDownOnce(Keys.LeftShift))
+                {
+                    Ship.RotationDelta = -0.10f;
+                }
+                else
+                {
+                    Ship.RotationDelta = -0.03f;
+                }
+            }
+            if (InputHandler.IsKeyDownOnce(Keys.Right))
+            {
+                if (InputHandler.IsKeyDownOnce(Keys.LeftShift))
+                {
+                    Ship.RotationDelta = 0.10f;
+                }
+                else
+                {
+                    Ship.RotationDelta = 0.03f;
+                }
+            }
+            if (InputHandler.IsKeyDownOnce(Keys.Q))
+            {
+                Ship.Velocity = new Vector2(0, 0);
+            }
+            if (Ship.Visible == true)
+            {
+                if (InputHandler.IsKeyDownOnce(Keys.Space))
+                {
+                    ISpawnMISSle(gameTime);
+                }
+            }
+        }
+
+        #endregion
 
         void SceneManagement(GameTime gameTime)
         {
@@ -592,6 +675,7 @@ namespace TrebleSketch_AIE_Asteroids
                     if (timeNow + MaxAgeMessage < gameTime.TotalGameTime)
                     {
                         SceneID = 1;
+                        LoadViaCode = true;
                         timeNow = new TimeSpan(0, 0, 0, 0, 0);
                     }
                     PlayerInScene = false;
@@ -682,10 +766,12 @@ namespace TrebleSketch_AIE_Asteroids
                 {
                     SceneID = 4;
                     timeNow = gameTime.TotalGameTime;
+                    LoadViaCode = true;
                 }
             }
             else
             {
+                GetCentreNow();
                 Ship.Visible = false;
                 Ship.Dead = true;
                 Ship.Vunlerable = false;
