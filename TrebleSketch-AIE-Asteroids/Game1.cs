@@ -144,6 +144,10 @@ namespace TrebleSketch_AIE_Asteroids
         }
 
         public Buttons MenuButton;
+
+        TimeSpan lastRepeatChange;
+        TimeSpan lastAudioChange;
+        bool playedOnce;
         #endregion
 
         public Game1()
@@ -689,27 +693,42 @@ namespace TrebleSketch_AIE_Asteroids
             }
         }
 
-        public void ToggleMusic(GameTime gameTime) // Needs Updating from Platformer Code
+        public void ToggleMusic(GameTime gameTime)
         {
-            if (InputHandler.IsKeyDownOnce(Keys.M))
+            TimeSpan last = gameTime.TotalGameTime - lastAudioChange;
+            if (Keyboard.GetState().IsKeyDown(Keys.M))
             {
-                if (MediaPlayer.State != MediaState.Playing)
+                if (!playedOnce)
                 {
-                    // MediaPlayer.Play(backgroundMusicIntro);
-                    // MediaPlayer.Play(backgroundMusicCore);
-                    // MediaPlayer.Play(backgroundMusicEnd);
-                    MediaPlayer.Play(backgroundMusicFull);
+                    if (MediaPlayer.State != MediaState.Playing)
+                    {
+                        MediaPlayer.Play(backgroundMusicFull); // PLAY DIS
+                        MediaPlayer.Volume -= 0.75f;
+                        playedOnce = true;
+                        Debug.WriteToFile(backgroundMusicFull.Name.ToString() + " just played for the first time", true);
+                    }
+                }
+                else {
+                    if (last > new TimeSpan(0, 0, 0, 5, 0))
+                    {
+                        if (MediaPlayer.State != MediaState.Playing)
+                        {
+                            MediaPlayer.Play(backgroundMusicFull); // PLAY DIS
+                        }
+                    }
+                    lastAudioChange = gameTime.TotalGameTime;
                 }
             }
-            TimeSpan last = gameTime.TotalGameTime - lastChange;
-            if (InputHandler.IsKeyDownOnce(Keys.L) && last > new TimeSpan(0, 0, 0, 2, 0))
+            TimeSpan lastRepeat = gameTime.TotalGameTime - lastRepeatChange;
+            if (Keyboard.GetState().IsKeyDown(Keys.L) && lastRepeat > new TimeSpan(0, 0, 0, 2, 0))
             {
                 MediaPlayer.IsRepeating = !MediaPlayer.IsRepeating;
-                lastChange = gameTime.TotalGameTime;
+                lastRepeatChange = gameTime.TotalGameTime;
             }
-            if (InputHandler.IsKeyDownOnce(Keys.K))
+            if (Keyboard.GetState().IsKeyDown(Keys.K))
             {
                 MediaPlayer.Stop();
+                Debug.WriteToFile(backgroundMusicFull.Name.ToString() + " just stopped", true);
             }
         }
 
