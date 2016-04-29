@@ -888,7 +888,7 @@ namespace TrebleSketch_AIE_Asteroids
                         MediaPlayer.Play(Archie_Fallen_Dreams); // PLAY DIS
                         MediaPlayer.Volume -= 0.90f;
                         playedOnce = true;
-                        Debug.WriteToFile(Archie_Fallen_Dreams.Name + " by " + Archie_Fallen_Dreams.Artist + " just played for the first time", true);
+                        Debug.WriteToFile("[INFO] " + Archie_Fallen_Dreams.Name + " by " + Archie_Fallen_Dreams.Artist + " just played for the first time", true);
                     }
                 }
                 else {
@@ -911,7 +911,7 @@ namespace TrebleSketch_AIE_Asteroids
             if (Keyboard.GetState().IsKeyDown(Keys.K))
             {
                 MediaPlayer.Stop();
-                Debug.WriteToFile(Archie_Fallen_Dreams.Name.ToString() + " just stopped", true);
+                Debug.WriteToFile("[INFO] " + Archie_Fallen_Dreams.Name + " just stopped", true);
             }
         }
 
