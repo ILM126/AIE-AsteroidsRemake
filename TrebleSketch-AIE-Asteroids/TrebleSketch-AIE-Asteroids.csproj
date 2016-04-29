@@ -125,6 +125,15 @@
     <Content Include="Content\falcon-9.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\menu-StartGameButton-v1-clicked.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\menu-StartGameButton-v1-hover.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\menu-StartGameButton-v1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\musker.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

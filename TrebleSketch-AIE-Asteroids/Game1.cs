@@ -135,6 +135,15 @@ namespace TrebleSketch_AIE_Asteroids
         InputHandler UserInput;
 
         public Rectangle CursorRect;
+
+        public class Buttons
+        {
+            public Texture2D MainMenu_StartButton;
+            public Texture2D MainMenu_StartButton_Hover;
+            public Texture2D MainMenu_StartButton_Clicked;
+        }
+
+        public Buttons MenuButton;
         #endregion
 
         public Game1()
@@ -155,6 +164,8 @@ namespace TrebleSketch_AIE_Asteroids
         /// </summary>
         protected override void Initialize()
         {
+            Debug.WriteToFile("[INFO] Started Initializing game...", true);
+
             graphics.PreferredBackBufferHeight = 720;
             graphics.PreferredBackBufferWidth = 1280;
             graphics.ApplyChanges();
@@ -162,44 +173,19 @@ namespace TrebleSketch_AIE_Asteroids
             CentreScreen = new Vector2(graphics.PreferredBackBufferWidth / 2
                 , graphics.PreferredBackBufferHeight / 2);
 
-            MouseMovement = new Cursor();
-            UserInput = new InputHandler();
-
-            Ship = new ShipClass();
-            Life = new LifeClass();
-            myAsteroids = new List<AsteroidClass>();
-            messages = new List<Message>();
-            ListMessages = new Message();
-
+            InitializeClasses();
             BeginInitialization();
-
-            SceneID = 0;
-            SceneName = "Tests Scene";
-            Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
-
-            Level_Easy = 0.60f;
-            Level_Medium = 1.25f;
-            Level_Hard = 1.8f;
-            Level_Conspiracy = 5f;
-            Level_Multiplier = Level_Easy;
-            AsteroidLevel = 0;
-            NUM_ASTEROIDS = AsteroidLevel * Level_Multiplier + 7;
-
-            Ship.Debug = Debug;
-
-            myMissles = new List<MissleClass>(); // Magic Missle!
-            datExplosions = new List<ExplosionsClass>(); // Boom
+            InitializeScene();
 
             base.Initialize();
+
+            Debug.WriteToFile("[INFO] Finished initializing game...", true);
         }
 
-        public int CheckCurrentState(int CurrentState)
-        {
-            return CurrentState;
-        }
-
+        #region Initialization
         void BeginInitialization()
         {
+            Debug.WriteToFile("[DEBUG] Initializing Ship", false);
             Ship.Position = new Vector2(
                 graphics.PreferredBackBufferWidth / 2
                 , graphics.PreferredBackBufferHeight / 2);
@@ -214,13 +200,17 @@ namespace TrebleSketch_AIE_Asteroids
                 , graphics.PreferredBackBufferHeight + (Ship.Size.Y / 2));
             Ship.MinLimit = new Vector2(0 - (Ship.Size.X / 2), 0 - (Ship.Size.Y / 2));
 
-            Life.Size = new Vector2(10f, 105.2f);
+            Debug.WriteToFile("[DEBUG] Initialized", false);
 
+            Debug.WriteToFile("[DEBUG] Initializing Life and MouseMovement", false);
+            Life.Size = new Vector2(10f, 105.2f);
             MouseMovement.CursorRect = CursorRect;
+            Debug.WriteToFile("[DEBUG] Initialized", false);
         }
 
         void InitializeShip() // I ship it! - Lightwing <3
         {
+            Debug.WriteToFile("[DEBUG] Loading Ship", false);
             Ship.Dead = false;
             Ship.Visible = true;
             Ship.Vunlerable = false;
@@ -238,6 +228,7 @@ namespace TrebleSketch_AIE_Asteroids
             PlayerLives = 3;
             Ship.Health = 150f;
             Ship.ScoreIncrements = 15;
+            Debug.WriteToFile("[INFO] Ship loaded", true);
         }
 
         void InitializeASteroids() // You Rock, Woho
@@ -264,11 +255,44 @@ namespace TrebleSketch_AIE_Asteroids
                 Asteroid.DamageDealt = 5f;
 
                 myAsteroids.Add(Asteroid);
-                Debug.WriteToFile("[DEBUG] Asteroids on screen: " + myAsteroids.Count, false);
             }
+            Debug.WriteToFile("[DEBUG] Loading " + myAsteroids.Count + " Asteroids onto screen", false);
         }
 
-        // public static Song FromUri(string name, Uri uri);
+        void InitializeClasses()
+        {
+            MouseMovement = new Cursor();
+            UserInput = new InputHandler();
+            MenuButton = new Buttons();
+
+            Ship = new ShipClass();
+            Life = new LifeClass();
+
+            ListMessages = new Message();
+            messages = new List<Message>();
+            myAsteroids = new List<AsteroidClass>();
+            myMissles = new List<MissleClass>(); // Magic Missle!
+            datExplosions = new List<ExplosionsClass>(); // Boom
+
+            Ship.Debug = Debug;
+        }
+
+        void InitializeScene()
+        {
+            SceneID = 0;
+            SceneName = "Tests Scene";
+            Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
+
+            Level_Easy = 0.60f;
+            Level_Medium = 1.25f;
+            Level_Hard = 1.8f;
+            Level_Conspiracy = 5f;
+            Level_Multiplier = Level_Easy;
+            AsteroidLevel = 0;
+            NUM_ASTEROIDS = AsteroidLevel * Level_Multiplier + 7;
+        }
+
+        #endregion
 
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
@@ -278,7 +302,7 @@ namespace TrebleSketch_AIE_Asteroids
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            Debug.WriteToFile("[INFO] Started loading content...", true);
 
             // Ship.Texture = Content.Load<Texture2D> ("ship"); // The actual ship
             // Ship.Texture = Content.Load<Texture2D>("falcon-9"); // The Falcon 9 v1.1
@@ -296,30 +320,67 @@ namespace TrebleSketch_AIE_Asteroids
             backgroundMusicFull = Content.Load<Song>("ExtremeMuggingsFull");
             MouseMovement.MouseTexture = Content.Load<Texture2D>("Cursor-v1");
             MouseMovement.MouseTexturePressed = Content.Load<Texture2D>("Cursor-v1-clicked");
+            MenuButton.MainMenu_StartButton = Content.Load<Texture2D>("menu-StartGameButton-v1");
+            MenuButton.MainMenu_StartButton_Hover = Content.Load<Texture2D>("menu-StartGameButton-v1-hover");
+            MenuButton.MainMenu_StartButton_Clicked = Content.Load<Texture2D>("menu-StartGameButton-v1-clicked");
 
+            Debug.WriteToFile("[INFO] Finished loading content...", true);
         }
 
-        public void ToggleMusic(GameTime gameTime)
+        /// <summary>
+        /// UnloadContent will be called once per game and is the place to unload
+        /// game-specific content.
+        /// </summary>
+        protected override void UnloadContent()
         {
-            if (InputHandler.IsKeyDownOnce(Keys.M))
+            // TODO: Unload any non ContentManager content here
+        }
+
+        /// <summary>
+        /// Allows the game to run logic such as updating the world,
+        /// checking for collisions, gathering input, and playing audio.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        protected override void Update(GameTime gameTime)
+        {
+            MessageOnLoad(gameTime);
+
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || InputHandler.IsKeyDownOnce(Keys.Escape))
             {
-                if (MediaPlayer.State != MediaState.Playing)
+                Debug.WriteToFile("[INFO] Exiting game...", true);
+                Exit();
+            }
+
+            SceneManagement(gameTime);
+            GameSceneManagement(gameTime);
+
+            ICheckINput(gameTime);
+            MouseMovement.Update();
+            ToggleMusic(gameTime);
+
+            while (messages.Count > 0 && messages[0].Appeared + MaxAgeMessage < gameTime.TotalGameTime)
+            {
+                messages.RemoveAt(0);
+                Debug.WriteToFile("[DEBUG] Message being removed", false);
+            }
+
+            base.Update(gameTime);
+        }
+
+        #region Updates
+        void MessageOnLoad(GameTime gameTime)
+        {
+            if (GameFirstLoad)
+            {
+                messages.Add(new Message()
                 {
-                    // MediaPlayer.Play(backgroundMusicIntro);
-                    // MediaPlayer.Play(backgroundMusicCore);
-                    // MediaPlayer.Play(backgroundMusicEnd);
-                    MediaPlayer.Play(backgroundMusicFull);
-                }
-            }
-            TimeSpan last = gameTime.TotalGameTime - lastChange;
-            if (InputHandler.IsKeyDownOnce(Keys.L) && last > new TimeSpan(0,0,0,2,0)) 
-            {
-                MediaPlayer.IsRepeating = !MediaPlayer.IsRepeating;
-                lastChange = gameTime.TotalGameTime;
-            }
-            if (InputHandler.IsKeyDownOnce(Keys.K))
-            {
-                MediaPlayer.Stop();
+                    Text = "Scene ID: " + SceneID,
+                    Appeared = gameTime.TotalGameTime,
+                    Position = CentreScreen
+                });
+                Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
+                GameFirstLoad = false;
+                Debug.WriteToFile("[DEBUG] Game First Load: " + GameFirstLoad.ToString(), false);
             }
         }
 
@@ -372,6 +433,7 @@ namespace TrebleSketch_AIE_Asteroids
                         ISpawnMISSle(gameTime);
                     }
                 }
+                GetCentre();
             }
 
             if (InputHandler.IsKeyDownOnce(Keys.D0))
@@ -443,42 +505,8 @@ namespace TrebleSketch_AIE_Asteroids
             }
         }
 
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// game-specific content.
-        /// </summary>
-        protected override void UnloadContent()
+        void SceneManagement(GameTime gameTime)
         {
-            // TODO: Unload any non ContentManager content here
-        }
-
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Update(GameTime gameTime)
-        {
-            // Menu.CurrentState = 1; // 1 = Menu || 2 = Game || 3 = Settings || 4 = Ded || 0 = LMAO ||| At least I tried
-
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || InputHandler.IsKeyDownOnce(Keys.Escape))
-            {
-                Debug.WriteToFile("[INFO] Exiting game...", true);
-                Exit();
-            }
-            if (GameFirstLoad)
-            {
-                messages.Add(new Message()
-                {
-                    Text = "Scene ID: " + SceneID,
-                    Appeared = gameTime.TotalGameTime,
-                    Position = CentreScreen
-                });
-                Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
-                GameFirstLoad = false;
-                Debug.WriteToFile("[DEBUG] Game First Load: " + GameFirstLoad.ToString(), false);
-            }
-
             switch (SceneID)
             {
                 case 0:
@@ -525,7 +553,6 @@ namespace TrebleSketch_AIE_Asteroids
                     }
                     ICheckShip(gameTime);
                     IRotateMISSLes();
-                    GetCentre();
                     UpdatedExplosions(gameTime);
                     CheckCollisions();
                     PlayerInScene = true;
@@ -582,9 +609,10 @@ namespace TrebleSketch_AIE_Asteroids
                     AsteroidsInScene = false;
                     break;
             }
+        }
 
-            MouseMovement.Update();
-
+        void GameSceneManagement(GameTime gameTime)
+        {
             if (AsteroidsInScene)
             {
                 ICheckASteroids();
@@ -638,7 +666,8 @@ namespace TrebleSketch_AIE_Asteroids
                     InitializeASteroids();
                     Ship.Vunlerable = true;
                 }
-            } else
+            }
+            else
             {
                 myAsteroids.Clear();
             }
@@ -650,45 +679,43 @@ namespace TrebleSketch_AIE_Asteroids
                     SceneID = 4;
                     timeNow = gameTime.TotalGameTime;
                 }
-            } else
+            }
+            else
             {
                 Ship.Visible = false;
                 Ship.Dead = true;
                 Ship.Vunlerable = false;
                 Ship.Die();
             }
-
-
-
-            ICheckINput(gameTime);
-            ToggleMusic(gameTime);
-
-            while (messages.Count > 0 && messages[0].Appeared + MaxAgeMessage < gameTime.TotalGameTime)
-            {
-                messages.RemoveAt(0);
-                Debug.WriteToFile("[DEBUG] Message being removed", false);
-            }
-
-            base.Update(gameTime);
         }
 
-        public void GetCentre()
+        public void ToggleMusic(GameTime gameTime) // Needs Updating from Platformer Code
         {
-            if (InputHandler.IsKeyDownOnce(Keys.E))
+            if (InputHandler.IsKeyDownOnce(Keys.M))
             {
-                Ship.Position = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
-                Ship.Velocity = new Vector2(0, 0);
-                Ship.Rotation = 0;
+                if (MediaPlayer.State != MediaState.Playing)
+                {
+                    // MediaPlayer.Play(backgroundMusicIntro);
+                    // MediaPlayer.Play(backgroundMusicCore);
+                    // MediaPlayer.Play(backgroundMusicEnd);
+                    MediaPlayer.Play(backgroundMusicFull);
+                }
+            }
+            TimeSpan last = gameTime.TotalGameTime - lastChange;
+            if (InputHandler.IsKeyDownOnce(Keys.L) && last > new TimeSpan(0, 0, 0, 2, 0))
+            {
+                MediaPlayer.IsRepeating = !MediaPlayer.IsRepeating;
+                lastChange = gameTime.TotalGameTime;
+            }
+            if (InputHandler.IsKeyDownOnce(Keys.K))
+            {
+                MediaPlayer.Stop();
             }
         }
 
-        void GetCentreNow()
-        {
-                Ship.Position = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
-                Ship.Velocity = new Vector2(0, 0);
-                Ship.Rotation = 0;
-        }
+        #endregion
 
+        #region Detectors/Collisions
         void ICheckShip(GameTime gameTime)
         {
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -859,11 +886,6 @@ namespace TrebleSketch_AIE_Asteroids
             }
         }
 
-        public void ElonMissles() // EYE MISSLES!!!!
-        {
-
-        }
-
         void IRotateMISSLes() // You Spin Me Right Round, Baby Right Round
         {
             foreach (MissleClass Missle in myMissles) // MISSle's rotation
@@ -937,6 +959,7 @@ namespace TrebleSketch_AIE_Asteroids
                             Ship.Dead = true;
                             Ship.Die();
                             PlayerLives--;
+                            Debug.WriteToFile("[INFO] Ship Loses Life, now on: " + PlayerLives, true);
                         }
                     }
                 }
@@ -953,7 +976,7 @@ namespace TrebleSketch_AIE_Asteroids
                         AsteroidDeathRow.Add(Asteroid);
                         CreateExplosion(Asteroid.Position, ExplosionType.ASTEROID);
                         //Debug.WriteToFile("[INFO] An Elon Missle hit a Barge Ship", true);
-                        Debug.WriteToFile("[DEBUG] Asteroids on screen: " + myAsteroids.Count, false);
+                        Debug.WriteToFile("[DEBUG] " + myAsteroids.Count + " Asteroids left on screen", false);
                     }
                 }
             }
@@ -967,7 +990,9 @@ namespace TrebleSketch_AIE_Asteroids
                 myMissles.Remove(Missle);
             }
         }
+        #endregion
 
+        #region Draw UI
         void DrawLives(SpriteBatch spriteBatch)
         {
             // Debug.WriteToFile("[DEBUG] No. of Player Lives: " + PlayerLives, false);
@@ -1000,7 +1025,9 @@ namespace TrebleSketch_AIE_Asteroids
         {
             spriteBatch.DrawString(scoreText, "Level : " + (int)AsteroidLevel, new Vector2(320, 10), Color.White);
         }
+        #endregion
 
+        #region Explosions
         protected void CreateExplosion(Vector2 SpawnPosition, ExplosionType SpawnedExplosionType)
         {
             ExplosionsClass NewExplosion = new ExplosionsClass();
@@ -1082,6 +1109,26 @@ namespace TrebleSketch_AIE_Asteroids
                 , 0);
             }
         }
+        #endregion
+
+        #region GetCentres
+        public void GetCentre()
+        {
+            if (InputHandler.IsKeyDownOnce(Keys.E))
+            {
+                Ship.Position = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
+                Ship.Velocity = new Vector2(0, 0);
+                Ship.Rotation = 0;
+            }
+        }
+
+        void GetCentreNow()
+        {
+            Ship.Position = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
+            Ship.Velocity = new Vector2(0, 0);
+            Ship.Rotation = 0;
+        }
+        #endregion
 
         /// <summary>
         /// This is called when the game should draw itself.
