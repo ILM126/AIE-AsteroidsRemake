@@ -17,6 +17,7 @@ namespace TrebleSketch_AIE_Asteroids
     /// Game Engine: MonoGame
     /// Dev Notes: This is my first ever major game of any kind, tons of hard work is still needed >:D
     /// *** Ask Max about radians and stuff, where the missles will spawn over Elon's eyes no matter what orientation he is
+    /// *** BUG: If traveling too fast and is still pressing key, player health will go to minus! gg
     /// </summary>
     public class Game1 : Game
     {
@@ -266,19 +267,52 @@ namespace TrebleSketch_AIE_Asteroids
                 AsteroidClass Asteroid = new AsteroidClass();
                 Asteroid.Position = new Vector2(randNum.Next(graphics.PreferredBackBufferWidth)
                     , randNum.Next(graphics.PreferredBackBufferHeight));
-                Asteroid.Velocity = new Vector2(randNum.Next(-4, 4), randNum.Next(-6, 6));
+                Asteroid.Velocity = new Vector2(randNum.Next(-6, 6), randNum.Next(-6, 6));
                 Asteroid.RotationDelta = randNum.Next(-1, 1);
 
-                int randSize = randNum.Next(32, 86);
+                int randSize = randNum.Next(32, 172); // original 86
                 Asteroid.Size = new Vector2(randSize, randSize);
 
                 Asteroid.MaxLimit = new Vector2(graphics.PreferredBackBufferWidth + (Asteroid.Size.X + 100)
                     , graphics.PreferredBackBufferHeight + (Asteroid.Size.Y + 100));
                 Asteroid.MinLimit = new Vector2(0 - (Asteroid.Size.X + 100), 0 - (Asteroid.Size.Y + 100));
 
-                Asteroid.DamageDealt = 5f;
-
-                Asteroid.DamageDealt = 5f;
+                switch ((int)AsteroidLevel)
+                {
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        Asteroid.DamageDealt = 5f;
+                        break;
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                        Asteroid.DamageDealt = 10f;
+                        break;
+                    case 8:
+                    case 9:
+                    case 10:
+                    case 11:
+                    case 12:
+                    case 13:
+                    case 14:
+                        Asteroid.DamageDealt = 25f;
+                        break;
+                    case 15:
+                    case 16:
+                    case 17:
+                        Asteroid.DamageDealt = 30f;
+                        break;
+                    case 18:
+                    case 19:
+                    case 20:
+                        break;
+                    default:
+                        Asteroid.DamageDealt = 5f;
+                        break;
+                }
 
                 myAsteroids.Add(Asteroid);
             }
@@ -647,11 +681,6 @@ namespace TrebleSketch_AIE_Asteroids
                             Position = CentreScreen
                         });
                         Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
-                        if (!Paused && myAsteroids.Count != 0)
-                        {
-                            //myAsteroids.Clear();
-                            //myMissles.Clear();
-                        }
                         LoadViaCode = false;
                     }
                     if (MenuButton.state.LeftButton == ButtonState.Pressed)
@@ -690,6 +719,7 @@ namespace TrebleSketch_AIE_Asteroids
                         LoadViaCode = false;
                         Debug.WriteToFile("[DEBUG] SCENE 2 LOADED", false);
                         InitializeShip();
+                        AsteroidLevel = 0;
                     }
                     ICheckShip(gameTime);
                     IRotateMISSLes();
@@ -724,6 +754,7 @@ namespace TrebleSketch_AIE_Asteroids
                             Appeared = gameTime.TotalGameTime,
                             Position = CentreScreen
                         });
+                        AsteroidLevel = 0;
                         Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
                         LoadViaCode = false;
                     }
@@ -780,7 +811,7 @@ namespace TrebleSketch_AIE_Asteroids
                         case 4:
                         case 5:
                         case 6:
-                            NUM_ASTEROIDS = (AsteroidLevel * 2f) * Level_Multiplier + 15;
+                            NUM_ASTEROIDS = (AsteroidLevel * 1.5f) * Level_Multiplier + 15;
                             Ship.ScoreIncrements = 15;
                             break;
                         case 7:
@@ -1105,15 +1136,16 @@ namespace TrebleSketch_AIE_Asteroids
                         if (Ship.Vunlerable)
                         {
                             Ship.Health -= Asteroid.DamageDealt;
+                            Debug.WriteToFile("[INFO] Ship Health is now: " + Ship.Health + "HP", true);
                         }
                         AsteroidDeathRow.Add(Asteroid);
                         CreateExplosion(Asteroid.Position, ExplosionType.ASTEROID);
                         if (Ship.Health != 0 && !Ship.Vunlerable)
                         {
-                            Debug.WriteToFile("[INFO] Ship Health is now: " + Ship.Health + "HP", true);
+                            Debug.WriteToFile("[INFO] Ship Health is now when not Vunlerable: " + Ship.Health + "HP", true);
                         }
                     }
-                    if (Ship.Vunlerable && Ship.Visible)
+                    if (Ship.Visible)
                     {
                         if (Ship.Health == 0)
                         {
@@ -1123,7 +1155,17 @@ namespace TrebleSketch_AIE_Asteroids
                             PlayerLives--;
                             Debug.WriteToFile("[INFO] Ship Loses Life, now on: " + PlayerLives, true);
                         }
+                        if (Ship.Health == -105)
+                        {
+                            CreateExplosion(Ship.Position, ExplosionType.SHIP);
+                            Ship.Dead = true;
+                            Ship.Die();
+                            PlayerLives--;
+                            Debug.WriteToFile("[INFO] Ship Loses Life, now on: " + PlayerLives, true);
+                        }
                     }
+                    Debug.WriteToFile("[INFO] Ship Vunlerable: " + Ship.Vunlerable, true);
+                    Debug.WriteToFile("[INFO] Ship Visible: " + Ship.Visible, true);
                 }
 
                 foreach (MissleClass Missle in myMissles)
