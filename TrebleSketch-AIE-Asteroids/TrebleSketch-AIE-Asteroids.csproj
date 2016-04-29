@@ -64,6 +64,8 @@
   <ItemGroup>
     <Compile Include="AsteroidClass.cs" />
     <Compile Include="AudioClass.cs" />
+    <Compile Include="InputHandler.cs" />
+    <Compile Include="Cursor.cs" />
     <Compile Include="Debugging.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="KeysClass.cs" />
@@ -94,6 +96,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\bullet.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Cursor-v1-clicked.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Cursor-v1.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\explosion.png">
