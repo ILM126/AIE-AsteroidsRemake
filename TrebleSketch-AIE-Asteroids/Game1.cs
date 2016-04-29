@@ -703,7 +703,7 @@ namespace TrebleSketch_AIE_Asteroids
                     if (MediaPlayer.State != MediaState.Playing)
                     {
                         MediaPlayer.Play(backgroundMusicFull); // PLAY DIS
-                        MediaPlayer.Volume -= 0.75f;
+                        MediaPlayer.Volume -= 0.90f;
                         playedOnce = true;
                         Debug.WriteToFile(backgroundMusicFull.Name.ToString() + " just played for the first time", true);
                     }
