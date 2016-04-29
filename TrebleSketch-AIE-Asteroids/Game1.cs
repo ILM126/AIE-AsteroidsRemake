@@ -12,7 +12,7 @@ namespace TrebleSketch_AIE_Asteroids
     /// <summary>
     /// Name: SpaceXterminator
     /// Description: A Game Where Elon Musk Must Destroy All The Tugboats That Is Stopping His Launches
-    /// Version: 0.0.126 (First Playable)
+    /// Version: 0.0.135 (First Playable)
     /// Developer: Titus Huang (Treble Sketch/ILM126)
     /// Game Engine: MonoGame
     /// Dev Notes: This is my first ever major game of any kind, tons of hard work is still needed >:D
@@ -141,7 +141,7 @@ namespace TrebleSketch_AIE_Asteroids
         {
             Debug = new Debugging();
             File.Delete(Debug.GetCurrentDirectory());
-            GameVersionBuild = "v0.0.124 (27/04/16)";
+            GameVersionBuild = "v0.0.135 (29/04/16)";
             Debug.WriteToFile("[INFO] Starting SpaceXterminator " + GameVersionBuild, true);
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -597,6 +597,8 @@ namespace TrebleSketch_AIE_Asteroids
                     {
                         case 0:
                         case 1:
+                            NUM_ASTEROIDS = AsteroidLevel + Level_Multiplier + 5;
+                            break;
                         case 2:
                         case 3:
                             NUM_ASTEROIDS = AsteroidLevel * Level_Multiplier + 7;
@@ -604,7 +606,7 @@ namespace TrebleSketch_AIE_Asteroids
                         case 4:
                         case 5:
                         case 6:
-                            NUM_ASTEROIDS = (AsteroidLevel * 2f) * Level_Multiplier + 10;
+                            NUM_ASTEROIDS = (AsteroidLevel * 2f) * Level_Multiplier + 15;
                             break;
                         case 7:
                         case 8:
@@ -616,6 +618,8 @@ namespace TrebleSketch_AIE_Asteroids
                         case 12:
                         case 13:
                         case 14:
+                            NUM_ASTEROIDS = (AsteroidLevel * 3.5f) * Level_Multiplier + 20;
+                            break;
                         case 15:
                         case 16:
                         case 17:
