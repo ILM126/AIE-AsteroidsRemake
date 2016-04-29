@@ -37,3 +37,9 @@
 /processorParam:Quality=Best
 /build:ExtremeMuggingsFull.mp3
 
+#begin Archie-Fallen-Dreams-Original-Mix.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Archie-Fallen-Dreams-Original-Mix.mp3
+

@@ -87,6 +87,7 @@ namespace TrebleSketch_AIE_Asteroids
         public Song backgroundMusicCore;
         public Song backgroundMusicEnd;
         public Song backgroundMusicFull;
+        public Song Archie_Fallen_Dreams;
 
         class LifeClass
         {
@@ -379,6 +380,7 @@ namespace TrebleSketch_AIE_Asteroids
             backgroundMusicCore = Content.Load<Song>("ExtremeMugginsCore");
             backgroundMusicEnd = Content.Load<Song>("ExtremeMugginsEnd");
             backgroundMusicFull = Content.Load<Song>("ExtremeMuggingsFull");
+            Archie_Fallen_Dreams = Content.Load<Song>("Archie-Fallen-Dreams-Original-Mix");
             MouseMovement.MouseTexture = Content.Load<Texture2D>("Cursor-v1");
             MouseMovement.MouseTexturePressed = Content.Load<Texture2D>("Cursor-v1-clicked");
             MenuButton.MainMenu_StartButton = Content.Load<Texture2D>("menu-StartGameButton-v1");
@@ -756,13 +758,13 @@ namespace TrebleSketch_AIE_Asteroids
                         });
                         AsteroidLevel = 0;
                         Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
+                        timeNow = new TimeSpan(0, 0, 0, 5, 0) + gameTime.TotalGameTime;
                         LoadViaCode = false;
                     }
-                    if (timeNow + MaxAgeMessage < gameTime.TotalGameTime)
+                    if (timeNow < gameTime.TotalGameTime)
                     {
                         SceneID = 1;
                         LoadViaCode = true;
-                        timeNow = new TimeSpan(0, 0, 0, 0, 0);
                     }
                     PlayerInScene = false;
                     AsteroidsInScene = false;
@@ -886,7 +888,7 @@ namespace TrebleSketch_AIE_Asteroids
                         MediaPlayer.Play(backgroundMusicFull); // PLAY DIS
                         MediaPlayer.Volume -= 0.90f;
                         playedOnce = true;
-                        Debug.WriteToFile(backgroundMusicFull.Name.ToString() + " just played for the first time", true);
+                        Debug.WriteToFile(Archie_Fallen_Dreams.Name + " by " + Archie_Fallen_Dreams.Artist + " just played for the first time", true);
                     }
                 }
                 else {
@@ -909,7 +911,7 @@ namespace TrebleSketch_AIE_Asteroids
             if (Keyboard.GetState().IsKeyDown(Keys.K))
             {
                 MediaPlayer.Stop();
-                Debug.WriteToFile(backgroundMusicFull.Name.ToString() + " just stopped", true);
+                Debug.WriteToFile(Archie_Fallen_Dreams.Name.ToString() + " just stopped", true);
             }
         }
 
@@ -919,7 +921,7 @@ namespace TrebleSketch_AIE_Asteroids
         void ICheckShip(GameTime gameTime)
         {
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (Ship.m_invulnerabliltyTimer != 0)
+            if (Ship.m_invulnerabliltyTimer >= 0)
             {
                 Debug.WriteToFile("[DEBUG] m_invulnerabliltyTimer: " + Ship.m_invulnerabliltyTimer.ToString(), false);
             }
@@ -1140,14 +1142,14 @@ namespace TrebleSketch_AIE_Asteroids
                         }
                         AsteroidDeathRow.Add(Asteroid);
                         CreateExplosion(Asteroid.Position, ExplosionType.ASTEROID);
-                        if (Ship.Health != 0 && !Ship.Vunlerable)
-                        {
-                            Debug.WriteToFile("[INFO] Ship Health is now when not Vunlerable: " + Ship.Health + "HP", true);
-                        }
+                        //if (Ship.Health != 0 && !Ship.Vunlerable)
+                        //{
+                        //    Debug.WriteToFile("[INFO] Ship Health is now when not Vunlerable: " + Ship.Health + "HP", true);
+                        //}
                     }
                     if (Ship.Visible)
                     {
-                        if (Ship.Health < 0) // Grr, stupid me. https://stackoverflow.com/questions/4099366/how-do-i-check-if-a-number-is-positive-or-negative-in-c
+                        if (Ship.Health <= 0) // Grr, stupid me. https://stackoverflow.com/questions/4099366/how-do-i-check-if-a-number-is-positive-or-negative-in-c
                         {
                             CreateExplosion(Ship.Position, ExplosionType.SHIP);
                             Ship.Dead = true;
@@ -1156,8 +1158,8 @@ namespace TrebleSketch_AIE_Asteroids
                             Debug.WriteToFile("[INFO] Ship Loses Life, now on: " + PlayerLives, true);
                         }
                     }
-                    Debug.WriteToFile("[INFO] Ship Vunlerable: " + Ship.Vunlerable, true);
-                    Debug.WriteToFile("[INFO] Ship Visible: " + Ship.Visible, true);
+                    //Debug.WriteToFile("[INFO] Ship Vunlerable: " + Ship.Vunlerable, true);
+                    //Debug.WriteToFile("[INFO] Ship Visible: " + Ship.Visible, true);
                 }
 
                 foreach (MissleClass Missle in myMissles)
@@ -1195,7 +1197,7 @@ namespace TrebleSketch_AIE_Asteroids
             for (int i = 0; i < PlayerLives; ++i)
             {
                 spriteBatch.Draw(Life.Texture
-                , new Vector2(i*10 + 25, 85)
+                , new Vector2(i*15 + 18, 90)
                 , null
                 , Color.White
                 , 0
