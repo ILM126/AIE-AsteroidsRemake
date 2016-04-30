@@ -242,7 +242,7 @@ namespace TrebleSketch_AIE_Asteroids
             MouseMovement.CursorRect = CursorRect;
             Debug.WriteToFile("[DEBUG] Initialized", false);
 
-            MenuButton.button_Position = new Vector2(CentreScreen.X, CentreScreen.Y);
+            MenuButton.button_Position = new Vector2(CentreScreen.X - 100, CentreScreen.Y);
             MenuButton.Button = new Rectangle(
                     (int)MenuButton.button_Position.X - 50,
                     (int)MenuButton.button_Position.Y - 20,
@@ -484,6 +484,8 @@ namespace TrebleSketch_AIE_Asteroids
             {
                 SceneID = 0;
                 Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
+                if (messages.Count > 0)
+                    messages.Clear();
                 messages.Add(new Message()
                 {
                     Text = "Scene ID: " + SceneID,
@@ -496,6 +498,9 @@ namespace TrebleSketch_AIE_Asteroids
             {
                 SceneID = 1;
                 Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
+                myMissles.Clear();
+                if (messages.Count > 0)
+                    messages.Clear();
                 messages.Add(new Message()
                 {
                     Text = "Scene ID: " + SceneID,
@@ -508,6 +513,8 @@ namespace TrebleSketch_AIE_Asteroids
             {
                 SceneID = 2;
                 Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
+                if (messages.Count > 0)
+                    messages.Clear();
                 messages.Add(new Message()
                 {
                     Text = "Scene ID: " + SceneID,
@@ -532,6 +539,9 @@ namespace TrebleSketch_AIE_Asteroids
             {
                 SceneID = 3;
                 Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
+                myMissles.Clear();
+                if (messages.Count > 0)
+                    messages.Clear();
                 messages.Add(new Message()
                 {
                     Text = "Scene ID: " + SceneID,
@@ -544,6 +554,9 @@ namespace TrebleSketch_AIE_Asteroids
             {
                 SceneID = 4;
                 Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
+                myMissles.Clear();
+                if (messages.Count > 0)
+                    messages.Clear();
                 messages.Add(new Message()
                 {
                     Text = "Scene ID: " + SceneID,
@@ -669,6 +682,8 @@ namespace TrebleSketch_AIE_Asteroids
                     SceneName = "Tests Scene";
                     if (LoadViaCode)
                     {
+                        if (messages.Count > 0)
+                            messages.Clear();
                         messages.Add(new Message()
                         {
                             Text = "Scene ID: " + SceneID,
@@ -685,6 +700,8 @@ namespace TrebleSketch_AIE_Asteroids
                     SceneName = "Main Menu";
                     if (LoadViaCode)
                     {
+                        if (messages.Count > 0)
+                            messages.Clear();
                         messages.Add(new Message()
                         {
                             Text = "Scene ID: " + SceneID,
@@ -722,6 +739,8 @@ namespace TrebleSketch_AIE_Asteroids
                     SceneName = "Game";
                     if (LoadViaCode)
                     {
+                        if (messages.Count > 0)
+                            messages.Clear();
                         messages.Add(new Message()
                         {
                             Text = "Scene ID: " + SceneID,
@@ -748,6 +767,8 @@ namespace TrebleSketch_AIE_Asteroids
                     SceneName = "Settings - Diffculty";
                     if (LoadViaCode)
                     {
+                        if (messages.Count > 0)
+                            messages.Clear();
                         messages.Add(new Message()
                         {
                             Text = "Scene ID: " + SceneID,
@@ -764,6 +785,8 @@ namespace TrebleSketch_AIE_Asteroids
                     SceneName = "Game Over";
                     if (LoadViaCode)
                     {
+                        if (messages.Count > 0)
+                            messages.Clear();
                         messages.Add(new Message()
                         {
                             Text = "Scene ID: " + SceneID,
@@ -787,6 +810,8 @@ namespace TrebleSketch_AIE_Asteroids
                     SceneName = "Deafult Scene";
                     if (LoadViaCode)
                     {
+                        if (messages.Count > 0)
+                            messages.Clear();
                         messages.Add(new Message()
                         {
                             Text = "Scene ID: " + SceneID,
