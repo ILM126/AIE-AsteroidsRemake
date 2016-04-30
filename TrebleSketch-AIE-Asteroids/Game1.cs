@@ -133,6 +133,8 @@ namespace TrebleSketch_AIE_Asteroids
 
         TimeSpan timeNow = new TimeSpan(0, 0, 0, 0, 0);
 
+        public Vector2 MessagePosition;
+
         Cursor MouseMovement;
         InputHandler UserInput;
 
@@ -159,10 +161,14 @@ namespace TrebleSketch_AIE_Asteroids
         TimeSpan lastAudioChange;
         bool playedOnce;
 
-        int KeyMappingOption;
+        int KeyMappingOption; // Option Later!
         bool Trigged = false;
 
-        bool Restart;
+        bool Restart; // Option Later!
+
+        string Difficulty_Text;
+
+        public Texture2D GameName;
         #endregion
 
         public Game1()
@@ -242,6 +248,7 @@ namespace TrebleSketch_AIE_Asteroids
                     (int)MenuButton.button_Position.Y - 20,
                     100,
                     40);
+            MessagePosition = new Vector2(CentreScreen.X * 2 - 130, CentreScreen.Y * 2 - 30);
         }
 
         void InitializeShip() // I ship it! - Lightwing <3
@@ -350,6 +357,7 @@ namespace TrebleSketch_AIE_Asteroids
             Level_Hard = 1.8f;
             Level_Conspiracy = 5f;
             Level_Multiplier = Level_Easy;
+            Difficulty_Text = "Easy";
             AsteroidLevel = 0;
             NUM_ASTEROIDS = AsteroidLevel * Level_Multiplier + 7;
         }
@@ -386,6 +394,7 @@ namespace TrebleSketch_AIE_Asteroids
             MenuButton.MainMenu_StartButton = Content.Load<Texture2D>("menu-StartGameButton-v1");
             MenuButton.MainMenu_StartButton_Hover = Content.Load<Texture2D>("menu-StartGameButton-v1-hover");
             MenuButton.MainMenu_StartButton_Clicked = Content.Load<Texture2D>("menu-StartGameButton-v1-clicked");
+            GameName = Content.Load<Texture2D>("menu-gameLogo-v1");
 
             Debug.WriteToFile("[INFO] Finished loading content...", true);
         }
@@ -439,7 +448,7 @@ namespace TrebleSketch_AIE_Asteroids
                 {
                     Text = "Scene ID: " + SceneID,
                     Appeared = gameTime.TotalGameTime,
-                    Position = CentreScreen
+                    Position = MessagePosition
                 });
                 Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
                 GameFirstLoad = false;
@@ -479,7 +488,7 @@ namespace TrebleSketch_AIE_Asteroids
                 {
                     Text = "Scene ID: " + SceneID,
                     Appeared = gameTime.TotalGameTime,
-                    Position = CentreScreen
+                    Position = MessagePosition
                 });
                 Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
             }
@@ -491,7 +500,7 @@ namespace TrebleSketch_AIE_Asteroids
                 {
                     Text = "Scene ID: " + SceneID,
                     Appeared = gameTime.TotalGameTime,
-                    Position = CentreScreen
+                    Position = MessagePosition
                 });
                 Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
             }
@@ -503,7 +512,7 @@ namespace TrebleSketch_AIE_Asteroids
                 {
                     Text = "Scene ID: " + SceneID,
                     Appeared = gameTime.TotalGameTime,
-                    Position = CentreScreen
+                    Position = MessagePosition
                 });
                 Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
                 if (!Paused)
@@ -527,7 +536,7 @@ namespace TrebleSketch_AIE_Asteroids
                 {
                     Text = "Scene ID: " + SceneID,
                     Appeared = gameTime.TotalGameTime,
-                    Position = CentreScreen
+                    Position = MessagePosition
                 });
                 Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
             }
@@ -539,7 +548,7 @@ namespace TrebleSketch_AIE_Asteroids
                 {
                     Text = "Scene ID: " + SceneID,
                     Appeared = gameTime.TotalGameTime,
-                    Position = CentreScreen
+                    Position = MessagePosition
                 });
                 Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
             }
@@ -664,7 +673,7 @@ namespace TrebleSketch_AIE_Asteroids
                         {
                             Text = "Scene ID: " + SceneID,
                             Appeared = gameTime.TotalGameTime,
-                            Position = CentreScreen
+                            Position = MessagePosition
                         });
                         Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
                         LoadViaCode = false;
@@ -680,11 +689,13 @@ namespace TrebleSketch_AIE_Asteroids
                         {
                             Text = "Scene ID: " + SceneID,
                             Appeared = gameTime.TotalGameTime,
-                            Position = CentreScreen
+                            Position = MessagePosition
                         });
                         Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
                         LoadViaCode = false;
                     }
+                    ToggleDifficulty();
+                    Difficulty();
                     if (MenuButton.state.LeftButton == ButtonState.Pressed)
                     {
                         MenuButton.isClickingWhileHovering = true;
@@ -715,18 +726,21 @@ namespace TrebleSketch_AIE_Asteroids
                         {
                             Text = "Scene ID: " + SceneID,
                             Appeared = gameTime.TotalGameTime,
-                            Position = CentreScreen
+                            Position = MessagePosition
                         });
                         Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
                         LoadViaCode = false;
                         Debug.WriteToFile("[DEBUG] SCENE 2 LOADED", false);
                         InitializeShip();
+                        Difficulty();
+                        Debug.WriteToFile("[DEBUG] Level Difficulty LOADED", false);
                         AsteroidLevel = 0;
                     }
                     ICheckShip(gameTime);
                     IRotateMISSLes();
                     UpdatedExplosions(gameTime);
                     CheckCollisions();
+                    ToggleDifficulty();
                     PlayerInScene = true;
                     AsteroidsInScene = true;
                     break;
@@ -738,7 +752,7 @@ namespace TrebleSketch_AIE_Asteroids
                         {
                             Text = "Scene ID: " + SceneID,
                             Appeared = gameTime.TotalGameTime,
-                            Position = CentreScreen
+                            Position = MessagePosition
                         });
                         Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
                         LoadViaCode = false;
@@ -754,7 +768,7 @@ namespace TrebleSketch_AIE_Asteroids
                         {
                             Text = "Scene ID: " + SceneID,
                             Appeared = gameTime.TotalGameTime,
-                            Position = CentreScreen
+                            Position = MessagePosition
                         });
                         AsteroidLevel = 0;
                         Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
@@ -777,7 +791,7 @@ namespace TrebleSketch_AIE_Asteroids
                         {
                             Text = "Scene ID: " + SceneID,
                             Appeared = gameTime.TotalGameTime,
-                            Position = CentreScreen
+                            Position = MessagePosition
                         });
                         Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
                         LoadViaCode = false;
@@ -785,6 +799,51 @@ namespace TrebleSketch_AIE_Asteroids
                     PlayerInScene = false;
                     AsteroidsInScene = false;
                     break;
+            }
+        }
+
+        void Difficulty()
+        {
+            if (Level_Multiplier == 0.60f) // Easy
+            {
+                Difficulty_Text = "Easy";
+            } else if (Level_Multiplier == 1.25f) // Medium
+            {
+                Difficulty_Text = "Medium";
+            } else if (Level_Multiplier == 1.8f) // Hard
+            {
+                Difficulty_Text = "Hard";
+            } else if (Level_Multiplier == 5f) // CONSPIRACY!!!!!
+            {
+                Difficulty_Text = "CONSPIRACY";
+            } else
+            {
+                Difficulty_Text = "Not Chosen";
+                Debug.WriteToFile("No Level Difficulty Chosen", true);
+            }
+        }
+
+        void ToggleDifficulty()
+        {
+            if (InputHandler.IsKeyDownOnce(Keys.D6))
+            {
+                Level_Multiplier = 0.60f;
+                Debug.WriteToFile("Level Difficulty Changed to Easy", false);
+            }
+            if (InputHandler.IsKeyDownOnce(Keys.D7))
+            {
+                Level_Multiplier = 1.25f;
+                Debug.WriteToFile("Level Difficulty Changed to Medium", false);
+            }
+            if (InputHandler.IsKeyDownOnce(Keys.D8))
+            {
+                Level_Multiplier = 1.8f;
+                Debug.WriteToFile("Level Difficulty Changed to Hard", false);
+            }
+            if (InputHandler.IsKeyDownOnce(Keys.D9))
+            {
+                Level_Multiplier = 5f;
+                Debug.WriteToFile("Level Difficulty Changed to CONSPIRACY", false);
             }
         }
 
@@ -803,7 +862,7 @@ namespace TrebleSketch_AIE_Asteroids
                         case 0:
                         case 1:
                             NUM_ASTEROIDS = AsteroidLevel + Level_Multiplier + 5;
-                            Ship.ScoreIncrements = 10;
+                            Ship.ScoreIncrements = 7;
                             break;
                         case 2:
                         case 3:
@@ -824,13 +883,11 @@ namespace TrebleSketch_AIE_Asteroids
                         case 10:
                         case 11:
                             NUM_ASTEROIDS = (AsteroidLevel * 3f) * Level_Multiplier + 20;
-                            Ship.ScoreIncrements = 17;
                             break;
                         case 12:
                         case 13:
                         case 14:
                             NUM_ASTEROIDS = (AsteroidLevel * 3.5f) * Level_Multiplier + 20;
-                            Ship.ScoreIncrements = 17;
                             break;
                         case 15:
                         case 16:
@@ -862,6 +919,7 @@ namespace TrebleSketch_AIE_Asteroids
             {
                 if (PlayerLives == 0)
                 {
+                    myMissles.Clear();
                     SceneID = 4;
                     timeNow = gameTime.TotalGameTime;
                     LoadViaCode = true;
@@ -1227,7 +1285,32 @@ namespace TrebleSketch_AIE_Asteroids
 
         void DrawLevel()
         {
-            spriteBatch.DrawString(scoreText, "Level : " + (int)AsteroidLevel, new Vector2(320, 10), Color.White);
+            spriteBatch.DrawString(scoreText, "Level : " + (int)AsteroidLevel, new Vector2(340, 10), Color.White);
+        }
+
+        void DrawLevelDIfficulty()
+        {
+            if (SceneID == 1)
+            {
+                spriteBatch.DrawString(scoreText, "Level Difficulty: " + Difficulty_Text, new Vector2(CentreScreen.X + 60, CentreScreen.Y - 15), Color.White);
+            } else if (SceneID == 2)
+            {
+                spriteBatch.DrawString(scoreText, "Level Difficulty: " + Difficulty_Text, new Vector2(470, 10), Color.White);
+            }
+        }
+
+        void DrawGameName()
+        {
+            spriteBatch.Draw(GameName
+                , new Vector2(CentreScreen.X, CentreScreen.Y - 80)
+                , null
+                , Color.White
+                , 0
+                , new Vector2(GameName.Width / 2
+                    , GameName.Height / 2)
+                , new Vector2(1)
+                , SpriteEffects.None
+                , 0);
         }
         #endregion
 
@@ -1428,6 +1511,8 @@ namespace TrebleSketch_AIE_Asteroids
                         0,
                         0);
                 }
+                DrawLevelDIfficulty();
+                DrawGameName();
             }
 
             if (SceneID == 2)
@@ -1437,6 +1522,7 @@ namespace TrebleSketch_AIE_Asteroids
                 DrawScore();
                 DrawLevel();
                 DrawLives(spriteBatch);
+                DrawLevelDIfficulty();
             }
 
             if (SceneID == 4)
