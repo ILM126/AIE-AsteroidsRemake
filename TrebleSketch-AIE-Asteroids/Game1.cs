@@ -853,22 +853,22 @@ namespace TrebleSketch_AIE_Asteroids
             if (InputHandler.IsKeyDownOnce(Keys.D6))
             {
                 Level_Multiplier = 0.60f;
-                Debug.WriteToFile("Level Difficulty Changed to Easy", false);
+                Debug.WriteToFile("[DEBUG] Level Difficulty Changed to Easy", false);
             }
             if (InputHandler.IsKeyDownOnce(Keys.D7))
             {
                 Level_Multiplier = 1.25f;
-                Debug.WriteToFile("Level Difficulty Changed to Medium", false);
+                Debug.WriteToFile("[DEBUG] Level Difficulty Changed to Medium", false);
             }
             if (InputHandler.IsKeyDownOnce(Keys.D8))
             {
                 Level_Multiplier = 1.8f;
-                Debug.WriteToFile("Level Difficulty Changed to Hard", false);
+                Debug.WriteToFile("[DEBUG] Level Difficulty Changed to Hard", false);
             }
             if (InputHandler.IsKeyDownOnce(Keys.D9))
             {
                 Level_Multiplier = 5f;
-                Debug.WriteToFile("Level Difficulty Changed to CONSPIRACY", false);
+                Debug.WriteToFile("[DEBUG] Level Difficulty Changed to CONSPIRACY", false);
             }
         }
 
@@ -1004,7 +1004,7 @@ namespace TrebleSketch_AIE_Asteroids
         void ICheckShip(GameTime gameTime)
         {
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (Ship.m_invulnerabliltyTimer >= 0)
+            if (Ship.m_invulnerabliltyTimer != 0)
             {
                 Debug.WriteToFile("[DEBUG] m_invulnerabliltyTimer: " + Ship.m_invulnerabliltyTimer.ToString(), false);
             }
@@ -1317,7 +1317,7 @@ namespace TrebleSketch_AIE_Asteroids
         {
             if (SceneID == 1)
             {
-                spriteBatch.DrawString(scoreText, "Level Difficulty: " + Difficulty_Text, new Vector2(CentreScreen.X + 60, CentreScreen.Y - 15), Color.White);
+                spriteBatch.DrawString(scoreText, "Level Difficulty: " + Difficulty_Text, new Vector2(CentreScreen.X, CentreScreen.Y - 15), Color.White);
             } else if (SceneID == 2)
             {
                 spriteBatch.DrawString(scoreText, "Level Difficulty: " + Difficulty_Text, new Vector2(470, 10), Color.White);
@@ -1502,7 +1502,7 @@ namespace TrebleSketch_AIE_Asteroids
                 {
                     spriteBatch.Draw(
                     MenuButton.MainMenu_StartButton_Clicked,
-                    new Vector2(CentreScreen.X, CentreScreen.Y),
+                    MenuButton.button_Position,
                     null,
                     Color.White,
                     0,
