@@ -1354,17 +1354,17 @@ namespace TrebleSketch_AIE_Asteroids
 
         void DrawLevel()
         {
-            spriteBatch.DrawString(scoreText, "Level : " + (int)AsteroidLevel, new Vector2(340, 10), Color.White);
+            spriteBatch.DrawString(scoreText, "Level : " + (int)AsteroidLevel + " / 20", new Vector2(340, 10), Color.White);
         }
 
         void DrawLevelDIfficulty()
         {
             if (SceneID == 1)
             {
-                spriteBatch.DrawString(scoreText, "Level Difficulty: " + Difficulty_Text, new Vector2(CentreScreen.X - 150, CentreScreen.Y - 30), Color.White);
+                spriteBatch.DrawString(scoreText, "Level Difficulty: " + Difficulty_Text + " (More Difficulties Coming!)", new Vector2(CentreScreen.X - 150, CentreScreen.Y - 30), Color.White);
             } else if (SceneID == 2)
             {
-                spriteBatch.DrawString(scoreText, "Level Difficulty: " + Difficulty_Text, new Vector2(470, 10), Color.White);
+                spriteBatch.DrawString(scoreText, "Level Difficulty: " + Difficulty_Text, new Vector2(CentreScreen.X - 115, 10), Color.White);
             }
         }
 
@@ -1401,8 +1401,16 @@ namespace TrebleSketch_AIE_Asteroids
 
                 spriteBatch.DrawString
                     (scoreText,
+                    "This game is in the public alpha testing phase, please submit a Github Issue\n" +
+                    "if problems are found or you want to give suggestions (https://github.com/ILM126/AIE-AsteroidsRemake/issues)",
+                    new Vector2(340, CentreScreen.Y * 2 - 37), Color.White, 0, new Vector2(0), 0.65f, SpriteEffects.None, 0);
+            }
+            if (SceneID == 0 || SceneID == 1 || SceneID == 2)
+            {
+                spriteBatch.DrawString
+                    (scoreText,
                     "Game Developed by Titus Huang (c) 2016",
-                    new Vector2(10, CentreScreen.Y * 2 - 30), Color.White, 0, new Vector2(0), 0.75f, SpriteEffects.None, 0);
+                    new Vector2(12, CentreScreen.Y * 2 - 30), Color.White, 0, new Vector2(0), 0.75f, SpriteEffects.None, 0);
             }
         }
         #endregion
@@ -1606,7 +1614,6 @@ namespace TrebleSketch_AIE_Asteroids
                 }
                 DrawLevelDIfficulty();
                 DrawGameName();
-                DrawGameHelp();
             }
 
             if (SceneID == 2)
@@ -1625,6 +1632,8 @@ namespace TrebleSketch_AIE_Asteroids
             }
 
             MouseMovement.Draw(spriteBatch);
+
+            DrawGameHelp();
 
             foreach (var message in messages)
                 spriteBatch.DrawString(scoreText, message.Text, message.Position, Color.Lime);
