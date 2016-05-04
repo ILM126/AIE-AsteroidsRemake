@@ -169,6 +169,9 @@ namespace TrebleSketch_AIE_Asteroids
         string Difficulty_Text;
 
         public Texture2D GameName;
+
+        bool playedOnceViaCode;
+        bool playedStopLoop;
         #endregion
 
         public Game1()
@@ -242,13 +245,16 @@ namespace TrebleSketch_AIE_Asteroids
             MouseMovement.CursorRect = CursorRect;
             Debug.WriteToFile("[DEBUG] Initialized", false);
 
-            MenuButton.button_Position = new Vector2(CentreScreen.X - 100, CentreScreen.Y);
+            MenuButton.button_Position = new Vector2(350, CentreScreen.Y);
             MenuButton.Button = new Rectangle(
                     (int)MenuButton.button_Position.X - 50,
                     (int)MenuButton.button_Position.Y - 20,
                     100,
                     40);
             MessagePosition = new Vector2(CentreScreen.X * 2 - 130, CentreScreen.Y * 2 - 30);
+
+            playedOnceViaCode = false;
+            playedStopLoop = false;
         }
 
         void InitializeShip() // I ship it! - Lightwing <3
@@ -291,13 +297,13 @@ namespace TrebleSketch_AIE_Asteroids
                     case 1:
                     case 2:
                     case 3:
-                        Asteroid.DamageDealt = 5f;
+                        Asteroid.DamageDealt = 15f;
                         break;
                     case 4:
                     case 5:
                     case 6:
                     case 7:
-                        Asteroid.DamageDealt = 10f;
+                        Asteroid.DamageDealt = 12f;
                         break;
                     case 8:
                     case 9:
@@ -306,16 +312,17 @@ namespace TrebleSketch_AIE_Asteroids
                     case 12:
                     case 13:
                     case 14:
-                        Asteroid.DamageDealt = 25f;
+                        Asteroid.DamageDealt = 8f;
                         break;
                     case 15:
                     case 16:
                     case 17:
-                        Asteroid.DamageDealt = 30f;
+                        Asteroid.DamageDealt = 3f;
                         break;
                     case 18:
                     case 19:
                     case 20:
+                        Asteroid.DamageDealt = 2f;
                         break;
                     default:
                         Asteroid.DamageDealt = 5f;
@@ -429,6 +436,7 @@ namespace TrebleSketch_AIE_Asteroids
             ICheckINput(gameTime);
             MouseMovement.Update();
             ToggleMusic(gameTime);
+            PlayerArchie();
 
             while (messages.Count > 0 && messages[0].Appeared + MaxAgeMessage < gameTime.TotalGameTime)
             {
@@ -731,6 +739,7 @@ namespace TrebleSketch_AIE_Asteroids
                     {
                         SceneID = 2;
                         LoadViaCode = true;
+                        playedStopLoop = false;
                     }
                     PlayerInScene = false;
                     AsteroidsInScene = false;
@@ -968,7 +977,7 @@ namespace TrebleSketch_AIE_Asteroids
                     if (MediaPlayer.State != MediaState.Playing)
                     {
                         MediaPlayer.Play(Archie_Fallen_Dreams); // PLAY DIS
-                        MediaPlayer.Volume -= 0.90f;
+                        MediaPlayer.Volume -= 0.85f;
                         playedOnce = true;
                         Debug.WriteToFile("[INFO] " + Archie_Fallen_Dreams.Name + " by " + Archie_Fallen_Dreams.Artist + " just played for the first time", true);
                     }
@@ -997,6 +1006,33 @@ namespace TrebleSketch_AIE_Asteroids
             }
         }
 
+        void PlayerArchie()
+        {
+            if (SceneID == 2)
+            {
+                if (!playedStopLoop)
+                {
+                    MediaPlayer.Play(Archie_Fallen_Dreams); // PLAY DIS
+                    if (!playedOnceViaCode)
+                    {
+                        MediaPlayer.Volume -= 0.85f;
+                        playedOnceViaCode = true;
+                        MediaPlayer.IsRepeating = true;
+                    }
+                    Debug.WriteToFile("[INFO] Song is looping: " + MediaPlayer.IsRepeating.ToString(), true);
+                    Debug.WriteToFile("[INFO] " + Archie_Fallen_Dreams.Name + " by " + Archie_Fallen_Dreams.Artist + " just started playing", true);
+                    playedStopLoop = true;
+                }
+            }
+            else if (SceneID != 2)
+            {
+                if (MediaPlayer.State == MediaState.Playing)
+                {
+                    MediaPlayer.Stop();
+                }
+            }
+        }
+
         #endregion
 
         #region Detectors/Collisions
@@ -1005,7 +1041,7 @@ namespace TrebleSketch_AIE_Asteroids
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (Ship.m_invulnerabliltyTimer != 0)
             {
-                Debug.WriteToFile("[DEBUG] m_invulnerabliltyTimer: " + Ship.m_invulnerabliltyTimer.ToString(), false);
+                // Debug.WriteToFile("[DEBUG] m_invulnerabliltyTimer: " + Ship.m_invulnerabliltyTimer.ToString(), false);
             }
             if (Ship.Dead && Ship.m_invulnerabliltyTimer == 0f) // Player is dead via natural means
             {
@@ -1017,7 +1053,7 @@ namespace TrebleSketch_AIE_Asteroids
             if (Ship.m_respawnTimer > 0) // Player is respawning
             {
                 Ship.m_respawnTimer -= delta;
-                Debug.WriteToFile("[Debug] Respawn in: " + Ship.m_respawnTimer.ToString(), false);
+                // Debug.WriteToFile("[Debug] Respawn in: " + Ship.m_respawnTimer.ToString(), false);
             }
             else if (!Ship.Visible && Ship.Dead) // Player is dead and is respawning
             {
@@ -1316,7 +1352,7 @@ namespace TrebleSketch_AIE_Asteroids
         {
             if (SceneID == 1)
             {
-                spriteBatch.DrawString(scoreText, "Level Difficulty: " + Difficulty_Text, new Vector2(CentreScreen.X, CentreScreen.Y - 15), Color.White);
+                spriteBatch.DrawString(scoreText, "Level Difficulty: " + Difficulty_Text, new Vector2(CentreScreen.X - 150, CentreScreen.Y - 30), Color.White);
             } else if (SceneID == 2)
             {
                 spriteBatch.DrawString(scoreText, "Level Difficulty: " + Difficulty_Text, new Vector2(470, 10), Color.White);
@@ -1326,15 +1362,39 @@ namespace TrebleSketch_AIE_Asteroids
         void DrawGameName()
         {
             spriteBatch.Draw(GameName
-                , new Vector2(CentreScreen.X, CentreScreen.Y - 80)
+                , new Vector2(CentreScreen.X, 240)
                 , null
                 , Color.White
                 , 0
                 , new Vector2(GameName.Width / 2
                     , GameName.Height / 2)
-                , new Vector2(1)
+                , new Vector2(1.5f)
                 , SpriteEffects.None
                 , 0);
+        }
+
+        void DrawGameHelp()
+        {
+            if (SceneID == 1)
+            {
+                spriteBatch.DrawString
+                    (scoreText,
+                    "Based on the third launch delay on Sunday 28th of February to SpaceX's\n" +
+                    "Falcon 9 during the SES-9 mission due to a 'Fouled Range'. Meaning\n" +
+                    "that a vehicle or person had strayed into the restricted zones that\n" +
+                    "was set for the launch, in case of a launch failure or near where\n" +
+                    "Falcon 9's first stage will be landing.\n\n" +
+                    "W / S = Moving forwards and backwards\n" +
+                    "A / D = Turning to the left and right\n" +
+                    "Shift = Increases the turn and movement rate\n" +
+                    "Esc = Exit the Game at any time",
+                    new Vector2(CentreScreen.X - 150, CentreScreen.Y + 15), Color.White);
+
+                spriteBatch.DrawString
+                    (scoreText,
+                    "Game Developed by Titus Huang (c) 2016",
+                    new Vector2(10, CentreScreen.Y * 2 - 30), Color.White, 0, new Vector2(0), 0.75f, SpriteEffects.None, 0);
+            }
         }
         #endregion
 
@@ -1506,7 +1566,7 @@ namespace TrebleSketch_AIE_Asteroids
                     Color.White,
                     0,
                     new Vector2(MenuButton.MainMenu_StartButton_Hover.Width / 2, MenuButton.MainMenu_StartButton_Hover.Height / 2),
-                    1,
+                    1.25f,
                     0,
                     0);
                 }
@@ -1519,7 +1579,7 @@ namespace TrebleSketch_AIE_Asteroids
                         Color.White,
                         0,
                         new Vector2(MenuButton.MainMenu_StartButton_Hover.Width / 2, MenuButton.MainMenu_StartButton_Hover.Height / 2),
-                        1,
+                        1.25f,
                         0,
                         0);
                 }
@@ -1531,12 +1591,13 @@ namespace TrebleSketch_AIE_Asteroids
                         Color.White,
                         0,
                         new Vector2(MenuButton.MainMenu_StartButton_Hover.Width / 2, MenuButton.MainMenu_StartButton_Hover.Height / 2),
-                        1,
+                        1.25f,
                         0,
                         0);
                 }
                 DrawLevelDIfficulty();
                 DrawGameName();
+                DrawGameHelp();
             }
 
             if (SceneID == 2)
