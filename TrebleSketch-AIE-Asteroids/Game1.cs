@@ -995,7 +995,7 @@ namespace TrebleSketch_AIE_Asteroids
         public void ToggleMusic(GameTime gameTime)
         {
             TimeSpan last = gameTime.TotalGameTime - lastAudioChange;
-            if (Keyboard.GetState().IsKeyDown(Keys.M))
+            if (InputHandler.IsKeyDownOnce(Keys.M))
             {
                 if (!playedOnce)
                 {
@@ -1019,12 +1019,12 @@ namespace TrebleSketch_AIE_Asteroids
                 }
             }
             TimeSpan lastRepeat = gameTime.TotalGameTime - lastRepeatChange;
-            if (Keyboard.GetState().IsKeyDown(Keys.L) && lastRepeat > new TimeSpan(0, 0, 0, 2, 0))
+            if (InputHandler.IsKeyDownOnce(Keys.L) && lastRepeat > new TimeSpan(0, 0, 0, 2, 0))
             {
                 MediaPlayer.IsRepeating = !MediaPlayer.IsRepeating;
                 lastRepeatChange = gameTime.TotalGameTime;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.K))
+            if (InputHandler.IsKeyDownOnce(Keys.K))
             {
                 MediaPlayer.Stop();
                 Debug.WriteToFile("[INFO] " + Archie_Fallen_Dreams.Name + " just stopped", true);
