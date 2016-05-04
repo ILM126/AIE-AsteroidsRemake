@@ -887,18 +887,15 @@ namespace TrebleSketch_AIE_Asteroids
                         case 0:
                         case 1:
                             NUM_ASTEROIDS = AsteroidLevel + Level_Multiplier + 5;
-                            Ship.ScoreIncrements = 7;
                             break;
                         case 2:
                         case 3:
                             NUM_ASTEROIDS = AsteroidLevel * Level_Multiplier + 7;
-                            Ship.ScoreIncrements = 12;
                             break;
                         case 4:
                         case 5:
                         case 6:
                             NUM_ASTEROIDS = (AsteroidLevel * 1.5f) * Level_Multiplier + 15;
-                            Ship.ScoreIncrements = 15;
                             break;
                         case 7:
                         case 8:
@@ -918,18 +915,20 @@ namespace TrebleSketch_AIE_Asteroids
                         case 16:
                         case 17:
                             NUM_ASTEROIDS = (AsteroidLevel * 5f) * (Level_Multiplier * 1.2f) + 25;
-                            Ship.ScoreIncrements = 17;
                             break;
                         case 18:
                         case 19:
                         case 20:
                             NUM_ASTEROIDS = (AsteroidLevel * 5.2f) * (Level_Multiplier * 2) + 35;
-                            Ship.ScoreIncrements = 21;
                             break;
                         default:
                             NUM_ASTEROIDS = AsteroidLevel * Level_Multiplier + 5;
                             LoadViaCode = false;
                             break;
+                    }
+                    foreach (AsteroidClass Asteroid in myAsteroids) // Modular score system, where the bigger the ship. More points
+                    {
+
                     }
                     InitializeASteroids();
                     Ship.Vunlerable = true;
