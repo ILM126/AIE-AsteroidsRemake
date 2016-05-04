@@ -864,21 +864,21 @@ namespace TrebleSketch_AIE_Asteroids
                 Level_Multiplier = 0.60f;
                 Debug.WriteToFile("[DEBUG] Level Difficulty Changed to Easy", false);
             }
-            if (InputHandler.IsKeyDownOnce(Keys.D7))
-            {
-                Level_Multiplier = 1.25f;
-                Debug.WriteToFile("[DEBUG] Level Difficulty Changed to Medium", false);
-            }
-            if (InputHandler.IsKeyDownOnce(Keys.D8))
-            {
-                Level_Multiplier = 1.8f;
-                Debug.WriteToFile("[DEBUG] Level Difficulty Changed to Hard", false);
-            }
-            if (InputHandler.IsKeyDownOnce(Keys.D9))
-            {
-                Level_Multiplier = 5f;
-                Debug.WriteToFile("[DEBUG] Level Difficulty Changed to CONSPIRACY", false);
-            }
+            //if (InputHandler.IsKeyDownOnce(Keys.D7))
+            //{
+            //    Level_Multiplier = 1.25f;
+            //    Debug.WriteToFile("[DEBUG] Level Difficulty Changed to Medium", false);
+            //}
+            //if (InputHandler.IsKeyDownOnce(Keys.D8))
+            //{
+            //    Level_Multiplier = 1.8f;
+            //    Debug.WriteToFile("[DEBUG] Level Difficulty Changed to Hard", false);
+            //}
+            //if (InputHandler.IsKeyDownOnce(Keys.D9))
+            //{
+            //    Level_Multiplier = 5f;
+            //    Debug.WriteToFile("[DEBUG] Level Difficulty Changed to CONSPIRACY", false);
+            //}
         }
 
         void GameSceneManagement(GameTime gameTime)
