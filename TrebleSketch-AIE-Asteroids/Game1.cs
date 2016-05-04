@@ -436,7 +436,7 @@ namespace TrebleSketch_AIE_Asteroids
             ICheckINput(gameTime);
             MouseMovement.Update();
             ToggleMusic(gameTime);
-            PlayerArchie();
+            PlayerArchie(gameTime);
 
             while (messages.Count > 0 && messages[0].Appeared + MaxAgeMessage < gameTime.TotalGameTime)
             {
@@ -1006,7 +1006,7 @@ namespace TrebleSketch_AIE_Asteroids
             }
         }
 
-        void PlayerArchie()
+        void PlayerArchie(GameTime gameTime)
         {
             if (SceneID == 2)
             {
@@ -1019,6 +1019,20 @@ namespace TrebleSketch_AIE_Asteroids
                         playedOnceViaCode = true;
                         MediaPlayer.IsRepeating = true;
                     }
+                    if (messages.Count != 0)
+                    {
+                        MessagePosition = new Vector2(CentreScreen.X * 2 - 130, CentreScreen.Y * 2 - 60);
+                    }
+                    messages.Add(new Message()
+                    {
+                        Text = Archie_Fallen_Dreams.Name.ToString() + "just started playing",
+                        Appeared = gameTime.TotalGameTime,
+                        Position = MessagePosition
+                    });
+                    MessagePosition = new Vector2(CentreScreen.X * 2 - 130, CentreScreen.Y * 2 - 30);
+                    Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
+                    GameFirstLoad = false;
+                    Debug.WriteToFile("[DEBUG] Game First Load: " + GameFirstLoad.ToString(), false);
                     Debug.WriteToFile("[INFO] Song is looping: " + MediaPlayer.IsRepeating.ToString(), true);
                     Debug.WriteToFile("[INFO] " + Archie_Fallen_Dreams.Name + " by " + Archie_Fallen_Dreams.Artist + " just started playing", true);
                     playedStopLoop = true;
