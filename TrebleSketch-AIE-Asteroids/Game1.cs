@@ -479,7 +479,7 @@ namespace TrebleSketch_AIE_Asteroids
             {
                 Ship.Acceleration = 0f;
                 Ship.RotationDelta = 0f;
-                GetCentre();
+                //GetCentre();
 
                 if (KeyMappingOption == 0)
                 {
@@ -497,91 +497,91 @@ namespace TrebleSketch_AIE_Asteroids
                 }
             }
 
-            if (InputHandler.IsKeyDownOnce(Keys.D0))
-            {
-                SceneID = 0;
-                Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
-                //if (messages.Count > 0)
-                //    messages.Clear();
-                //messages.Add(new Message()
-                //{
-                //    Text = "Scene ID: " + SceneID,
-                //    Appeared = gameTime.TotalGameTime,
-                //    Position = MessagePosition
-                //});
-                //Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
-            }
-            if (InputHandler.IsKeyDownOnce(Keys.D1))
-            {
-                SceneID = 1;
-                Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
-                myMissles.Clear();
-                //if (messages.Count > 0)
-                //    messages.Clear();
-                //messages.Add(new Message()
-                //{
-                //    Text = "Scene ID: " + SceneID,
-                //    Appeared = gameTime.TotalGameTime,
-                //    Position = MessagePosition
-                //});
-                //Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
-            }
-            if (InputHandler.IsKeyDownOnce(Keys.D2))
-            {
-                SceneID = 2;
-                Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
-                //if (messages.Count > 0)
-                //    messages.Clear();
-                //messages.Add(new Message()
-                //{
-                //    Text = "Scene ID: " + SceneID,
-                //    Appeared = gameTime.TotalGameTime,
-                //    Position = MessagePosition
-                //});
-                //Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
-                if (!Paused)
-                {
-                    myAsteroids.Clear();
-                    AsteroidLevel = 0;
-                    AsteroidLevel++;
-                    Ship.Score = 0;
-                    InitializeShip();
-                    InitializeASteroids();
-                    CenterOfShip = Ship.Position;
-                    Debug.WriteToFile("[DEBUG] Ship Position: " + Ship.Position, false);
-                }
-                NUM_ASTEROIDS = AsteroidLevel * Level_Multiplier + 7;
-            }
-            if (InputHandler.IsKeyDownOnce(Keys.D3))
-            {
-                SceneID = 3;
-                Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
-                myMissles.Clear();
-                //if (messages.Count > 0)
-                //    messages.Clear();
-                //messages.Add(new Message()
-                //{
-                //    Text = "Scene ID: " + SceneID,
-                //    Appeared = gameTime.TotalGameTime,
-                //    Position = MessagePosition
-                //});
-                //Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
-            }
-            if (InputHandler.IsKeyDownOnce(Keys.D4))
-            {
-                SceneID = 4;
-                Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
-                myMissles.Clear();
-                //if (messages.Count > 0)
-                //    messages.Clear();
-                //messages.Add(new Message()
-                //{
-                //    Text = "Scene ID: " + SceneID,
-                //    Appeared = gameTime.TotalGameTime,
-                //    Position = MessagePosition
-                //});
-                //Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
-            }
+            //if (InputHandler.IsKeyDownOnce(Keys.D0))
+            //{
+            //    SceneID = 0;
+            //    Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
+            //    //if (messages.Count > 0)
+            //    //    messages.Clear();
+            //    //messages.Add(new Message()
+            //    //{
+            //    //    Text = "Scene ID: " + SceneID,
+            //    //    Appeared = gameTime.TotalGameTime,
+            //    //    Position = MessagePosition
+            //    //});
+            //    //Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
+            //}
+            //if (InputHandler.IsKeyDownOnce(Keys.D1))
+            //{
+            //    SceneID = 1;
+            //    Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
+            //    myMissles.Clear();
+            //    //if (messages.Count > 0)
+            //    //    messages.Clear();
+            //    //messages.Add(new Message()
+            //    //{
+            //    //    Text = "Scene ID: " + SceneID,
+            //    //    Appeared = gameTime.TotalGameTime,
+            //    //    Position = MessagePosition
+            //    //});
+            //    //Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
+            //}
+            //if (InputHandler.IsKeyDownOnce(Keys.D2))
+            //{
+            //    SceneID = 2;
+            //    Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
+            //    //if (messages.Count > 0)
+            //    //    messages.Clear();
+            //    //messages.Add(new Message()
+            //    //{
+            //    //    Text = "Scene ID: " + SceneID,
+            //    //    Appeared = gameTime.TotalGameTime,
+            //    //    Position = MessagePosition
+            //    //});
+            //    //Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
+            //    if (!Paused)
+            //    {
+            //        myAsteroids.Clear();
+            //        AsteroidLevel = 0;
+            //        AsteroidLevel++;
+            //        Ship.Score = 0;
+            //        InitializeShip();
+            //        InitializeASteroids();
+            //        CenterOfShip = Ship.Position;
+            //        Debug.WriteToFile("[DEBUG] Ship Position: " + Ship.Position, false);
+            //    }
+            //    NUM_ASTEROIDS = AsteroidLevel * Level_Multiplier + 7;
+            //}
+            //if (InputHandler.IsKeyDownOnce(Keys.D3))
+            //{
+            //    SceneID = 3;
+            //    Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
+            //    myMissles.Clear();
+            //    //if (messages.Count > 0)
+            //    //    messages.Clear();
+            //    //messages.Add(new Message()
+            //    //{
+            //    //    Text = "Scene ID: " + SceneID,
+            //    //    Appeared = gameTime.TotalGameTime,
+            //    //    Position = MessagePosition
+            //    //});
+            //    //Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
+            //}
+            //if (InputHandler.IsKeyDownOnce(Keys.D4))
+            //{
+            //    SceneID = 4;
+            //    Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
+            //    myMissles.Clear();
+            //    //if (messages.Count > 0)
+            //    //    messages.Clear();
+            //    //messages.Add(new Message()
+            //    //{
+            //    //    Text = "Scene ID: " + SceneID,
+            //    //    Appeared = gameTime.TotalGameTime,
+            //    //    Position = MessagePosition
+            //    //});
+            //    //Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
+            //}
         }
 
         #region KeyMapping
@@ -884,11 +884,11 @@ namespace TrebleSketch_AIE_Asteroids
 
         void ToggleDifficulty()
         {
-            if (InputHandler.IsKeyDownOnce(Keys.D6))
-            {
-                Level_Multiplier = 0.60f;
-                Debug.WriteToFile("[DEBUG] Level Difficulty Changed to Easy", false);
-            }
+            //if (InputHandler.IsKeyDownOnce(Keys.D6))
+            //{
+            //    Level_Multiplier = 0.60f;
+            //    Debug.WriteToFile("[DEBUG] Level Difficulty Changed to Easy", false);
+            //}
             //if (InputHandler.IsKeyDownOnce(Keys.D7))
             //{
             //    Level_Multiplier = 1.25f;
@@ -1568,15 +1568,15 @@ namespace TrebleSketch_AIE_Asteroids
         #endregion
 
         #region GetCentres
-        public void GetCentre()
-        {
-            if (InputHandler.IsKeyDownOnce(Keys.E))
-            {
-                Ship.Position = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
-                Ship.Velocity = new Vector2(0, 0);
-                Ship.Rotation = 0;
-            }
-        }
+        //public void GetCentre()
+        //{
+        //    if (InputHandler.IsKeyDownOnce(Keys.E))
+        //    {
+        //        Ship.Position = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
+        //        Ship.Velocity = new Vector2(0, 0);
+        //        Ship.Rotation = 0;
+        //    }
+        //}
 
         void GetCentreNow()
         {
