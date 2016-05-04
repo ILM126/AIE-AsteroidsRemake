@@ -444,7 +444,7 @@ namespace TrebleSketch_AIE_Asteroids
 
             ICheckINput(gameTime);
             MouseMovement.Update();
-            ToggleMusic(gameTime);
+            //ToggleMusic(gameTime);
             PlayerArchie(gameTime);
 
             while (messages.Count > 0 && messages[0].Appeared + MaxAgeMessage < gameTime.TotalGameTime)
@@ -992,44 +992,44 @@ namespace TrebleSketch_AIE_Asteroids
             }
         }
 
-        public void ToggleMusic(GameTime gameTime)
-        {
-            TimeSpan last = gameTime.TotalGameTime - lastAudioChange;
-            if (InputHandler.IsKeyDownOnce(Keys.M))
-            {
-                if (!playedOnce)
-                {
-                    if (MediaPlayer.State != MediaState.Playing)
-                    {
-                        MediaPlayer.Play(Archie_Fallen_Dreams); // PLAY DIS
-                        MediaPlayer.Volume -= 0.85f;
-                        playedOnce = true;
-                        Debug.WriteToFile("[INFO] " + Archie_Fallen_Dreams.Name + " by " + Archie_Fallen_Dreams.Artist + " just played for the first time", true);
-                    }
-                }
-                else {
-                    if (last > new TimeSpan(0, 0, 0, 5, 0))
-                    {
-                        if (MediaPlayer.State != MediaState.Playing)
-                        {
-                            MediaPlayer.Play(Archie_Fallen_Dreams); // PLAY DIS
-                        }
-                    }
-                    lastAudioChange = gameTime.TotalGameTime;
-                }
-            }
-            TimeSpan lastRepeat = gameTime.TotalGameTime - lastRepeatChange;
-            if (InputHandler.IsKeyDownOnce(Keys.L) && lastRepeat > new TimeSpan(0, 0, 0, 2, 0))
-            {
-                MediaPlayer.IsRepeating = !MediaPlayer.IsRepeating;
-                lastRepeatChange = gameTime.TotalGameTime;
-            }
-            if (InputHandler.IsKeyDownOnce(Keys.K))
-            {
-                MediaPlayer.Stop();
-                Debug.WriteToFile("[INFO] " + Archie_Fallen_Dreams.Name + " just stopped", true);
-            }
-        }
+        //public void ToggleMusic(GameTime gameTime)
+        //{
+        //    TimeSpan last = gameTime.TotalGameTime - lastAudioChange;
+        //    if (InputHandler.IsKeyDownOnce(Keys.M))
+        //    {
+        //        if (!playedOnce)
+        //        {
+        //            if (MediaPlayer.State != MediaState.Playing)
+        //            {
+        //                MediaPlayer.Play(Archie_Fallen_Dreams); // PLAY DIS
+        //                MediaPlayer.Volume -= 0.85f;
+        //                playedOnce = true;
+        //                Debug.WriteToFile("[INFO] " + Archie_Fallen_Dreams.Name + " by " + Archie_Fallen_Dreams.Artist + " just played for the first time", true);
+        //            }
+        //        }
+        //        else {
+        //            if (last > new TimeSpan(0, 0, 0, 5, 0))
+        //            {
+        //                if (MediaPlayer.State != MediaState.Playing)
+        //                {
+        //                    MediaPlayer.Play(Archie_Fallen_Dreams); // PLAY DIS
+        //                }
+        //            }
+        //            lastAudioChange = gameTime.TotalGameTime;
+        //        }
+        //    }
+        //    TimeSpan lastRepeat = gameTime.TotalGameTime - lastRepeatChange;
+        //    if (InputHandler.IsKeyDownOnce(Keys.L) && lastRepeat > new TimeSpan(0, 0, 0, 2, 0))
+        //    {
+        //        MediaPlayer.IsRepeating = !MediaPlayer.IsRepeating;
+        //        lastRepeatChange = gameTime.TotalGameTime;
+        //    }
+        //    if (InputHandler.IsKeyDownOnce(Keys.K))
+        //    {
+        //        MediaPlayer.Stop();
+        //        Debug.WriteToFile("[INFO] " + Archie_Fallen_Dreams.Name + " just stopped", true);
+        //    }
+        //}
 
         void PlayerArchie(GameTime gameTime)
         {
