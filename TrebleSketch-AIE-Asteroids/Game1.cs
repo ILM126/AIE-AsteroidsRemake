@@ -12,7 +12,7 @@ namespace TrebleSketch_AIE_Asteroids
     /// <summary>
     /// Name: SpaceXterminator
     /// Description: A Game Where Elon Musk Must Destroy All The Tugboats That Is Stopping His Launches
-    /// Version: 0.0.165 (First Playable)
+    /// Version: 0.1.174 (Pre-Alpha)
     /// Developer: Titus Huang (Treble Sketch/ILM126)
     /// Game Engine: MonoGame
     /// Dev Notes: This is my first ever major game of any kind, tons of hard work is still needed >:D
@@ -172,13 +172,20 @@ namespace TrebleSketch_AIE_Asteroids
 
         bool playedOnceViaCode;
         bool playedStopLoop;
+
+        int MenuPage;
+
+        TimeSpan HalfASecond = new TimeSpan(0, 0, 0, 0, 500);
+        TimeSpan OneSecond = new TimeSpan(0, 0, 0, 1, 0);
+        TimeSpan TwoSeconds = new TimeSpan(0, 0, 0, 2, 0);
+        TimeSpan lastMenuChange;
         #endregion
 
         public Game1()
         {
             Debug = new Debugging();
             File.Delete(Debug.GetCurrentDirectory());
-            GameVersionBuild = "v0.0.165 (30/04/16)";
+            GameVersionBuild = "v0.1.174 (05/05/16) [Pre-Alpha]";
             Debug.WriteToFile("[INFO] Starting SpaceXterminator " + GameVersionBuild, true);
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -255,6 +262,8 @@ namespace TrebleSketch_AIE_Asteroids
 
             playedOnceViaCode = false;
             playedStopLoop = false;
+
+            MenuPage = 0;
         }
 
         void InitializeShip() // I ship it! - Lightwing <3
@@ -741,6 +750,22 @@ namespace TrebleSketch_AIE_Asteroids
                         LoadViaCode = true;
                         playedStopLoop = false;
                     }
+
+                    TimeSpan lastSwitch = gameTime.TotalGameTime - lastMenuChange;
+                    if (lastSwitch > HalfASecond)
+                    {
+                        if (InputHandler.IsKeyDownOnce(Keys.Left) && MenuPage > 0)
+                        {
+                            MenuPage--;
+                            lastMenuChange = gameTime.TotalGameTime;
+                        }
+                        if (InputHandler.IsKeyDownOnce(Keys.Right) && MenuPage < 3)
+                        {
+                            MenuPage++;
+                            lastMenuChange = gameTime.TotalGameTime;
+                        }
+                    }
+
                     PlayerInScene = false;
                     AsteroidsInScene = false;
                     break;
@@ -1386,18 +1411,61 @@ namespace TrebleSketch_AIE_Asteroids
         {
             if (SceneID == 1)
             {
+                if (MenuPage == 0)
+                {
+                    spriteBatch.DrawString
+                        (scoreText,
+                        "Based on the third launch delay on Sunday 28th of February to SpaceX's\n" +
+                        "Falcon 9 during the SES-9 mission due to a 'Fouled Range'. Meaning\n" +
+                        "that a vehicle or person had strayed into the restricted zones that\n" +
+                        "was set for the launch, in case of a launch failure or near where\n" +
+                        "Falcon 9's first stage will be landing.",
+                        new Vector2(CentreScreen.X - 150, CentreScreen.Y + 15), Color.White);
+                } else if (MenuPage == 1)
+                {
+                    spriteBatch.DrawString
+                        (scoreText,
+                        "Keybinds:\n\n" +
+                        "W / S = Moving forwards and backwards\n" +
+                        "A / D = Turning to the left and right\n" +
+                        "Shift = Increases the turn and movement rate\n" +
+                        "Space = Shoots eye missles!\n" +
+                        "Esc = Exit the Game at any time",
+                        new Vector2(CentreScreen.X - 150, CentreScreen.Y + 15), Color.White);
+                } else if (MenuPage == 2)
+                {
+                    spriteBatch.DrawString
+                        (scoreText,
+                        "Aim of the game:\n\n" +
+                        "1. To survive pass the first 20 levels\n" +
+                        "2. Get the most amount of points without losing all your\n" +
+                        "   reserve rockets\n" +
+                        "3. Have fun!",
+                        new Vector2(CentreScreen.X - 150, CentreScreen.Y + 15), Color.White);
+                } else if (MenuPage == 3)
+                {
+                    spriteBatch.DrawString
+                        (scoreText,
+                        "All Copyrights belong to their own respective owners\n" +
+                        "Song In-Game: Fallen Dreams (Original Mix) by Archie\n" +
+                        "Player Sprite: Elon Musk's face, the founder of SpaceX\n" +
+                        "Enemy Sprite: From an image found on Google Images\n" +
+                        "etc    ... Add more",
+                        new Vector2(CentreScreen.X - 150, CentreScreen.Y + 15), Color.White);
+                } else
+                {
+                    spriteBatch.DrawString
+                        (scoreText,
+                        "Default Text",
+                        new Vector2(CentreScreen.X - 150, CentreScreen.Y + 15), Color.White);
+                }
+
                 spriteBatch.DrawString
-                    (scoreText,
-                    "Based on the third launch delay on Sunday 28th of February to SpaceX's\n" +
-                    "Falcon 9 during the SES-9 mission due to a 'Fouled Range'. Meaning\n" +
-                    "that a vehicle or person had strayed into the restricted zones that\n" +
-                    "was set for the launch, in case of a launch failure or near where\n" +
-                    "Falcon 9's first stage will be landing.\n\n" +
-                    "W / S = Moving forwards and backwards\n" +
-                    "A / D = Turning to the left and right\n" +
-                    "Shift = Increases the turn and movement rate\n" +
-                    "Esc = Exit the Game at any time",
-                    new Vector2(CentreScreen.X - 150, CentreScreen.Y + 15), Color.White);
+                        (scoreText,
+                        (MenuPage + 1) + " / 4",
+                        new Vector2(CentreScreen.X - 150, CentreScreen.Y + 260), Color.White);
+
+                // Make a progress bar showing the two second delay being runned out.... Draw right next to the page numbers!
 
                 spriteBatch.DrawString
                     (scoreText,
