@@ -1021,15 +1021,15 @@ namespace TrebleSketch_AIE_Asteroids
                     }
                     if (messages.Count != 0)
                     {
-                        MessagePosition = new Vector2(CentreScreen.X * 2 - 130, CentreScreen.Y * 2 - 60);
+                        MessagePosition = new Vector2(CentreScreen.X * 2 - 200, CentreScreen.Y * 2 - 3);
                     }
                     messages.Add(new Message()
                     {
-                        Text = Archie_Fallen_Dreams.Name.ToString() + "just started playing",
+                        Text = "'Fallen Dreams by Archie' just started playing",
                         Appeared = gameTime.TotalGameTime,
                         Position = MessagePosition
                     });
-                    MessagePosition = new Vector2(CentreScreen.X * 2 - 130, CentreScreen.Y * 2 - 30);
+                    // MessagePosition = new Vector2(CentreScreen.X * 2 - 130, CentreScreen.Y * 2 - 30);
                     Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
                     GameFirstLoad = false;
                     Debug.WriteToFile("[DEBUG] Game First Load: " + GameFirstLoad.ToString(), false);
