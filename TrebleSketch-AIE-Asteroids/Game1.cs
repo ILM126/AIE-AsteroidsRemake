@@ -17,7 +17,6 @@ namespace TrebleSketch_AIE_Asteroids
     /// Game Engine: MonoGame
     /// Dev Notes: This is my first ever major game of any kind, tons of hard work is still needed >:D
     /// *** Ask Max about radians and stuff, where the missles will spawn over Elon's eyes no matter what orientation he is
-    /// *** BUG: If traveling too fast and is still pressing key, player health will go to minus! gg
     /// </summary>
     public class Game1 : Game
     {
@@ -499,7 +498,7 @@ namespace TrebleSketch_AIE_Asteroids
                     }
                 }
             }
-
+            #region Debug Levels
             //if (InputHandler.IsKeyDownOnce(Keys.D0))
             //{
             //    SceneID = 0;
@@ -585,7 +584,7 @@ namespace TrebleSketch_AIE_Asteroids
             //    //});
             //    //Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
             //}
-
+            #endregion
             if (InputHandler.IsKeyDownOnce(Keys.F))
             {
                 if (FullScreen = !FullScreen)
@@ -739,7 +738,7 @@ namespace TrebleSketch_AIE_Asteroids
                     //    Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
                     //    LoadViaCode = false;
                     //}
-                    ToggleDifficulty();
+                    //ToggleDifficulty();
                     Difficulty();
                     if (MenuButton.state.LeftButton == ButtonState.Pressed)
                     {
@@ -804,7 +803,7 @@ namespace TrebleSketch_AIE_Asteroids
                     IRotateMISSLes();
                     UpdatedExplosions(gameTime);
                     CheckCollisions();
-                    ToggleDifficulty();
+                    //ToggleDifficulty();
                     PlayerInScene = true;
                     AsteroidsInScene = true;
                     break;
@@ -893,29 +892,29 @@ namespace TrebleSketch_AIE_Asteroids
             }
         }
 
-        void ToggleDifficulty()
-        {
-            //if (InputHandler.IsKeyDownOnce(Keys.D6))
-            //{
-            //    Level_Multiplier = 0.60f;
-            //    Debug.WriteToFile("[DEBUG] Level Difficulty Changed to Easy", false);
-            //}
-            //if (InputHandler.IsKeyDownOnce(Keys.D7))
-            //{
-            //    Level_Multiplier = 1.25f;
-            //    Debug.WriteToFile("[DEBUG] Level Difficulty Changed to Medium", false);
-            //}
-            //if (InputHandler.IsKeyDownOnce(Keys.D8))
-            //{
-            //    Level_Multiplier = 1.8f;
-            //    Debug.WriteToFile("[DEBUG] Level Difficulty Changed to Hard", false);
-            //}
-            //if (InputHandler.IsKeyDownOnce(Keys.D9))
-            //{
-            //    Level_Multiplier = 5f;
-            //    Debug.WriteToFile("[DEBUG] Level Difficulty Changed to CONSPIRACY", false);
-            //}
-        }
+        //void ToggleDifficulty()
+        //{
+        //    if (InputHandler.IsKeyDownOnce(Keys.D6))
+        //    {
+        //        Level_Multiplier = 0.60f;
+        //        Debug.WriteToFile("[DEBUG] Level Difficulty Changed to Easy", false);
+        //    }
+        //    if (InputHandler.IsKeyDownOnce(Keys.D7))
+        //    {
+        //        Level_Multiplier = 1.25f;
+        //        Debug.WriteToFile("[DEBUG] Level Difficulty Changed to Medium", false);
+        //    }
+        //    if (InputHandler.IsKeyDownOnce(Keys.D8))
+        //    {
+        //        Level_Multiplier = 1.8f;
+        //        Debug.WriteToFile("[DEBUG] Level Difficulty Changed to Hard", false);
+        //    }
+        //    if (InputHandler.IsKeyDownOnce(Keys.D9))
+        //    {
+        //        Level_Multiplier = 5f;
+        //        Debug.WriteToFile("[DEBUG] Level Difficulty Changed to CONSPIRACY", false);
+        //    }
+        //}
 
         void GameSceneManagement(GameTime gameTime)
         {
@@ -927,6 +926,7 @@ namespace TrebleSketch_AIE_Asteroids
                     AsteroidLevel++;
                     Debug.WriteToFile("[DEBUG] Starting Level: " + AsteroidLevel, false);
                     Debug.WriteToFile("[DEBUG] Level Multiplier: " + Level_Multiplier, false);
+                    #region Asteroid Count
                     switch ((int)AsteroidLevel)
                     {
                         case 0:
@@ -971,6 +971,7 @@ namespace TrebleSketch_AIE_Asteroids
                             LoadViaCode = false;
                             break;
                     }
+                    #endregion
                     foreach (AsteroidClass Asteroid in myAsteroids) // Modular score system, where the bigger the ship. More points
                     {
 
@@ -1270,10 +1271,8 @@ namespace TrebleSketch_AIE_Asteroids
             }
         }
 
-        bool CircleCollisionCheck(Vector2 object1Pos
-            , float object1Radius
-            , Vector2 object2Pos
-            , float object2Radius) // Yo, I check for collisions between objects
+        bool CircleCollisionCheck(Vector2 object1Pos, float object1Radius, Vector2 object2Pos, float object2Radius)
+            // Yo, I check for collisions between objects
         {
             float distanceBetweenOrbjects = (object1Pos - object2Pos).Length();
             float sumOfRadii = object1Radius + object2Radius;
@@ -1487,15 +1486,13 @@ namespace TrebleSketch_AIE_Asteroids
                         (MenuPage + 1) + " / 5",
                         new Vector2(CentreScreen.X - 160, CentreScreen.Y + 270), Color.White);
 
-                // Make a progress bar showing the two second delay being runned out.... Draw right next to the page numbers!
-
                 spriteBatch.DrawString
                     (scoreText,
                     "This game is in the public alpha testing phase, please submit a Github Issue\n" +
                     "if problems are found or you want to give suggestions (https://github.com/ILM126/AIE-AsteroidsRemake/issues)",
                     new Vector2(340, CentreScreen.Y * 2 - 37), Color.White, 0, new Vector2(0), 0.65f, SpriteEffects.None, 0);
             }
-            if (SceneID == 0 || SceneID == 1 || SceneID == 2)
+            if (SceneID == 0 || SceneID == 1 || SceneID == 2) // Only in-Menu and in-Game
             {
                 spriteBatch.DrawString
                     (scoreText,
@@ -1667,6 +1664,7 @@ namespace TrebleSketch_AIE_Asteroids
 
             if (SceneID == 1)
             {
+                #region Start Button
                 if (MenuButton.isClickingWhileHovering && MenuButton.isHoveringButton)
                 {
                     spriteBatch.Draw(
@@ -1705,6 +1703,7 @@ namespace TrebleSketch_AIE_Asteroids
                         0,
                         0);
                 }
+                #endregion
                 DrawLevelDIfficulty();
                 DrawGameName();
             }
@@ -1724,15 +1723,14 @@ namespace TrebleSketch_AIE_Asteroids
                 spriteBatch.DrawString(scoreText, "Game Over Pal!", new Vector2(CentreScreen.X, CentreScreen.Y - 50), Color.Red);
             }
 
+            #region Permanent
             DrawGameHelp();
-
             MouseMovement.Draw(spriteBatch);
-
             foreach (var message in messages)
                 spriteBatch.DrawString(scoreText, message.Text, message.Position, Color.Lime);
+            #endregion
 
             spriteBatch.End();
-
             base.Draw(gameTime);
         }
     }
