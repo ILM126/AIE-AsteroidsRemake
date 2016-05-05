@@ -179,6 +179,8 @@ namespace TrebleSketch_AIE_Asteroids
         TimeSpan OneSecond = new TimeSpan(0, 0, 0, 1, 0);
         TimeSpan TwoSeconds = new TimeSpan(0, 0, 0, 2, 0);
         TimeSpan lastMenuChange;
+
+        bool FullScreen;
         #endregion
 
         public Game1()
@@ -366,6 +368,7 @@ namespace TrebleSketch_AIE_Asteroids
         {
             SceneID = 1;
             SceneName = "Main Menu";
+            FullScreen = false;
             Debug.WriteToFile("[INFO] Scene Changed to: " + SceneName, true);
 
             Level_Easy = 0.60f;
@@ -582,6 +585,14 @@ namespace TrebleSketch_AIE_Asteroids
             //    //});
             //    //Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
             //}
+
+            if (InputHandler.IsKeyDownOnce(Keys.F))
+            {
+                if (FullScreen = !FullScreen)
+                {
+                    graphics.ToggleFullScreen();
+                }
+            }
         }
 
         #region KeyMapping
@@ -759,7 +770,7 @@ namespace TrebleSketch_AIE_Asteroids
                             MenuPage--;
                             lastMenuChange = gameTime.TotalGameTime;
                         }
-                        if (InputHandler.IsKeyDownOnce(Keys.Right) && MenuPage < 3)
+                        if (InputHandler.IsKeyDownOnce(Keys.Right) && MenuPage < 4)
                         {
                             MenuPage++;
                             lastMenuChange = gameTime.TotalGameTime;
@@ -1386,7 +1397,7 @@ namespace TrebleSketch_AIE_Asteroids
         {
             if (SceneID == 1)
             {
-                spriteBatch.DrawString(scoreText, "Level Difficulty: " + Difficulty_Text + " (More Difficulties Coming!)", new Vector2(CentreScreen.X - 150, CentreScreen.Y - 30), Color.White);
+                spriteBatch.DrawString(scoreText, "Level Difficulty: " + Difficulty_Text + " (More Difficulties Coming!)", new Vector2(CentreScreen.X - 160, CentreScreen.Y - 30), Color.White);
             } else if (SceneID == 2)
             {
                 spriteBatch.DrawString(scoreText, "Level Difficulty: " + Difficulty_Text, new Vector2(CentreScreen.X - 115, 10), Color.White);
@@ -1415,13 +1426,25 @@ namespace TrebleSketch_AIE_Asteroids
                 {
                     spriteBatch.DrawString
                         (scoreText,
-                        "Based on the third launch delay on Sunday 28th of February to SpaceX's\n" +
-                        "Falcon 9 during the SES-9 mission due to a 'Fouled Range'. Meaning\n" +
-                        "that a vehicle or person had strayed into the restricted zones that\n" +
-                        "was set for the launch, in case of a launch failure or near where\n" +
-                        "Falcon 9's first stage will be landing.",
-                        new Vector2(CentreScreen.X - 150, CentreScreen.Y + 15), Color.White);
+                        "This is the first game made under Academy of Interactive Entertainment's\n" +
+                        "Games Programming Cert II Course. SpaceXterminator is the first of\n" +
+                        "three games made throughout the 10 week course. It is also the \n" +
+                        "first game that I've ever programmed from scratch.\n" +
+                        "Hope you'll enjoy it!\n" +
+                        "This game is based on cause for the third launch delay to SpaceX's\n" +
+                        "Falcon 9 during the SES-9 mission due to the exclusive zone for the\n" +
+                        "launch being breached in the last two minutes before launch.\n\n" +
+                        "Mission Objective =>",
+                        new Vector2(CentreScreen.X - 160, CentreScreen.Y + 15), Color.White);
                 } else if (MenuPage == 1)
+                {
+                    spriteBatch.DrawString
+                        (scoreText,
+                        "Mission Objective:\n\n" +
+                        "\n\n\n\n\n\n\n" +
+                        "<= Game Info | Keybinds =>",
+                        new Vector2(CentreScreen.X - 160, CentreScreen.Y + 15), Color.White);
+                } else if (MenuPage == 2)
                 {
                     spriteBatch.DrawString
                         (scoreText,
@@ -1430,19 +1453,17 @@ namespace TrebleSketch_AIE_Asteroids
                         "A / D = Turning to the left and right\n" +
                         "Shift = Increases the turn and movement rate\n" +
                         "Space = Shoots eye missles!\n" +
-                        "Esc = Exit the Game at any time",
-                        new Vector2(CentreScreen.X - 150, CentreScreen.Y + 15), Color.White);
-                } else if (MenuPage == 2)
+                        "Esc = Exit the Game at any time\n\n\n" +
+                        "<= Mission Objective | *empty* =>",
+                        new Vector2(CentreScreen.X - 160, CentreScreen.Y + 15), Color.White);
+                } else if (MenuPage == 3)
                 {
                     spriteBatch.DrawString
                         (scoreText,
-                        "Aim of the game:\n\n" +
-                        "1. To survive pass the first 20 levels\n" +
-                        "2. Get the most amount of points without losing all your\n" +
-                        "   reserve rockets\n" +
-                        "3. Have fun!",
-                        new Vector2(CentreScreen.X - 150, CentreScreen.Y + 15), Color.White);
-                } else if (MenuPage == 3)
+                        "*write something else here\n\n\n\n\n\n\n\n\n" +
+                        "<= Keybinds | Copyrights =>",
+                        new Vector2(CentreScreen.X - 160, CentreScreen.Y + 15), Color.White);
+                } else if (MenuPage == 4)
                 {
                     spriteBatch.DrawString
                         (scoreText,
@@ -1450,20 +1471,21 @@ namespace TrebleSketch_AIE_Asteroids
                         "Song In-Game: Fallen Dreams (Original Mix) by Archie\n" +
                         "Player Sprite: Elon Musk's face, the founder of SpaceX\n" +
                         "Enemy Sprite: From an image found on Google Images\n" +
-                        "etc    ... Add more",
-                        new Vector2(CentreScreen.X - 150, CentreScreen.Y + 15), Color.White);
+                        "etc  ... Add more\n\n\n\n\n" +
+                        "<= *empty*",
+                        new Vector2(CentreScreen.X - 160, CentreScreen.Y + 15), Color.White);
                 } else
                 {
                     spriteBatch.DrawString
                         (scoreText,
                         "Default Text",
-                        new Vector2(CentreScreen.X - 150, CentreScreen.Y + 15), Color.White);
+                        new Vector2(CentreScreen.X - 160, CentreScreen.Y + 15), Color.White);
                 }
 
                 spriteBatch.DrawString
                         (scoreText,
-                        (MenuPage + 1) + " / 4",
-                        new Vector2(CentreScreen.X - 150, CentreScreen.Y + 260), Color.White);
+                        (MenuPage + 1) + " / 5",
+                        new Vector2(CentreScreen.X - 160, CentreScreen.Y + 270), Color.White);
 
                 // Make a progress bar showing the two second delay being runned out.... Draw right next to the page numbers!
 
@@ -1596,6 +1618,7 @@ namespace TrebleSketch_AIE_Asteroids
 
             spriteBatch.Begin();
 
+            #region Defaults
             if (Ship.Visible == true)
             {
                 spriteBatch.Draw(Ship.Texture
@@ -1639,6 +1662,8 @@ namespace TrebleSketch_AIE_Asteroids
                     , SpriteEffects.None
                     , 0);
             }
+
+            #endregion
 
             if (SceneID == 1)
             {
@@ -1699,9 +1724,9 @@ namespace TrebleSketch_AIE_Asteroids
                 spriteBatch.DrawString(scoreText, "Game Over Pal!", new Vector2(CentreScreen.X, CentreScreen.Y - 50), Color.Red);
             }
 
-            MouseMovement.Draw(spriteBatch);
-
             DrawGameHelp();
+
+            MouseMovement.Draw(spriteBatch);
 
             foreach (var message in messages)
                 spriteBatch.DrawString(scoreText, message.Text, message.Position, Color.Lime);
