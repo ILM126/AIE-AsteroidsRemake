@@ -12,7 +12,7 @@ namespace TrebleSketch_AIE_Asteroids
     /// <summary>
     /// Name: SpaceXterminator
     /// Description: A Game Where Elon Musk Must Destroy All The Tugboats That Is Stopping His Launches
-    /// Version: 0.1.174 (Pre-Alpha)
+    /// Version: 0.1.180 (Pre-Alpha)
     /// Developer: Titus Huang (Treble Sketch/ILM126)
     /// Game Engine: MonoGame
     /// Dev Notes: This is my first ever major game of any kind, tons of hard work is still needed >:D
@@ -188,7 +188,7 @@ namespace TrebleSketch_AIE_Asteroids
         {
             Debug = new Debugging();
             File.Delete(Debug.GetCurrentDirectory());
-            GameVersionBuild = "v0.1.174 (05/05/16) [Pre-Alpha]";
+            GameVersionBuild = "v0.1.180 (09/05/16) [Pre-Alpha]";
             Debug.WriteToFile("[INFO] Starting SpaceXterminator " + GameVersionBuild, true);
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -452,8 +452,8 @@ namespace TrebleSketch_AIE_Asteroids
             ICheckINput(gameTime);
             MouseMovement.Update();
             //ToggleMusic(gameTime);
-            PlayerArchie(gameTime);
             PlayerAllTheseWorlds(gameTime);
+            PlayerArchie(gameTime);
 
             while (messages.Count > 0 && messages[0].Appeared + MaxAgeMessage < gameTime.TotalGameTime)
             {
@@ -765,6 +765,7 @@ namespace TrebleSketch_AIE_Asteroids
                         SceneID = 2;
                         LoadViaCode = true;
                         playedStopLoop = false;
+                        playedOnceViaCode = false;
                     }
 
                     TimeSpan lastSwitch = gameTime.TotalGameTime - lastMenuChange;
@@ -1078,73 +1079,53 @@ namespace TrebleSketch_AIE_Asteroids
 
         void PlayerArchie(GameTime gameTime)
         {
-            if (SceneID == 2)
+            if (SceneID == 2 && !playedStopLoop)
             {
-                if (!playedStopLoop)
+                MediaPlayer.Play(Archie_Fallen_Dreams); // PLAY DIS
+                if (!playedOnceViaCode)
                 {
-                    MediaPlayer.Play(Archie_Fallen_Dreams); // PLAY DIS
-                    if (!playedOnceViaCode)
-                    {
-                        MediaPlayer.Volume -= 0.85f;
-                        playedOnceViaCode = true;
-                        MediaPlayer.IsRepeating = true;
-                    }
-                    messages.Add(new Message()
-                    {
-                        Text = "'Fallen Dreams by Archie' just started playing",
-                        Appeared = gameTime.TotalGameTime,
-                        Position = new Vector2(CentreScreen.X + 125, CentreScreen.Y * 2 - 33)
-                    });
-                    Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
-                    GameFirstLoad = false;
-                    Debug.WriteToFile("[DEBUG] Game First Load: " + GameFirstLoad.ToString(), false);
-                    Debug.WriteToFile("[INFO] Song is looping: " + MediaPlayer.IsRepeating.ToString(), true);
-                    Debug.WriteToFile("[INFO] " + Archie_Fallen_Dreams.Name + " by " + Archie_Fallen_Dreams.Artist + " just started playing", true);
-                    playedStopLoop = true;
+                    MediaPlayer.Volume -= 0.40f;
+                    playedOnceViaCode = true;
+                    MediaPlayer.IsRepeating = true;
                 }
-            }
-            else if (SceneID != 2)
-            {
-                if (MediaPlayer.State == MediaState.Playing)
+                messages.Add(new Message()
                 {
-                    MediaPlayer.Stop();
-                }
+                    Text = "'Fallen Dreams by Archie' just started playing",
+                    Appeared = gameTime.TotalGameTime,
+                    Position = new Vector2(CentreScreen.X + 125, CentreScreen.Y * 2 - 33)
+                });
+                Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
+                GameFirstLoad = false;
+                Debug.WriteToFile("[DEBUG] Game First Load: " + GameFirstLoad.ToString(), false);
+                Debug.WriteToFile("[INFO] Song is looping: " + MediaPlayer.IsRepeating.ToString(), true);
+                Debug.WriteToFile("[INFO] " + Archie_Fallen_Dreams.Name + " by " + Archie_Fallen_Dreams.Artist + " just started playing", true);
+                playedStopLoop = true;
             }
         }
 
         void PlayerAllTheseWorlds(GameTime gameTime)
         {
-            if (SceneID == 1)
+            if (SceneID == 1 && !playedStopLoop)
             {
-                if (!playedStopLoop)
+                MediaPlayer.Play(TestShotStarfish_AllTheseWorlds); // PLAY DIS
+                if (!playedOnceViaCode)
                 {
-                    MediaPlayer.Play(TestShotStarfish_AllTheseWorlds); // PLAY DIS
-                    if (!playedOnceViaCode)
-                    {
-                        MediaPlayer.Volume -= 0.85f;
-                        playedOnceViaCode = true;
-                        MediaPlayer.IsRepeating = true;
-                    }
-                    //messages.Add(new Message()
-                    //{
-                    //    Text = "'All These Worlds by Test Shot Starfish' just started playing",
-                    //    Appeared = gameTime.TotalGameTime,
-                    //    Position = new Vector2(CentreScreen.X, CentreScreen.Y * 2 - 33)
-                    //});
-                    //Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
-                    GameFirstLoad = false;
-                    // Debug.WriteToFile("[DEBUG] Game First Load: " + GameFirstLoad.ToString(), false);
-                    Debug.WriteToFile("[INFO] Song is looping: " + MediaPlayer.IsRepeating.ToString(), true);
-                    Debug.WriteToFile("[INFO] " + TestShotStarfish_AllTheseWorlds.Name + " by " + TestShotStarfish_AllTheseWorlds.Artist + " just started playing", true);
-                    playedStopLoop = true;
+                    MediaPlayer.Volume -= 0.25f;
+                    playedOnceViaCode = true;
+                    MediaPlayer.IsRepeating = true;
                 }
-            }
-            else if (SceneID != 1)
-            {
-                if (MediaPlayer.State == MediaState.Playing)
-                {
-                    MediaPlayer.Stop();
-                }
+                //messages.Add(new Message()
+                //{
+                //    Text = "'All These Worlds by Test Shot Starfish' just started playing",
+                //    Appeared = gameTime.TotalGameTime,
+                //    Position = new Vector2(CentreScreen.X, CentreScreen.Y * 2 - 33)
+                //});
+                //Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
+                GameFirstLoad = false;
+                // Debug.WriteToFile("[DEBUG] Game First Load: " + GameFirstLoad.ToString(), false);
+                Debug.WriteToFile("[INFO] Song is looping: " + MediaPlayer.IsRepeating.ToString(), true);
+                Debug.WriteToFile("[INFO] " + TestShotStarfish_AllTheseWorlds.Name + " by " + TestShotStarfish_AllTheseWorlds.Artist + " just started playing", true);
+                playedStopLoop = true;
             }
         }
 
@@ -1536,7 +1517,8 @@ namespace TrebleSketch_AIE_Asteroids
                     spriteBatch.DrawString
                         (scoreText,
                         "All Copyrights belong to their own respective owners\n" +
-                        "Song In-Game: Fallen Dreams (Original Mix) by Archie\n" +
+                        "Music in-game: Fallen Dreams (Original Mix) by Archie\n" +
+                        "Music in menu: All These Worlds by Test Shot Starfish\n" +
                         "Player Sprite: Elon Musk's face, the founder of SpaceX\n" +
                         "Enemy Sprite: From an image found on Google Images\n" +
                         "etc  ... Add more\n\n\n\n\n" +

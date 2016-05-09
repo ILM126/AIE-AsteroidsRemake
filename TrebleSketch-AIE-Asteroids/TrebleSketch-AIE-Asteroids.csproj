@@ -92,7 +92,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\Archie-Fallen-Dreams-Original-Mix.mp3" />
+    <Content Include="Content\Archie-Fallen-Dreams-Original-Mix.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\asteroid.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -144,7 +146,9 @@
     <Content Include="Content\ship.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\TestShotStarfish-AllTheseWorlds.mp3" />
+    <Content Include="Content\TestShotStarfish-AllTheseWorlds.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\tugboat.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
