@@ -43,3 +43,9 @@
 /processorParam:Quality=Best
 /build:Archie-Fallen-Dreams-Original-Mix.mp3
 
+#begin TestShotStarfish-AllTheseWorlds.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:TestShotStarfish-AllTheseWorlds.mp3
+

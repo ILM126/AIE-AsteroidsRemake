@@ -144,6 +144,7 @@
     <Content Include="Content\ship.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\TestShotStarfish-AllTheseWorlds.mp3" />
     <Content Include="Content\tugboat.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

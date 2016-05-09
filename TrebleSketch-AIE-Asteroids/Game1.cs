@@ -17,6 +17,7 @@ namespace TrebleSketch_AIE_Asteroids
     /// Game Engine: MonoGame
     /// Dev Notes: This is my first ever major game of any kind, tons of hard work is still needed >:D
     /// *** Ask Max about radians and stuff, where the missles will spawn over Elon's eyes no matter what orientation he is
+    /// *** 
     /// </summary>
     public class Game1 : Game
     {
@@ -87,6 +88,7 @@ namespace TrebleSketch_AIE_Asteroids
         public Song backgroundMusicEnd;
         public Song backgroundMusicFull;
         public Song Archie_Fallen_Dreams;
+        public Song TestShotStarfish_AllTheseWorlds;
 
         class LifeClass
         {
@@ -307,22 +309,24 @@ namespace TrebleSketch_AIE_Asteroids
                     case 1:
                     case 2:
                     case 3:
-                        Asteroid.DamageDealt = 15f;
+                        Asteroid.DamageDealt = 5f;
                         break;
                     case 4:
                     case 5:
                     case 6:
                     case 7:
-                        Asteroid.DamageDealt = 12f;
+                        Asteroid.DamageDealt = 7f;
                         break;
                     case 8:
                     case 9:
                     case 10:
                     case 11:
+                        Asteroid.DamageDealt = 10f;
+                        break;
                     case 12:
                     case 13:
                     case 14:
-                        Asteroid.DamageDealt = 8f;
+                        Asteroid.DamageDealt = 5f;
                         break;
                     case 15:
                     case 16:
@@ -407,6 +411,7 @@ namespace TrebleSketch_AIE_Asteroids
             backgroundMusicEnd = Content.Load<Song>("ExtremeMugginsEnd");
             backgroundMusicFull = Content.Load<Song>("ExtremeMuggingsFull");
             Archie_Fallen_Dreams = Content.Load<Song>("Archie-Fallen-Dreams-Original-Mix");
+            TestShotStarfish_AllTheseWorlds = Content.Load<Song>("TestShotStarfish-AllTheseWorlds");
             MouseMovement.MouseTexture = Content.Load<Texture2D>("Cursor-v1");
             MouseMovement.MouseTexturePressed = Content.Load<Texture2D>("Cursor-v1-clicked");
             MenuButton.MainMenu_StartButton = Content.Load<Texture2D>("menu-StartGameButton-v1");
@@ -448,6 +453,7 @@ namespace TrebleSketch_AIE_Asteroids
             MouseMovement.Update();
             //ToggleMusic(gameTime);
             PlayerArchie(gameTime);
+            PlayerAllTheseWorlds(gameTime);
 
             while (messages.Count > 0 && messages[0].Appeared + MaxAgeMessage < gameTime.TotalGameTime)
             {
@@ -798,6 +804,8 @@ namespace TrebleSketch_AIE_Asteroids
                         Difficulty();
                         Debug.WriteToFile("[DEBUG] Level Difficulty LOADED", false);
                         AsteroidLevel = 0;
+                        Ship.Score = 0;
+                        Ship.Health = 150;
                     }
                     ICheckShip(gameTime);
                     IRotateMISSLes();
@@ -827,6 +835,31 @@ namespace TrebleSketch_AIE_Asteroids
                     break;
                 case 4:
                     SceneName = "Game Over";
+                    if (LoadViaCode)
+                    {
+                        //if (messages.Count > 0)
+                        //    messages.Clear();
+                        //messages.Add(new Message()
+                        //{
+                        //    Text = "Scene ID: " + SceneID,
+                        //    Appeared = gameTime.TotalGameTime,
+                        //    Position = MessagePosition
+                        //});
+                        AsteroidLevel = 0;
+                        // Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
+                        timeNow = new TimeSpan(0, 0, 0, 5, 0) + gameTime.TotalGameTime;
+                        LoadViaCode = false;
+                    }
+                    if (timeNow < gameTime.TotalGameTime)
+                    {
+                        SceneID = 1;
+                        LoadViaCode = true;
+                    }
+                    PlayerInScene = false;
+                    AsteroidsInScene = false;
+                    break;
+                case 5:
+                    SceneName = "You Won!";
                     if (LoadViaCode)
                     {
                         //if (messages.Count > 0)
@@ -1071,6 +1104,42 @@ namespace TrebleSketch_AIE_Asteroids
                 }
             }
             else if (SceneID != 2)
+            {
+                if (MediaPlayer.State == MediaState.Playing)
+                {
+                    MediaPlayer.Stop();
+                }
+            }
+        }
+
+        void PlayerAllTheseWorlds(GameTime gameTime)
+        {
+            if (SceneID == 1)
+            {
+                if (!playedStopLoop)
+                {
+                    MediaPlayer.Play(TestShotStarfish_AllTheseWorlds); // PLAY DIS
+                    if (!playedOnceViaCode)
+                    {
+                        MediaPlayer.Volume -= 0.85f;
+                        playedOnceViaCode = true;
+                        MediaPlayer.IsRepeating = true;
+                    }
+                    //messages.Add(new Message()
+                    //{
+                    //    Text = "'All These Worlds by Test Shot Starfish' just started playing",
+                    //    Appeared = gameTime.TotalGameTime,
+                    //    Position = new Vector2(CentreScreen.X, CentreScreen.Y * 2 - 33)
+                    //});
+                    //Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
+                    GameFirstLoad = false;
+                    // Debug.WriteToFile("[DEBUG] Game First Load: " + GameFirstLoad.ToString(), false);
+                    Debug.WriteToFile("[INFO] Song is looping: " + MediaPlayer.IsRepeating.ToString(), true);
+                    Debug.WriteToFile("[INFO] " + TestShotStarfish_AllTheseWorlds.Name + " by " + TestShotStarfish_AllTheseWorlds.Artist + " just started playing", true);
+                    playedStopLoop = true;
+                }
+            }
+            else if (SceneID != 1)
             {
                 if (MediaPlayer.State == MediaState.Playing)
                 {
@@ -1721,6 +1790,11 @@ namespace TrebleSketch_AIE_Asteroids
             if (SceneID == 4)
             {
                 spriteBatch.DrawString(scoreText, "Game Over Pal!", new Vector2(CentreScreen.X, CentreScreen.Y - 50), Color.Red);
+            }
+
+            if (SceneID == 5)
+            {
+                spriteBatch.DrawString(scoreText, "You Won Pal! Congrats!", new Vector2(CentreScreen.X, CentreScreen.Y - 50), Color.Red);
             }
 
             #region Permanent
