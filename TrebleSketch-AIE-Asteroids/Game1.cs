@@ -83,6 +83,8 @@ namespace TrebleSketch_AIE_Asteroids
         Texture2D shipExplosionTexture;
         Texture2D asteroidExplosionTexture;
 
+        int SongQueue;
+
         public Song backgroundMusicIntro;
         public Song backgroundMusicCore;
         public Song backgroundMusicEnd;
@@ -998,7 +1000,7 @@ namespace TrebleSketch_AIE_Asteroids
                         case 18:
                         case 19:
                         case 20:
-                            NUM_ASTEROIDS = (AsteroidLevel * 5.2f) * (Level_Multiplier * 2) + 35;
+                            NUM_ASTEROIDS = (AsteroidLevel * 3.75f) * (Level_Multiplier * 2) + 30;
                             break;
                         default:
                             NUM_ASTEROIDS = AsteroidLevel * Level_Multiplier + 5;
@@ -1025,6 +1027,12 @@ namespace TrebleSketch_AIE_Asteroids
                 {
                     myMissles.Clear();
                     SceneID = 4;
+                    timeNow = gameTime.TotalGameTime;
+                    LoadViaCode = true;
+                } else if (PlayerLives > 0 && AsteroidLevel > 20)
+                {
+                    myMissles.Clear();
+                    SceneID = 5;
                     timeNow = gameTime.TotalGameTime;
                     LoadViaCode = true;
                 }
