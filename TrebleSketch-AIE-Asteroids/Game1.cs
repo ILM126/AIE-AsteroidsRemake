@@ -12,7 +12,7 @@ namespace TrebleSketch_AIE_Asteroids
     /// <summary>
     /// Name: SpaceXterminator
     /// Description: A Game Where Elon Musk Must Destroy All The Tugboats That Is Stopping His Launches
-    /// Version: 0.1.185 (Pre-Alpha)
+    /// Version: 0.1.188 (Pre-Alpha)
     /// Developer: Titus Huang (Treble Sketch/ILM126)
     /// Game Engine: MonoGame
     /// Dev Notes: This is my first ever major game of any kind, tons of hard work is still needed >:D
@@ -197,7 +197,7 @@ namespace TrebleSketch_AIE_Asteroids
         {
             Debug = new Debugging();
             File.Delete(Debug.GetCurrentDirectory());
-            GameVersionBuild = "v0.1.185 (19/05/16) [Pre-Alpha]";
+            GameVersionBuild = "v0.1.188 (19/05/16) [Pre-Alpha]";
             Debug.WriteToFile("[INFO] Starting SpaceXterminator " + GameVersionBuild, true);
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -790,7 +790,7 @@ namespace TrebleSketch_AIE_Asteroids
                             MenuPage--;
                             lastMenuChange = gameTime.TotalGameTime;
                         }
-                        if (InputHandler.IsKeyDownOnce(Keys.Right) && MenuPage < 4)
+                        if (InputHandler.IsKeyDownOnce(Keys.Right) && MenuPage < 5)
                         {
                             MenuPage++;
                             lastMenuChange = gameTime.TotalGameTime;
@@ -1468,7 +1468,7 @@ namespace TrebleSketch_AIE_Asteroids
         {
             if (SceneID == 1)
             {
-                spriteBatch.DrawString(scoreText, "Level Difficulty: " + Difficulty_Text + " (More Difficulties Coming!)", new Vector2(CentreScreen.X - 160, CentreScreen.Y - 30), Color.White);
+                spriteBatch.DrawString(scoreText, "Level Difficulty: " + Difficulty_Text + " (More Difficulties Coming!)", new Vector2(CentreScreen.X - 160, CentreScreen.Y - 30), Color.Cyan);
             } else if (SceneID == 2)
             {
                 spriteBatch.DrawString(scoreText, "Level Difficulty: " + Difficulty_Text, new Vector2(CentreScreen.X - 115, 10), Color.White);
@@ -1505,15 +1505,17 @@ namespace TrebleSketch_AIE_Asteroids
                         "This game is based on cause for the third launch delay to SpaceX's\n" +
                         "Falcon 9 during the SES-9 mission due to the exclusive zone for the\n" +
                         "launch being breached in the last two minutes before launch.\n\n" +
-                        "Mission Objective =>",
+                        "MISSON OBJECTIVE => (Arrow Keys to navigate!)",
                         new Vector2(CentreScreen.X - 160, CentreScreen.Y + 15), Color.White);
                 } else if (MenuPage == 1)
                 {
                     spriteBatch.DrawString
                         (scoreText,
                         "Mission Objective:\n\n" +
-                        "\n\n\n\n\n\n\n" +
-                        "<= Game Info | Keybinds =>",
+                        "You are Elon Musk, and must protect your precious Falcon 9 from being\n" +
+                        "destroyed by the evil drone ships that will delay your launch!\n" +
+                        "*more back story soon*\n\n\n\n\n" +
+                        "<= GAME INFO          | KEYBINDS =>",
                         new Vector2(CentreScreen.X - 160, CentreScreen.Y + 15), Color.White);
                 } else if (MenuPage == 2)
                 {
@@ -1522,17 +1524,25 @@ namespace TrebleSketch_AIE_Asteroids
                         "Keybinds:\n\n" +
                         "W / S = Moving forwards and backwards\n" +
                         "A / D = Turning to the left and right\n" +
+                        "Q = Stops movement completely\n" +
                         "Shift = Increases the turn and movement rate\n" +
-                        "Space = Shoots eye missles!\n" +
-                        "Esc = Exit the Game at any time\n\n\n" +
-                        "<= Mission Objective | *empty* =>",
+                        "Space = Shoots Elon Musk eye missles!\n" +
+                        "F = Full Screen!\n" +
+                        "Esc = Exit the Game at any time\n" +
+                        "<= MISSION OBJECTIVE  | GITHUB INFO =>",
                         new Vector2(CentreScreen.X - 160, CentreScreen.Y + 15), Color.White);
                 } else if (MenuPage == 3)
                 {
                     spriteBatch.DrawString
                         (scoreText,
-                        "*write something else here\n\n\n\n\n\n\n\n\n" +
-                        "<= Keybinds | Copyrights =>",
+                        "Project Name: AIE-AsteroidsRemake\n" +
+                        "Project Link: https://github.com/ILM126/AIE-AsteroidsRemake/ \n" +
+                        "Project Issues: https://github.com/ILM126/AIE-AsteroidsRemake/issues \n" +
+                        "Find a mistake? Or you want to suggest something to be added into the game?\n" +
+                        "Go to the 'Issue' link and write up an issue for me!\n" +
+                        "Thanks!\n\n" +
+                        "Treble Sketch\n\n" +
+                        "<= KEYBINDS           | COPYRIGHTS =>",
                         new Vector2(CentreScreen.X - 160, CentreScreen.Y + 15), Color.White);
                 } else if (MenuPage == 4)
                 {
@@ -1540,11 +1550,24 @@ namespace TrebleSketch_AIE_Asteroids
                         (scoreText,
                         "All Copyrights belong to their own respective owners\n" +
                         "Music in-game: Fallen Dreams (Original Mix) by Archie\n" +
-                        "Music in menu: All These Worlds by Test Shot Starfish\n" +
+                        "Music in-menu: All These Worlds by Test Shot Starfish\n" +
                         "Player Sprite: Elon Musk's face, the founder of SpaceX\n" +
-                        "Enemy Sprite: From an image found on Google Images\n" +
-                        "etc  ... Add more\n\n\n\n" +
-                        "<= *empty*",
+                        "Enemy Sprite: Image from Google Images\n" +
+                        "more to come...\n\n" +
+                        "SpaceXterminator (c) Treble Sketch 2016\n\n" +
+                        "<= GITHUB INFO        | UPCOMING FEATURES =>",
+                        new Vector2(CentreScreen.X - 160, CentreScreen.Y + 15), Color.White);
+                } else if (MenuPage == 5)
+                {
+                    spriteBatch.DrawString
+                        (scoreText,
+                        "Upcoming Features!\n" +
+                        "* High score system\n" +
+                        "* Custom names/saves\n" +
+                        "* More songs!\n" +
+                        "* More vibrant UI\n" +
+                        "* Better backend for improved performace!\n\n\n\n" +
+                        "<= COPYRIGHTS",
                         new Vector2(CentreScreen.X - 160, CentreScreen.Y + 15), Color.White);
                 } else
                 {
@@ -1556,21 +1579,29 @@ namespace TrebleSketch_AIE_Asteroids
 
                 spriteBatch.DrawString
                         (scoreText,
-                        (MenuPage + 1) + " / 5",
+                        (MenuPage + 1) + " / 6",
                         new Vector2(CentreScreen.X - 160, CentreScreen.Y + 270), Color.White);
 
-                spriteBatch.DrawString
-                    (scoreText,
-                    "This game is in the public alpha testing phase, please submit a Github Issue\n" +
-                    "if problems are found or you want to give suggestions (https://github.com/ILM126/AIE-AsteroidsRemake/issues)",
-                    new Vector2(340, CentreScreen.Y * 2 - 37), Color.White, 0, new Vector2(0), 0.65f, SpriteEffects.None, 0);
             }
             if (SceneID == 0 || SceneID == 1 || SceneID == 2) // Only in-Menu and in-Game
             {
                 spriteBatch.DrawString
                     (scoreText,
-                    "Game Developed by Treble Sketch (c) 2016",
+                    "Developed by Treble Sketch (c) 2016",
                     new Vector2(12, CentreScreen.Y * 2 - 30), Color.White, 0, new Vector2(0), 0.75f, SpriteEffects.None, 0);
+
+                spriteBatch.DrawString
+                   (scoreText,
+                   "This game is in the public alpha testing phase, please submit a Github Issue\n" +
+                   "if problems are found or you want to give suggestions (https://github.com/ILM126/AIE-AsteroidsRemake/issues)",
+                   new Vector2(335, CentreScreen.Y * 2 - 37), Color.White, 0, new Vector2(0), 0.65f, SpriteEffects.None, 0);
+            }
+            if (SceneID == 2)
+            {
+                spriteBatch.DrawString
+                    (scoreText,
+                    "[Pre-Alpha] 0.1.188",
+                    new Vector2(CentreScreen.X * 2 - 160, CentreScreen.Y * 2 - 30), Color.White, 0, new Vector2(0), 0.75f, SpriteEffects.None, 0);
             }
         }
         #endregion
