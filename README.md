@@ -1,14 +1,18 @@
 # SpaceXterminator (Pre-Alpha)
-A Game Where Elon Musk Must Destroy All The Tugboats That Is Stopping His Launches
+The tug boats must be destroyed!
 ---
 
-Inspired by the recent SES-9 Launch Attempt No. 3 on Sunday 28th of February, where a tug boat strayed into the retriction zone 2 minutes before launch and the launch had to be pushed back before a last second launch abort that saw the launch be pushed to the 4th of March.
+Inspired by SpaceX's [Falcon 9-022](https://en.wikipedia.org/wiki/Falcon_9_Flight_22) Launch Attempt No. 3 on Sunday 28th of February, where a tug boat strayed into the retricted zone designated before lift off, 2 minutes before launch. Which caused the launch had to be delayed by 34 min before a last second launch abort that saw the launch be scrubbed 5 days later to the 4th of March. Where it successfully launched the sattelite, SES-9 into a Geostationary Transfer Orbit at at 11:35:00 UTC.
 
+SpaceXterminator is based off the popular arcade game, Asteroids. Which you can have a go at playing the original game [here](http://www.freeasteroids.org/).
 
->This is a MonoGame being developed in Visual Studio 2015 for an Academy of Interactive Entertainment Course for Year 10 in Australia.
->Based off the popular arcade game, Asteroids. Participants of the course must make a version of their own 'Asteroids' and hand it up for assessment on 16/03/2016
->Still got a lot of work to do...
->The PDF that this is based off is also in the repo
+If you have any opinions, suggestions or ideas, or critique. Please submit it to the Issue Tracker on [GitHub](https://github.com/ILM126/AIE-AsteroidsRemake/issues). Thanks!
 
->All Files Belongs to Treble Sketch (Titus Huang), but based off the code provided by AIE. Do Not Release This Code Anywhere Under Any Circumstances Unless You Have The Express Permission of Teble Sketch.
->Preferably Contacted By Either [Twitter](https://www.twitter.com/ILM126) or [Email](mailto:ILM126@hotmail.com.au)
+>This is a game being developed in Visual Studio 2015 using the MonoGame pipeline/engine for an Academy of Interactive Entertainment (AIE) course, the 'Game Programming Cert II course'. ([link to course](http://www.aie.edu.au/courses/game_programming/certII_idmt_basic_game.html))
+>The PDF file that we were given is uploaded with the repo, users may have a peek if you wish.
+
+Note: This is the accumilation of all my knowledge that I have learnt about C# entirely since Feburay 2016, the code is a mess due to me writing most of it in the first few months of the course.
+
+SpaceXterminator © 2016 Treble Sketch (Titus Huang)
+Visit me on: [GitHub](https://github.com/ILM126/) | [GameJolt](http://gamejolt.com/profile/treble-sketch/430901) | [Steam](https://steamcommunity.com/id/ILM126)
+Contact: Preferably via either [Twitter](https://www.twitter.com/ILM126) or Discord (Treble Sketch#9425)
