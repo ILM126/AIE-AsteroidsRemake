@@ -12,7 +12,7 @@ namespace TrebleSketch_AIE_Asteroids
     /// <summary>
     /// Name: SpaceXterminator
     /// Description: A Game Where Elon Musk Must Destroy All The Tugboats That Is Stopping His Launches
-    /// Version: 0.1.180 (Pre-Alpha)
+    /// Version: 0.1.185 (Pre-Alpha)
     /// Developer: Titus Huang (Treble Sketch/ILM126)
     /// Game Engine: MonoGame
     /// Dev Notes: This is my first ever major game of any kind, tons of hard work is still needed >:D
@@ -91,6 +91,13 @@ namespace TrebleSketch_AIE_Asteroids
         public Song backgroundMusicFull;
         public Song Archie_Fallen_Dreams;
         public Song TestShotStarfish_AllTheseWorlds;
+
+        enum SongPlaylist
+        {
+            ExtremeMuggings,
+            FallenDreams,
+            AllTheseWorlds
+        }
 
         class LifeClass
         {
@@ -190,7 +197,7 @@ namespace TrebleSketch_AIE_Asteroids
         {
             Debug = new Debugging();
             File.Delete(Debug.GetCurrentDirectory());
-            GameVersionBuild = "v0.1.180 (09/05/16) [Pre-Alpha]";
+            GameVersionBuild = "v0.1.185 (19/05/16) [Pre-Alpha]";
             Debug.WriteToFile("[INFO] Starting SpaceXterminator " + GameVersionBuild, true);
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -454,8 +461,13 @@ namespace TrebleSketch_AIE_Asteroids
             ICheckINput(gameTime);
             MouseMovement.Update();
             //ToggleMusic(gameTime);
-            PlayerAllTheseWorlds(gameTime);
-            PlayerArchie(gameTime);
+            if (SceneID == 1)
+            {
+                PlayerAllTheseWorlds(gameTime);
+            } else if (SceneID == 2)
+            {
+                PlayerArchie(gameTime);
+            }
 
             while (messages.Count > 0 && messages[0].Appeared + MaxAgeMessage < gameTime.TotalGameTime)
             {
@@ -849,6 +861,8 @@ namespace TrebleSketch_AIE_Asteroids
                         //    Position = MessagePosition
                         //});
                         AsteroidLevel = 0;
+                        MediaPlayer.Stop();
+                        playedStopLoop = false;
                         // Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
                         timeNow = new TimeSpan(0, 0, 0, 5, 0) + gameTime.TotalGameTime;
                         LoadViaCode = false;
@@ -874,6 +888,8 @@ namespace TrebleSketch_AIE_Asteroids
                         //    Position = MessagePosition
                         //});
                         AsteroidLevel = 0;
+                        MediaPlayer.Stop();
+                        playedStopLoop = false;
                         // Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
                         timeNow = new TimeSpan(0, 0, 0, 5, 0) + gameTime.TotalGameTime;
                         LoadViaCode = false;
@@ -1087,7 +1103,7 @@ namespace TrebleSketch_AIE_Asteroids
 
         void PlayerArchie(GameTime gameTime)
         {
-            if (SceneID == 2 && !playedStopLoop)
+            if (/*SceneID == 2 && */!playedStopLoop)
             {
                 MediaPlayer.Play(Archie_Fallen_Dreams); // PLAY DIS
                 if (!playedOnceViaCode)
@@ -1107,15 +1123,12 @@ namespace TrebleSketch_AIE_Asteroids
                 Debug.WriteToFile("[INFO] Song is looping: " + MediaPlayer.IsRepeating.ToString(), true);
                 Debug.WriteToFile("[INFO] " + Archie_Fallen_Dreams.Name + " by " + Archie_Fallen_Dreams.Artist + " just started playing", true);
                 playedStopLoop = true;
-            } else if (SceneID != 2 && SceneID == 1)
-            {
-
             }
         }
 
         void PlayerAllTheseWorlds(GameTime gameTime)
         {
-            if (SceneID == 1 && !playedStopLoop)
+            if (/*SceneID == 1 && */!playedStopLoop)
             {
                 MediaPlayer.Play(TestShotStarfish_AllTheseWorlds); // PLAY DIS
                 if (!playedOnceViaCode)
@@ -1556,7 +1569,7 @@ namespace TrebleSketch_AIE_Asteroids
             {
                 spriteBatch.DrawString
                     (scoreText,
-                    "Game Developed by Titus Huang (c) 2016",
+                    "Game Developed by Treble Sketch (c) 2016",
                     new Vector2(12, CentreScreen.Y * 2 - 30), Color.White, 0, new Vector2(0), 0.75f, SpriteEffects.None, 0);
             }
         }

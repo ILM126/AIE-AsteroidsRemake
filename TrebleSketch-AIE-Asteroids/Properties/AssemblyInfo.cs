@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SpaceXterminator")]
-[assembly: AssemblyProduct("TrebleSketch-AIE-Asteroids")]
+[assembly: AssemblyTitle("SpaceXterminator [Pre-Alpha Release]")]
+[assembly: AssemblyProduct("SpaceXterminator")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyDescription("Destory All The Tugboats Before They Stop The Rocket!")]
-[assembly: AssemblyCompany("Academy of Interactive Entertainment")]
-[assembly: AssemblyCopyright("Copyright © Academy of Interactive Entertainment 2016")]
+[assembly: AssemblyDescription("Destory All The Tugboats Before They Blow Up The Rocket!")]
+[assembly: AssemblyCompany("Academy of Interactive Entertainment (AIE)")]
+[assembly: AssemblyCopyright("Copyright © Treble Sketch 2016")]
 [assembly: AssemblyTrademark("Treble Sketch")]
 [assembly: AssemblyCulture("")]
 
@@ -34,6 +34,6 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("3.5.0.1386")]
-[assembly: AssemblyFileVersion("3.5.0.1386")]
+[assembly: AssemblyFileVersion("0.1.0.185")]
 [assembly: NeutralResourcesLanguage("en-AU")]
 
