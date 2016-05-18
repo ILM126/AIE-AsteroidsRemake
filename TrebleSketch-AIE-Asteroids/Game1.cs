@@ -1092,7 +1092,6 @@ namespace TrebleSketch_AIE_Asteroids
                 MediaPlayer.Play(Archie_Fallen_Dreams); // PLAY DIS
                 if (!playedOnceViaCode)
                 {
-                    MediaPlayer.Volume -= 0.40f;
                     playedOnceViaCode = true;
                     MediaPlayer.IsRepeating = true;
                 }
@@ -1108,6 +1107,9 @@ namespace TrebleSketch_AIE_Asteroids
                 Debug.WriteToFile("[INFO] Song is looping: " + MediaPlayer.IsRepeating.ToString(), true);
                 Debug.WriteToFile("[INFO] " + Archie_Fallen_Dreams.Name + " by " + Archie_Fallen_Dreams.Artist + " just started playing", true);
                 playedStopLoop = true;
+            } else if (SceneID != 2 && SceneID == 1)
+            {
+
             }
         }
 
@@ -1118,7 +1120,6 @@ namespace TrebleSketch_AIE_Asteroids
                 MediaPlayer.Play(TestShotStarfish_AllTheseWorlds); // PLAY DIS
                 if (!playedOnceViaCode)
                 {
-                    MediaPlayer.Volume -= 0.25f;
                     playedOnceViaCode = true;
                     MediaPlayer.IsRepeating = true;
                 }
@@ -1134,7 +1135,7 @@ namespace TrebleSketch_AIE_Asteroids
                 Debug.WriteToFile("[INFO] Song is looping: " + MediaPlayer.IsRepeating.ToString(), true);
                 Debug.WriteToFile("[INFO] " + TestShotStarfish_AllTheseWorlds.Name + " by " + TestShotStarfish_AllTheseWorlds.Artist + " just started playing", true);
                 playedStopLoop = true;
-            }
+            } 
         }
 
         #endregion
@@ -1529,7 +1530,7 @@ namespace TrebleSketch_AIE_Asteroids
                         "Music in menu: All These Worlds by Test Shot Starfish\n" +
                         "Player Sprite: Elon Musk's face, the founder of SpaceX\n" +
                         "Enemy Sprite: From an image found on Google Images\n" +
-                        "etc  ... Add more\n\n\n\n\n" +
+                        "etc  ... Add more\n\n\n\n" +
                         "<= *empty*",
                         new Vector2(CentreScreen.X - 160, CentreScreen.Y + 15), Color.White);
                 } else
