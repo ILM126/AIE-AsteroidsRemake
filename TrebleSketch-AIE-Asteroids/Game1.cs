@@ -12,7 +12,7 @@ namespace TrebleSketch_AIE_Asteroids
     /// <summary>
     /// Name: SpaceXterminator
     /// Description: A Game Where Elon Musk Must Destroy All The Tugboats That Is Stopping His Launches
-    /// Version: 0.1.188 (Pre-Alpha)
+    /// Version: 0.1.25.190 (Pre-Alpha)
     /// Developer: Titus Huang (Treble Sketch/ILM126)
     /// Game Engine: MonoGame
     /// Dev Notes: This is my first ever major game of any kind, tons of hard work is still needed >:D
@@ -197,7 +197,7 @@ namespace TrebleSketch_AIE_Asteroids
         {
             Debug = new Debugging();
             File.Delete(Debug.GetCurrentDirectory());
-            GameVersionBuild = "v0.1.188 (19/05/16) [Pre-Alpha]";
+            GameVersionBuild = "v0.1.25.190 (19/05/16) [Pre-Alpha]";
             Debug.WriteToFile("[INFO] Starting SpaceXterminator " + GameVersionBuild, true);
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";

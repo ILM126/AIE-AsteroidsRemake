@@ -19,7 +19,7 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>C:\Users\TrebleSketch\Documents\Visual Studio 2015\Publish\</PublishUrl>
+    <PublishUrl>C:\Program Files %28x86%29\Treble Sketch Games\SpaceXterminator\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -33,9 +33,9 @@
     <ErrorReportUrl>https://github.com/ILM126/AIE-AsteroidsRemake/issues/</ErrorReportUrl>
     <TargetCulture>en-AU</TargetCulture>
     <ProductName>SpaceXterminator</ProductName>
-    <PublisherName>Treble Sketch</PublisherName>
-    <ApplicationRevision>186</ApplicationRevision>
-    <ApplicationVersion>0.1.185.%2a</ApplicationVersion>
+    <PublisherName>Treble Sketch Games</PublisherName>
+    <ApplicationRevision>190</ApplicationRevision>
+    <ApplicationVersion>0.1.25.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
