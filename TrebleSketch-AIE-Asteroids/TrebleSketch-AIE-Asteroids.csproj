@@ -34,7 +34,7 @@
     <TargetCulture>en-AU</TargetCulture>
     <ProductName>SpaceXterminator</ProductName>
     <PublisherName>Treble Sketch Games</PublisherName>
-    <ApplicationRevision>190</ApplicationRevision>
+    <ApplicationRevision>191</ApplicationRevision>
     <ApplicationVersion>0.1.25.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
