@@ -12,7 +12,7 @@ namespace TrebleSketch_AIE_Asteroids
     /// <summary>
     /// Name: SpaceXterminator
     /// Description: A Game Where Elon Musk Must Destroy All The Tugboats That Is Stopping His Launches
-    /// Version: 0.1.25.190 (Pre-Alpha)
+    /// Version: 0.1.26.192 (Pre-Alpha)
     /// Developer: Titus Huang (Treble Sketch/ILM126)
     /// Game Engine: MonoGame
     /// Dev Notes: This is my first ever major game of any kind, tons of hard work is still needed >:D
@@ -92,7 +92,7 @@ namespace TrebleSketch_AIE_Asteroids
         public Song Archie_Fallen_Dreams;
         public Song TestShotStarfish_AllTheseWorlds;
 
-        enum SongPlaylist
+        enum SongPlaylist // To be implemented in Release 3
         {
             ExtremeMuggings,
             FallenDreams,
@@ -120,8 +120,7 @@ namespace TrebleSketch_AIE_Asteroids
         float Level_Conspiracy;
 
         public int SceneID; // How I handle my scene, pretty bad. But it works for quick deployment! :D
-                            // This version will be the messy one, but future games will implement a simplier version.
-        bool Paused;                           
+                            // This version will be the messy one, but future games will implement a simplier version.                       
         string SceneName;
         bool PlayerInScene;
         bool AsteroidsInScene;
@@ -167,10 +166,6 @@ namespace TrebleSketch_AIE_Asteroids
 
         public Buttons MenuButton;
 
-        TimeSpan lastRepeatChange;
-        TimeSpan lastAudioChange;
-        bool playedOnce;
-
         int KeyMappingOption; // Option Later!
         bool Trigged = false;
 
@@ -197,7 +192,7 @@ namespace TrebleSketch_AIE_Asteroids
         {
             Debug = new Debugging();
             File.Delete(Debug.GetCurrentDirectory());
-            GameVersionBuild = "v0.1.25.190 (19/05/16) [Pre-Alpha]";
+            GameVersionBuild = "v0.1.26.192 (20/05/16) [Pre-Alpha]";
             Debug.WriteToFile("[INFO] Starting SpaceXterminator " + GameVersionBuild, true);
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -778,7 +773,6 @@ namespace TrebleSketch_AIE_Asteroids
                     {
                         SceneID = 2;
                         LoadViaCode = true;
-                        playedStopLoop = false;
                         playedOnceViaCode = false;
                     }
 
@@ -814,6 +808,7 @@ namespace TrebleSketch_AIE_Asteroids
                         //});
                         //Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
                         LoadViaCode = false;
+                        playedStopLoop = false;
                         Debug.WriteToFile("[DEBUG] SCENE 2 LOADED", false);
                         InitializeShip();
                         Difficulty();
@@ -1103,7 +1098,7 @@ namespace TrebleSketch_AIE_Asteroids
 
         void PlayerArchie(GameTime gameTime)
         {
-            if (/*SceneID == 2 && */!playedStopLoop)
+            if (!playedStopLoop)
             {
                 MediaPlayer.Play(Archie_Fallen_Dreams); // PLAY DIS
                 if (!playedOnceViaCode)
@@ -1115,7 +1110,7 @@ namespace TrebleSketch_AIE_Asteroids
                 {
                     Text = "'Fallen Dreams by Archie' just started playing",
                     Appeared = gameTime.TotalGameTime,
-                    Position = new Vector2(CentreScreen.X + 125, CentreScreen.Y * 2 - 33)
+                    Position = new Vector2(CentreScreen.X + 125, CentreScreen.Y * 2 - 60)
                 });
                 Debug.WriteToFile("[DEBUG] Message Appeared Time: " + messages[0].Appeared.ToString(), false);
                 GameFirstLoad = false;
@@ -1128,7 +1123,7 @@ namespace TrebleSketch_AIE_Asteroids
 
         void PlayerAllTheseWorlds(GameTime gameTime)
         {
-            if (/*SceneID == 1 && */!playedStopLoop)
+            if (!playedStopLoop)
             {
                 MediaPlayer.Play(TestShotStarfish_AllTheseWorlds); // PLAY DIS
                 if (!playedOnceViaCode)
@@ -1431,7 +1426,7 @@ namespace TrebleSketch_AIE_Asteroids
             for (int i = 0; i < PlayerLives; ++i)
             {
                 spriteBatch.Draw(Life.Texture
-                , new Vector2(i*15 + 18, 90)
+                , new Vector2(i*15 + 18, 95)
                 , null
                 , Color.White
                 , 0
@@ -1478,7 +1473,7 @@ namespace TrebleSketch_AIE_Asteroids
         void DrawGameName()
         {
             spriteBatch.Draw(GameName
-                , new Vector2(CentreScreen.X, 240)
+                , new Vector2(CentreScreen.X, 220)
                 , null
                 , Color.White
                 , 0
@@ -1493,6 +1488,7 @@ namespace TrebleSketch_AIE_Asteroids
         {
             if (SceneID == 1)
             {
+                #region Menu Page
                 if (MenuPage == 0)
                 {
                     spriteBatch.DrawString
@@ -1527,8 +1523,7 @@ namespace TrebleSketch_AIE_Asteroids
                         "Q = Stops movement completely\n" +
                         "Shift = Increases the turn and movement rate\n" +
                         "Space = Shoots Elon Musk eye missles!\n" +
-                        "F = Full Screen!\n" +
-                        "Esc = Exit the Game at any time\n" +
+                        "F = Full Screen! | Esc = Exit the Game at any time\n\n" +
                         "<= MISSION OBJECTIVE  | GITHUB INFO =>",
                         new Vector2(CentreScreen.X - 160, CentreScreen.Y + 15), Color.White);
                 } else if (MenuPage == 3)
@@ -1538,9 +1533,10 @@ namespace TrebleSketch_AIE_Asteroids
                         "Project Name: AIE-AsteroidsRemake\n" +
                         "Project Link: https://github.com/ILM126/AIE-AsteroidsRemake/ \n" +
                         "Project Issues: https://github.com/ILM126/AIE-AsteroidsRemake/issues \n" +
-                        "Find a mistake? Or you want to suggest something to be added into the game?\n" +
-                        "Go to the 'Issue' link and write up an issue for me!\n" +
-                        "Thanks!\n\n" +
+                        "Find a mistake? Or you want to suggest something to be added into\n" +
+                        "the game?\n" +
+                        "Go to the 'Project Issues' link and write up an issue for me!\n" +
+                        "Thanks!\n" +
                         "Treble Sketch\n\n" +
                         "<= KEYBINDS           | COPYRIGHTS =>",
                         new Vector2(CentreScreen.X - 160, CentreScreen.Y + 15), Color.White);
@@ -1566,7 +1562,8 @@ namespace TrebleSketch_AIE_Asteroids
                         "* Custom names/saves\n" +
                         "* More songs!\n" +
                         "* More vibrant UI\n" +
-                        "* Better backend for improved performace!\n\n\n\n" +
+                        "* Better backend for improved performace!\n" +
+                        "* Ship damage system by their size\n\n\n" +
                         "<= COPYRIGHTS",
                         new Vector2(CentreScreen.X - 160, CentreScreen.Y + 15), Color.White);
                 } else
@@ -1583,7 +1580,8 @@ namespace TrebleSketch_AIE_Asteroids
                         new Vector2(CentreScreen.X - 160, CentreScreen.Y + 270), Color.White);
 
             }
-            if (SceneID == 0 || SceneID == 1 || SceneID == 2) // Only in-Menu and in-Game
+            #endregion
+            if (SceneID == 0 || SceneID == 1) // Only in-Menu and in-Game
             {
                 spriteBatch.DrawString
                     (scoreText,
@@ -1592,16 +1590,32 @@ namespace TrebleSketch_AIE_Asteroids
 
                 spriteBatch.DrawString
                    (scoreText,
-                   "This game is in the public alpha testing phase, please submit a Github Issue\n" +
-                   "if problems are found or you want to give suggestions (https://github.com/ILM126/AIE-AsteroidsRemake/issues)",
-                   new Vector2(335, CentreScreen.Y * 2 - 37), Color.White, 0, new Vector2(0), 0.65f, SpriteEffects.None, 0);
+                   "This game is in the public alpha testing phase, please submit a Github Issue if problems, bug are found, or\n" +
+                   "that you've got a suggestion. Go to link on the right (https://github.com/ILM126/AIE-AsteroidsRemake/issues)",
+                   new Vector2(330, CentreScreen.Y * 2 - 37), Color.White, 0, new Vector2(0), 0.65f, SpriteEffects.None, 0);
+
+                spriteBatch.DrawString
+                    (scoreText,
+                    GameVersionBuild,
+                    new Vector2(CentreScreen.X + 50, 270), Color.LimeGreen, 0, new Vector2(0), 1.25f, SpriteEffects.None, 0);
             }
             if (SceneID == 2)
             {
                 spriteBatch.DrawString
                     (scoreText,
-                    "[Pre-Alpha] 0.1.188",
-                    new Vector2(CentreScreen.X * 2 - 160, CentreScreen.Y * 2 - 30), Color.White, 0, new Vector2(0), 0.75f, SpriteEffects.None, 0);
+                    "Developed by Treble Sketch (c) 2016",
+                    new Vector2(12, CentreScreen.Y * 2 - 65), Color.White, 0, new Vector2(0), 0.80f, SpriteEffects.None, 0);
+
+                spriteBatch.DrawString
+                   (scoreText,
+                   "This game is in the public alpha testing phase, please submit a Github Issue if problems, bug are found, or\n" +
+                   "that you've got a suggestion. Go to link on the right (https://github.com/ILM126/AIE-AsteroidsRemake/issues)",
+                   new Vector2(12, CentreScreen.Y * 2 - 37), Color.White, 0, new Vector2(0), 0.65f, SpriteEffects.None, 0);
+
+                spriteBatch.DrawString
+                    (scoreText,
+                    GameVersionBuild,
+                    new Vector2(CentreScreen.X + 350, CentreScreen.Y * 2 - 30), Color.White, 0, new Vector2(0), 0.75f, SpriteEffects.None, 0);
             }
         }
         #endregion
