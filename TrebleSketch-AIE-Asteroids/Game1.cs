@@ -1536,7 +1536,7 @@ namespace TrebleSketch_AIE_Asteroids
                         "Find a mistake? Or you want to suggest something to be added into\n" +
                         "the game?\n" +
                         "Go to the 'Project Issues' link and write up an issue for me!\n" +
-                        "Thanks!\n" +
+                        "Thanks!\n" +   
                         "Treble Sketch\n\n" +
                         "<= KEYBINDS           | COPYRIGHTS =>",
                         new Vector2(CentreScreen.X - 160, CentreScreen.Y + 15), Color.White);
