@@ -17,7 +17,7 @@ namespace TrebleSketch_AIE_Asteroids
     /// Game Engine: MonoGame
     /// Dev Notes: This is my first ever major game of any kind, tons of hard work is still needed >:D
     /// *** Ask Max about radians and stuff, where the missles will spawn over Elon's eyes no matter what orientation he is
-    /// *** 
+    /// *** Pause menu for the game!
     /// </summary>
     public class Game1 : Game
     {
